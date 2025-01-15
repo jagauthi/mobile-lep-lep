@@ -1,0 +1,27 @@
+Game object structure
+	Game
+		Player
+		Dungeon
+			NPCs
+			Containers
+				Items
+		Town
+			NPCs
+	Canvas
+		EscapeMenu
+		TownOptions
+		DungeonOptions
+	
+	
+	
+Script structure
+	Game
+		Player
+		Quests
+		NPCs
+	Player
+		Abilities
+		Inventory
+		Equipment
+	DungeonMenuScript
+		Player

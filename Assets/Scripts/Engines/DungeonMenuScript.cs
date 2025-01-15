@@ -15,7 +15,6 @@ public class DungeonMenuScript : MonoBehaviour
         }
         Debug.Log("Got playerScript: " + playerScript);
         
-        playerScript.printAbilities(); 
     }
 
     public void onButton1() {
