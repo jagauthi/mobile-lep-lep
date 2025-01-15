@@ -43,6 +43,7 @@ public class MageScript : PlayerScript {
     {
         drawBasics();
         drawManaBar();
+        drawAbilities();
     }
 
     protected void drawManaBar()

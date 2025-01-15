@@ -23,6 +23,7 @@ public class PlayerScript : MonoBehaviour
     protected int gold;
     protected bool levelUpMenuToggle = false;
 
+    Hashtable abilityMap = new Hashtable();
     protected List<Ability> abilities;
     protected List<Quest> activeQuests;
     protected Inventory inventory;
@@ -37,7 +38,7 @@ public class PlayerScript : MonoBehaviour
     protected void Start ()
     {
         //Cursor.visible = false;
-
+        Debug.Log("Start");
         basicInits();
         initStats();
     }
@@ -46,6 +47,7 @@ public class PlayerScript : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         abilities = new List<Ability>();
+        loadAbilities();
         activeQuests = new List<Quest>();
         inventory = new Inventory();
         equipment = new Equipment();
@@ -78,7 +80,29 @@ public class PlayerScript : MonoBehaviour
 
     protected virtual void loadAbilities()
     {
+        initAbilities();
+        abilities.Add((Ability)abilityMap["Fireball"]);
+        abilities.Add((Ability)abilityMap["Frostball"]);
+        abilities.Add((Ability)abilityMap["Melee Attack"]);
+    }
 
+    void initAbilities()
+    {
+        abilityMap.Add("Melee Attack", new Ability("Melee Attack", "Melee", 5, 30,
+                (GameObject)Resources.Load("Prefabs/Weapon"),
+                (Texture2D)Resources.Load("Images/WeaponIcon")));
+
+        abilityMap.Add("Ranged Attack", new Ability("Arrow", "RangedProjectile", 10, 40,
+                (GameObject)Resources.Load("Prefabs/Arrow"),
+                (Texture2D)Resources.Load("Images/ArrowIcon")));
+
+        abilityMap.Add("Fireball", new Ability("Fireball", "MagicProjectile", 10, 40,
+                (GameObject)Resources.Load("Prefabs/Fireball"),
+                (Texture2D)Resources.Load("Images/FireballIcon")));
+
+        abilityMap.Add("Frostball", new Ability("Frostball", "MagicProjectile", 5, 20,
+                (GameObject)Resources.Load("Prefabs/Frostball"),
+                (Texture2D)Resources.Load("Images/FrostballIcon")));
     }
 
     protected void Update() {
@@ -135,6 +159,7 @@ public class PlayerScript : MonoBehaviour
     protected void drawBasics() {
         drawHealthBar();
         drawExpBar();
+        drawAbilities();
     }
 
     protected void drawHealthBar()
