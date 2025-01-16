@@ -34,8 +34,9 @@ public class GameScript : MonoBehaviour {
         // DontDestroyOnLoad(transform.gameObject);
     }
 
-    void Start()
+    protected void Start()
     {
+        Debug.Log("GameScript Start");
         Physics.gravity = new Vector3(0, -22.0f, 0);
         restClient = new GameRestClient(this);
         itemHandler = new ItemHandler(this);

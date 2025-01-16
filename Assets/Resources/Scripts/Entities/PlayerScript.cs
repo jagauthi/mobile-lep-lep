@@ -12,11 +12,7 @@ public class PlayerScript : MonoBehaviour
     protected GameScript gameScript;
     public GameObject player, gameEngine;
     
-    protected int currentHealth, strength, intelligence, agility;
-    
-    protected float regularBarLength = Screen.width / 3;
-    protected float healthBarLength = Screen.width / 3;
-    protected float expBarLength = Screen.width / 3;
+    protected int currentHealth, currentResource, strength, intelligence, agility;
     protected int level = 1;
     protected int exp = 0;
     protected int skillPoints = 5;
@@ -38,7 +34,7 @@ public class PlayerScript : MonoBehaviour
     protected void Start ()
     {
         //Cursor.visible = false;
-        Debug.Log("Start");
+        Debug.Log("PlayerScript Start");
         basicInits();
         initStats();
     }
@@ -46,13 +42,20 @@ public class PlayerScript : MonoBehaviour
     protected void basicInits()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+
         abilities = new List<Ability>();
         loadAbilities();
+
         activeQuests = new List<Quest>();
         inventory = new Inventory();
+
         equipment = new Equipment();
         inventory.addItem(new Consumable(0, "Health Potion", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 50));
+        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
+        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
+
         gold = 10;
+
         retrieveGameScript();
     }
 
@@ -72,10 +75,11 @@ public class PlayerScript : MonoBehaviour
 
     protected void initStats()
     {
-        currentHealth = 100;
         strength = 1;
         intelligence = 1;
         agility = 1;
+        currentHealth = getMaxHealth();
+        currentResource = getMaxResource();
     }
 
     protected virtual void loadAbilities()
@@ -110,8 +114,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     protected void basicUpdates() {
-        healthBarLength = (regularBarLength) * (currentHealth / (float)getMaxHealth());
-        expBarLength = (regularBarLength) * (exp / (float)GetExpToNextLevel());
+
     }
 
     public void inventoryToggle() {
@@ -157,38 +160,10 @@ public class PlayerScript : MonoBehaviour
     }
 
     protected void drawBasics() {
-        drawHealthBar();
-        drawExpBar();
-        drawAbilities();
-    }
-
-    protected void drawHealthBar()
-    {
-        GUIStyle redStyle = new GUIStyle(GUI.skin.box);
-        redStyle.normal.background = MakeTex(2, 2, new Color(1f, 0f, 0f, 0.75f));
-        GUIStyle blackStyle = new GUIStyle(GUI.skin.box);
-        blackStyle.normal.background = MakeTex(2, 2, new Color(1f, 1f, 1f, 1f));
-        if (healthBarLength > 0)
-        {
-            GUI.Box(new Rect(10, 10, healthBarLength, 20), "", redStyle);
-        }
-        GUI.Box(new Rect(10, 10, regularBarLength, 20), currentHealth + "/" + getMaxHealth());
-        GUI.Box(new Rect(regularBarLength + 20, 10, 20, 20), "" + level);
-    }
-
-    protected void drawExpBar()
-    {
-        GUIStyle greenStyle = new GUIStyle(GUI.skin.box);
-        greenStyle.normal.background = MakeTex(2, 2, new Color(0f, 1f, 0f, 0.75f));
-        if (expBarLength > 0)
-        {
-            GUI.Box(new Rect(10, 35, expBarLength, 20), "", greenStyle);
-        }
-        GUI.Box(new Rect(10, 35, regularBarLength, 20), exp + "/" + GetExpToNextLevel());
-        if(skillPoints > 0)
-        {
-            GUI.Box(new Rect(regularBarLength + 20, 35, 20, 20), "+");
-        }
+        GuiUtil.drawHealthBar(currentHealth, getMaxHealth(), level);
+        GuiUtil.drawExpBar(exp, GetExpToNextLevel(), skillPoints);
+        GuiUtil.drawResourceBar(currentResource, getMaxResource());
+        //drawAbilities();
     }
 
     protected void drawAbilities()
@@ -200,34 +175,6 @@ public class PlayerScript : MonoBehaviour
                 abilities[i].getIcon()
             );
         }
-    }
-
-    protected void drawEnemyHealthBar(EnemyScript enemyScript)
-    {
-        if (enemyScript != null)
-        {
-            GUIStyle redStyle = new GUIStyle(GUI.skin.box);
-            redStyle.normal.background = MakeTex(2, 2, new Color(1f, 0f, 0f, 0.75f));
-            float healthBarLength = (regularBarLength) * (enemyScript.currentHealth / (float)enemyScript.maxHealth);
-            if (healthBarLength > 0)
-            {
-                GUI.Box(new Rect(regularBarLength + 50, 10, healthBarLength, 20), "", redStyle);
-            }
-            GUI.Box(new Rect(regularBarLength + 50, 10, regularBarLength, 20), enemyScript.currentHealth + "/" + enemyScript.maxHealth);
-        }
-    }
-
-    protected Texture2D MakeTex(int width, int height, Color col)
-    {
-        Color[] pix = new Color[width * height];
-        for (int i = 0; i < pix.Length; ++i)
-        {
-            pix[i] = col;
-        }
-        Texture2D result = new Texture2D(width, height);
-        result.SetPixels(pix);
-        result.Apply();
-        return result;
     }
 
     protected void loseHealth(int x)
@@ -246,15 +193,9 @@ public class PlayerScript : MonoBehaviour
         currentHealth -= (int)newDamage;
     }
 
-    protected bool loseResource(int x)
-    {
-        //To be implemented by children classes
-        return false;
-    }
-
     protected virtual void fillResource() {
         print("Ugh?");
-        //To be implemented by children classes
+        //To be implemented by children classes (maybe?)
     }
 
     protected int getMaxHealth()
@@ -275,7 +216,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    protected void gainExp(int x)
+    public void gainExp(int x)
     {
         exp += x;
         while (exp >= GetExpToNextLevel())
@@ -286,8 +227,27 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public virtual bool gainResource(int x) { 
-        return false;
+    public bool gainResource(int x) { 
+        if(currentResource >= getMaxResource()) {
+            return false;
+        }
+        else {
+            currentResource += x;
+            if(currentResource > getMaxResource()) {
+                currentResource = getMaxResource();
+            }
+            return true;
+        }
+    }
+
+    public bool loseResource(int x) {
+        if(currentResource >= x) {
+            currentResource -= x;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public void setStrength(int newStrength) {
@@ -394,7 +354,7 @@ public class PlayerScript : MonoBehaviour
         level++;
         skillPoints += 5;
         currentHealth = getMaxHealth();
-        fillResource();
+        currentResource = getMaxResource();
         exp = 0;
     }
 
@@ -406,10 +366,12 @@ public class PlayerScript : MonoBehaviour
         return activeQuests.Contains(quest); 
     }
 
-    public void useItem(Item item) {
+    public bool useItem(Item item) {
         if(item.use()) {
             inventory.loseItem(item);
+            return true;
         }
+        return false;
     }
 
     public bool buyItem(Item item, int cost) {
@@ -429,5 +391,13 @@ public class PlayerScript : MonoBehaviour
 
     public Armor getArmorSlot(string slot) {
         return (Armor)equipment.getItemMap()[slot];
+    }
+
+    public List<Ability> getAbilities() {
+        return abilities;
+    }
+
+    public bool useAbility(Ability ability) {
+        return loseResource(ability.getResourceCost());
     }
 }

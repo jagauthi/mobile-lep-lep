@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - GameEngine
+  - Dungeon
+  - DungeonOptions
+  - AbilityButton
+  - ItemButton
   layers:
   - Default
   - TransparentFX

@@ -16,7 +16,7 @@ public class GameRestClient {
         unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
 		yield return unityWebRequest.SendWebRequest();
  
-        if(unityWebRequest.isNetworkError ||unityWebRequest.isHttpError) {
+        if(unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError) {
             Debug.Log("Error: " + unityWebRequest.error);
         }
         else {
@@ -34,7 +34,7 @@ public class GameRestClient {
 		unityWebRequest.SetRequestHeader ("Content-Type", "application/json");
 		yield return unityWebRequest.SendWebRequest();
  
-        if(unityWebRequest.isNetworkError ||unityWebRequest.isHttpError) {
+        if(unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError) {
             Debug.Log("Error: " + unityWebRequest.error);
         }
         else {

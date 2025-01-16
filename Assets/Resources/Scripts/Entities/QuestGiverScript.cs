@@ -15,13 +15,16 @@ public class QuestGiverScript : NpcScript {
     protected Rect exitTextButton = new Rect( Screen.width / 6, Screen.height / 2, Screen.width / 8, Screen.height / 8);
     protected Rect acceptButton = new Rect( Screen.width / 3, Screen.height / 2, Screen.width / 8, Screen.height / 8);
 
-    protected new void Start ()
-    {
+    public QuestGiverScript(string npcName) : base(npcName) {
+        this.npcName = npcName;
         npcName = "Questkeeper Ben";
         initQuests(npcName);
         initValues();
         getGameScript();
-        GetComponent<Renderer>().material.color = Color.yellow;
+    }
+
+    protected new void Start ()
+    {
     }
 
     protected void initQuests(string name)
@@ -40,51 +43,51 @@ public class QuestGiverScript : NpcScript {
         if(player == null || playerScript == null) {
             initValues();
         }
-        else
-        {
-            controlColor();
-            float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
-            if (distanceFromPlayer <= 20)
-            {
-                playerInRange = true;
-                //Look at player
-                transform.rotation = Quaternion.Slerp(transform.rotation,
-                    Quaternion.LookRotation(player.transform.position - transform.position), 5f * Time.deltaTime);
-            }
-            else
-            {
-                playerInRange = false;
-                showingQuests = false;
-            }
-        }
+        // else
+        // {
+        //     controlColor();
+        //     float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
+        //     if (distanceFromPlayer <= 20)
+        //     {
+        //         playerInRange = true;
+        //         //Look at player
+        //         transform.rotation = Quaternion.Slerp(transform.rotation,
+        //             Quaternion.LookRotation(player.transform.position - transform.position), 5f * Time.deltaTime);
+        //     }
+        //     else
+        //     {
+        //         playerInRange = false;
+        //         showingQuests = false;
+        //     }
+        // }
     }
 
-    void controlColor() {
-        Light questLight = GetComponentInChildren<Light>();
-        Renderer renderer = GetComponentInChildren<Renderer>();
-        if(questList.Count != 0) {
-            if(playerScript.hasQuest(questList[0])) {
-                if(questList[0].completed) {
-                    questLight.color = Color.green;
-                    renderer.material.color = Color.green;
-                }
-                else {
-                    questLight.color = Color.gray;
-                    renderer.material.color = Color.white;
-                }
-            }
-            else {
-                questLight.color = Color.yellow;
-                renderer.material.color = Color.yellow;
+    // void controlColor() {
+    //     Light questLight = GetComponentInChildren<Light>();
+    //     Renderer renderer = GetComponentInChildren<Renderer>();
+    //     if(questList.Count != 0) {
+    //         if(playerScript.hasQuest(questList[0])) {
+    //             if(questList[0].completed) {
+    //                 questLight.color = Color.green;
+    //                 renderer.material.color = Color.green;
+    //             }
+    //             else {
+    //                 questLight.color = Color.gray;
+    //                 renderer.material.color = Color.white;
+    //             }
+    //         }
+    //         else {
+    //             questLight.color = Color.yellow;
+    //             renderer.material.color = Color.yellow;
                 
-            }
-        }
-        else {
-            questLight.color = Color.gray;
-            questLight.intensity = 0;
-            renderer.material.color = Color.black;
-        }
-    }
+    //         }
+    //     }
+    //     else {
+    //         questLight.color = Color.gray;
+    //         questLight.intensity = 0;
+    //         renderer.material.color = Color.black;
+    //     }
+    // }
     
     void OnGUI()
     {

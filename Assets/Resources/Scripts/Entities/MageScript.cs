@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class MageScript : PlayerScript {
 
-    protected float manaBarLength;
     protected int currentMana;
 
     protected new void Start()
@@ -18,7 +17,6 @@ public class MageScript : PlayerScript {
 
     new protected void initStats()
     {
-        manaBarLength = regularBarLength;
         if(strength == 0) {
             strength = 1;
         }
@@ -35,26 +33,14 @@ public class MageScript : PlayerScript {
     protected new void Update()
     {
         basicUpdates();
-        manaBarLength = (regularBarLength) * (currentMana / (float)getMaxResource());
 
     }
 
     protected new void OnGUI()
     {
         drawBasics();
-        drawManaBar();
+        // drawManaBar();
         drawAbilities();
-    }
-
-    protected void drawManaBar()
-    {
-        GUIStyle blueStyle = new GUIStyle(GUI.skin.box);
-        blueStyle.normal.background = MakeTex(2, 2, new Color(0f, 0f, 1f, 0.75f));
-        if (manaBarLength > 0)
-        {
-            GUI.Box(new Rect(10, 60, manaBarLength, 20), "", blueStyle);
-        }
-        GUI.Box(new Rect(10, 60, regularBarLength, 20), currentMana + "/" + getMaxResource());
     }
 
     protected override void loadAbilities()
@@ -80,7 +66,7 @@ public class MageScript : PlayerScript {
         currentMana = getMaxResource();
     }
 
-    public override bool gainResource(int x) { 
+    public bool gainResource(int x) { 
         if(currentMana >= getMaxResource()) {
             return false;
         }

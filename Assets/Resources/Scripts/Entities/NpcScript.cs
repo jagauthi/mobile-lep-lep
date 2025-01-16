@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NpcScript : MonoBehaviour
+public class NpcScript
 {
     protected string npcName;
     protected GameObject player;
     protected PlayerScript playerScript;
     protected GameScript gameScript;
 
-    protected void Start()
+    public NpcScript(string npcName) {
+        this.npcName = npcName;
+        DoInits();
+    }
+
+    protected void DoInits()
     {
         npcName = "NpcName";
         initValues();
@@ -34,7 +39,7 @@ public class NpcScript : MonoBehaviour
 
     protected void getGameScript()
     {
-        GameObject[] objects = Object.FindObjectsOfType<GameObject>();
+        GameObject[] objects = Object.FindObjectsByType <GameObject>(FindObjectsSortMode.None);
         foreach (GameObject o in objects)
         {
             if (o.name.Equals("GameEngine"))
@@ -44,27 +49,20 @@ public class NpcScript : MonoBehaviour
         }
     }
 
-    protected void Update()
-    {
-        
-    }
-
-    protected void basicUpdates() {
-        if(player == null || playerScript == null) {
-            initValues();
-        }
-        else
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
-    }
-
     public string getName() {
         return npcName;
     }
 
     protected void Die()
     {
-        Destroy(this.gameObject);
+        Debug.Log("Blehhh X.X");
     }
+
+    
+
+    void Awake() {}
+
+    protected void Start () {}
+
+    protected void Update() {}
 }

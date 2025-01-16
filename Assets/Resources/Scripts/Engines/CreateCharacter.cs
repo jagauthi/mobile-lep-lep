@@ -148,6 +148,7 @@ public class CreateCharacter : MonoBehaviour {
     public void createCharacter()
     {
 		PlayerScript playerScript;
+		Debug.Log("Player class: " + playerClass);
 		// if(playerClass == "Mage") {
 			GameObject mageObject = (GameObject)Resources.Load("Prefabs/Mage");
 			playerScript = Instantiate(mageObject).GetComponent<MageScript>();

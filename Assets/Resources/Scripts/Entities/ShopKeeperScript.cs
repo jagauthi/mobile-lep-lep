@@ -13,13 +13,17 @@ public class ShopKeeperScript : NpcScript {
     Rect closeButton;
     Rect introRect;
 
-    protected new void Start ()
-    {
+    public ShopKeeperScript(string npcName) : base(npcName) {
+        this.npcName = npcName;
         npcName = "Shopkeeper David";
         initInventory(npcName);
         initValues();
         getGameScript();
-        GetComponent<Renderer>().material.color = Color.magenta;
+        // GetComponent<Renderer>().material.color = Color.magenta;
+    }
+
+    protected new void Start ()
+    {
     }
 
     protected void initInventory(string name)
@@ -52,22 +56,22 @@ public class ShopKeeperScript : NpcScript {
         if(player == null || playerScript == null) {
             initValues();
         }
-        else
-        {
-            float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
-            if (distanceFromPlayer <= 20)
-            {
-                playerInRange = true;
-                //Look at player
-                transform.rotation = Quaternion.Slerp(transform.rotation,
-                    Quaternion.LookRotation(player.transform.position - transform.position), 5f * Time.deltaTime);
-            }
-            else
-            {
-                playerInRange = false;
-                showingInventory = false;
-            }
-        }
+        // else
+        // {
+        //     float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
+        //     if (distanceFromPlayer <= 20)
+        //     {
+        //         playerInRange = true;
+        //         //Look at player
+        //         transform.rotation = Quaternion.Slerp(transform.rotation,
+        //             Quaternion.LookRotation(player.transform.position - transform.position), 5f * Time.deltaTime);
+        //     }
+        //     else
+        //     {
+        //         playerInRange = false;
+        //         showingInventory = false;
+        //     }
+        // }
     }
     
     void OnGUI()
@@ -85,7 +89,7 @@ public class ShopKeeperScript : NpcScript {
         int buffer = (int)inventoryGroupRect.width/16;
         GUI.BeginGroup(inventoryGroupRect);
         GUI.Box(backgroundRect, "");
-        GUI.Box(introRect, name + "'s Shop");
+        GUI.Box(introRect, npcName + "'s Shop");
         //GUI.DrawTexture(backgroundRect, backgroundTexture);
         for( int col = 0; col < 3; col++ ) {
             for( int row = 0; row < 3; row++ ) {

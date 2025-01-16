@@ -6,13 +6,15 @@ public class EnemyScript : NpcScript
     protected bool aggrod, canShoot;
     protected float range, moveSpeed, rotationSpeed, nextTime, interval;
     public int maxHealth, currentHealth, damage, expWorth, goldWorth;
-    protected Rigidbody fireball;
-
-    protected const float maxInvuln = 0.3f;
     
-    protected new void Start()
+    
+    public EnemyScript(string npcName) : base(npcName) {
+        this.npcName = npcName;
+        DoInits();
+    }
+
+    protected new void DoInits()
     {
-        npcName = "Enemy";
         basicInits();
         initStats();
         initValues();
@@ -22,8 +24,7 @@ public class EnemyScript : NpcScript
 
     protected void initAbilities()
     {
-        GameObject holder = (GameObject)Resources.Load("Prefabs/Fireball");
-        fireball = holder.GetComponent<Rigidbody>();
+        
     }
 
     protected void initStats()
@@ -33,7 +34,7 @@ public class EnemyScript : NpcScript
         maxHealth = 100;
         currentHealth = 100;
         damage = 10;
-        expWorth = 10;
+        expWorth = 20;
         goldWorth = 10;
         range = 10f;
         moveSpeed = 5f;
@@ -52,9 +53,16 @@ public class EnemyScript : NpcScript
         loseHealth(weapon.getDamage());
     }
 
-    protected void loseHealth(int x)
+    public void loseHealth(int x)
     {
         currentHealth -= x;
+        if(currentHealth < 0) {
+            currentHealth = 0;
+        }
+    }
+
+    public bool isDead() {
+        return currentHealth <= 0;
     }
 
 }
