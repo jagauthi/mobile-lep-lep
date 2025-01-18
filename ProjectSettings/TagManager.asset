@@ -9,6 +9,8 @@ TagManager:
   - DungeonOptions
   - AbilityButton
   - ItemButton
+  - TownOptions
+  - Town
   layers:
   - Default
   - TransparentFX

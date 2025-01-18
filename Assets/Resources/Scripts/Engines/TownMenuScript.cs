@@ -4,15 +4,15 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DungeonMenuScript : MonoBehaviour
+public class TownMenuScript : MonoBehaviour
 {
 
    public GameObject playerGameObject;
-   public GameObject dungeonGameObject;
+   public GameObject townGameObject;
 
    private PlayerScript playerScript;
 
-   private DungeonScript dungeonScript;
+   private TownScript townScript;
 
    private List<Button> playerAbilityButtons;
 
@@ -21,13 +21,13 @@ public class DungeonMenuScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-      Debug.Log("DungeonMenuScript start");
+      Debug.Log("TownMenuScript start");
          if(null == playerScript) {
             playerScript = playerGameObject.GetComponent<PlayerScript>();
          }
          
-        if(null == dungeonScript) {
-            dungeonScript = dungeonGameObject.GetComponent<DungeonScript>();
+        if(null == townScript) {
+            townScript = townGameObject.GetComponent<TownScript>();
         }
 
          initDungeonOptionsBackground();
@@ -66,7 +66,7 @@ public class DungeonMenuScript : MonoBehaviour
 
          thisButton.onClick.RemoveAllListeners();
          thisButton.onClick.AddListener(() => {
-            dungeonScript.doPlayerAbility(playerAbility);
+            townScript.doPlayerAbility(playerAbility);
          });
       }
 
@@ -83,7 +83,7 @@ public class DungeonMenuScript : MonoBehaviour
 
          thisButton.onClick.RemoveAllListeners();
          thisButton.onClick.AddListener(() => {
-            dungeonScript.usePlayerItem(playerItem);
+            townScript.usePlayerItem(playerItem);
             //If we used an item it might have been removed from inventory, so reload the buttons
             initAbilityButtons();
          });
