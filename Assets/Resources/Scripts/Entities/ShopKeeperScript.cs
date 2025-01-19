@@ -8,10 +8,7 @@ public class ShopKeeperScript : NpcScript {
     bool playerInRange = false;
     protected List<Item> inventory;
 
-    Rect inventoryGroupRect;
-    Rect backgroundRect;
-    Rect closeButton;
-    Rect introRect;
+    Rect inventoryGroupRect, backgroundRect, closeButton, introRect;
 
     public ShopKeeperScript(string npcName, Texture2D texture) : base(npcName, texture) {
         this.npcName = npcName;

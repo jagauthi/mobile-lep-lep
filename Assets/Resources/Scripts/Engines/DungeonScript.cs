@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DungeonScript : MonoBehaviour
 {
-   public GameObject playerGameObject;
-   public GameObject dungeonOptionsGameObject;
+    public GameObject playerGameObject;
+    public GameObject dungeonOptionsGameObject;
 
-   private PlayerScript playerScript;
-   private DungeonMenuScript dungeonMenuScript;
-   protected List<EnemyScript> enemies;
-
+    private PlayerScript playerScript;
+    private DungeonMenuScript dungeonMenuScript;
+    protected List<EnemyScript> enemies;
+    public Ability selectedPlayerAbility;
    bool playerTurn;
 
 
@@ -30,25 +31,8 @@ public class DungeonScript : MonoBehaviour
         playerTurn = true;
     }
 
-    public void doPlayerAbility(Ability ability) {
-        if(!playerScript.useAbility(ability)) {
-            Debug.Log("Not enough resource to use " + ability.getName());
-        }
-        else {
-            Debug.Log("Player used " + ability.getName());
-            for(int i = 0; i < enemies.Count; i++) {
-                if(enemies[i].isDead()) {
-                    continue;
-                }
-                else {
-                    enemies[i].loseHealth(ability.getPower());
-                    if(enemies[i].isDead()) {
-                        playerScript.gainExp(enemies[i].expWorth);
-                    }
-                    return;
-                }
-            }
-        }
+    public void selectPlayerAbility(Ability ability) {
+        selectedPlayerAbility = ability;
     }
 
     public void usePlayerItem(Item item) {
@@ -64,13 +48,36 @@ public class DungeonScript : MonoBehaviour
         drawDungeonThings();        
     }
 
-    protected void drawDungeonThings() {
+    protected void drawDungeonThings() { 
         drawEnemies();
         //drawAbilities();
     }
 
     protected void drawEnemies()
     {
-        GuiUtil.drawEnemies(enemies);
+        GuiUtil.drawEnemies(enemies, attackEnemy);
+    }
+
+    public bool attackEnemy(EnemyScript enemy) {
+
+        //Check if this action can even happen
+        if(null == selectedPlayerAbility) {
+            Debug.Log("No ability selected");
+            return false;
+        }
+        if(enemy.isDead()) {
+            Debug.Log("Enemy " + enemy.getName() + " is already dead");
+            return false;
+        }
+
+        //Now actually use the ability
+        if(!playerScript.useAbility(selectedPlayerAbility)) {
+            Debug.Log("Not enough resource to use " + selectedPlayerAbility.getName());
+            return false;
+        }
+        else {
+            enemy.loseHealth(selectedPlayerAbility.getPower());
+            return true;
+        }
     }
 }

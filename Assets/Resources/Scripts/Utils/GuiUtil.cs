@@ -107,7 +107,7 @@ public class GuiUtil : MonoBehaviour {
         }
     }
 
-    public static void drawEnemies(List<EnemyScript> enemies)
+    public static void drawEnemies(List<EnemyScript> enemies, Func<EnemyScript, bool> getAttackedFunction)
     {
         int buttonLength = (int)(enemyGroupRect.width / 4);
         int buffer = (int)enemyGroupRect.width/16;
@@ -135,8 +135,17 @@ public class GuiUtil : MonoBehaviour {
                 
                 //Button to select enemy
                 if (GUI.Button(slot, "" + enemyScript.getName())) {
-                    Debug.Log("Clicked on enemy " + enemyScript.getName());
+                    // Debug.Log("Clicked on enemy " + enemyScript.getName());
+                    getAttackedFunction(enemyScript);
                 }
+
+                //Enemy healthbar
+                float healthBarLength = (buttonLength) * (enemyScript.currentHealth / (float)enemyScript.maxHealth);
+                if (healthBarLength > 0)
+                {
+                    GUI.Box(new Rect(slot.x, slot.y, healthBarLength, 20), "", redStyle);
+                }
+                GUI.Box(new Rect(slot.x, slot.y, buttonLength, 20), enemyScript.currentHealth + "/" + enemyScript.maxHealth);
 
                 //cursor tooltip
                 if (null != enemyScript && slot.Contains(Event.current.mousePosition))

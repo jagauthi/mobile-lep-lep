@@ -1534,7 +1534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1138829832
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1644,6 +1644,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerGameObject: {fileID: 117995438}
   dungeonGameObject: {fileID: 1794453632}
+  playerAbilityButtons: []
+  playerItemButtons: []
 --- !u!1 &1261792900
 GameObject:
   m_ObjectHideFlags: 0
@@ -2935,7 +2937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1893560767
 RectTransform:
   m_ObjectHideFlags: 0
