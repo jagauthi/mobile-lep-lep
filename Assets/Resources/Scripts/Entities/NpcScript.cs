@@ -7,9 +7,11 @@ public class NpcScript
     protected GameObject player;
     protected PlayerScript playerScript;
     protected GameScript gameScript;
+    protected Texture2D texture;
 
-    public NpcScript(string npcName) {
+    public NpcScript(string npcName, Texture2D texture) {
         this.npcName = npcName;
+        this.texture = texture;
         DoInits();
     }
 
@@ -51,6 +53,10 @@ public class NpcScript
 
     public string getName() {
         return npcName;
+    }
+
+    public Texture2D getTexture() {
+        return texture;
     }
 
     protected void Die()

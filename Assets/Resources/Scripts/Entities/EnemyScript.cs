@@ -8,8 +8,9 @@ public class EnemyScript : NpcScript
     public int maxHealth, currentHealth, damage, expWorth, goldWorth;
     
     
-    public EnemyScript(string npcName) : base(npcName) {
+    public EnemyScript(string npcName, Texture2D texture) : base(npcName, texture) {
         this.npcName = npcName;
+        this.texture = texture;
         DoInits();
     }
 

@@ -15,7 +15,7 @@ public class QuestGiverScript : NpcScript {
     protected Rect exitTextButton = new Rect( Screen.width / 6, Screen.height / 2, Screen.width / 8, Screen.height / 8);
     protected Rect acceptButton = new Rect( Screen.width / 3, Screen.height / 2, Screen.width / 8, Screen.height / 8);
 
-    public QuestGiverScript(string npcName) : base(npcName) {
+    public QuestGiverScript(string npcName, Texture2D texture) : base(npcName, texture) {
         this.npcName = npcName;
         npcName = "Questkeeper Ben";
         initQuests(npcName);

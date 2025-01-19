@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class GuiUtil : MonoBehaviour {
     public static float expBarLength = Screen.width / 3;
 
     private static GUIStyle redStyle, blackStyle, greenStyle, blueStyle;
+
+    private static Rect enemyGroupRect, enemyBackgroundRect;
 
     public static void initStyles() {
 
@@ -23,6 +26,9 @@ public class GuiUtil : MonoBehaviour {
         
         blueStyle = new GUIStyle(GUI.skin.box);
         blueStyle.normal.background = MakeTex(2, 2, new Color(0f, 0f, 1f, 0.75f));
+        
+        enemyGroupRect = new Rect(4 * Screen.width / 8, 2* Screen.height / 8, 3* Screen.width / 8, 2 * Screen.height / 4);
+        enemyBackgroundRect = new Rect(0, 0, 3 * Screen.width / 4, 2 * Screen.height / 4);
     }
 
     public static Texture2D MakeTex(int width, int height, Color col)
@@ -99,5 +105,52 @@ public class GuiUtil : MonoBehaviour {
             }
             GUI.Box(new Rect(xValue, yValue, regularBarLength, 20), enemyScript.currentHealth + "/" + enemyScript.maxHealth);
         }
+    }
+
+    public static void drawEnemies(List<EnemyScript> enemies)
+    {
+        int buttonLength = (int)(enemyGroupRect.width / 4);
+        int buffer = (int)enemyGroupRect.width/16;
+
+        if(null == redStyle) {
+            initStyles();
+        }
+
+        
+        GUI.BeginGroup(enemyGroupRect);
+        GUI.Box(enemyBackgroundRect, "");
+
+
+        for(int enemyNumber = 0; enemyNumber < enemies.Count; enemyNumber++) {
+            int yValue = 10 + (enemyNumber * 30);
+            EnemyScript enemyScript = enemies[enemyNumber];
+            if (enemyScript != null)
+            {
+                Rect slot = new Rect(buffer*(enemyNumber+1) + buttonLength*enemyNumber, 
+                    buffer, 
+                    buttonLength, 
+                    buttonLength); 
+
+                GUI.DrawTexture( slot, enemyScript.getTexture() );
+                
+                //Button to select enemy
+                if (GUI.Button(slot, "" + enemyScript.getName())) {
+                    Debug.Log("Clicked on enemy " + enemyScript.getName());
+                }
+
+                //cursor tooltip
+                if (null != enemyScript && slot.Contains(Event.current.mousePosition))
+                {
+                    String tooltipText = "Tooltip for " + enemyScript.getName();
+                    Rect mouseTextRect = new Rect(
+                        Input.mousePosition.x - enemyGroupRect.x + (buffer / 2),
+                        Screen.height - Input.mousePosition.y - enemyGroupRect.y,
+                        tooltipText.Length*8, Screen.height / 16 / 2);
+                    GUI.Box(mouseTextRect, tooltipText);
+                }
+            }
+        }
+
+        GUI.EndGroup();
     }
 }

@@ -24,14 +24,8 @@ public class DungeonScript : MonoBehaviour
         }
 
         enemies = new List<EnemyScript>();
-        enemies.Add(new EnemyScript("monster1"));
-        enemies.Add(new EnemyScript("monster2"));
-        enemies.Add(new EnemyScript("monster3"));
-        enemies.Add(new EnemyScript("monster4"));
-        enemies.Add(new EnemyScript("monster5"));
-        enemies.Add(new EnemyScript("monster6"));
-        enemies.Add(new EnemyScript("monster7"));
-        enemies.Add(new EnemyScript("monster8"));
+        enemies.Add(new EnemyScript("Cube", (Texture2D)Resources.Load("Images/SawahCube1")));
+        enemies.Add(new EnemyScript("Dragon", (Texture2D)Resources.Load("Images/SawahDragon1")));
         
         playerTurn = true;
     }
@@ -77,8 +71,6 @@ public class DungeonScript : MonoBehaviour
 
     protected void drawEnemies()
     {
-        for(int i = 0; i < enemies.Count; i++) {
-            GuiUtil.drawEnemyHealthBar(enemies[i], i);
-        }
+        GuiUtil.drawEnemies(enemies);
     }
 }

@@ -13,7 +13,7 @@ public class ShopKeeperScript : NpcScript {
     Rect closeButton;
     Rect introRect;
 
-    public ShopKeeperScript(string npcName) : base(npcName) {
+    public ShopKeeperScript(string npcName, Texture2D texture) : base(npcName, texture) {
         this.npcName = npcName;
         npcName = "Shopkeeper David";
         initInventory(npcName);
