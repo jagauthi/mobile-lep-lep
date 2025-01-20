@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DungeonScript : MonoBehaviour
@@ -16,6 +18,9 @@ public class DungeonScript : MonoBehaviour
 
     void Start()
     {
+        if(null == playerGameObject) {
+            playerGameObject = GameObject.FindGameObjectWithTag("Player");
+        }
         if(null == playerScript) {
             playerScript = playerGameObject.GetComponent<PlayerScript>();
         }
@@ -50,7 +55,6 @@ public class DungeonScript : MonoBehaviour
 
     protected void drawDungeonThings() { 
         drawEnemies();
-        //drawAbilities();
     }
 
     protected void drawEnemies()
@@ -61,6 +65,10 @@ public class DungeonScript : MonoBehaviour
     public bool attackEnemy(EnemyScript enemy) {
 
         //Check if this action can even happen
+        if(!playerTurn) {
+            Debug.Log("Not player's turn");
+            return false;
+        }
         if(null == selectedPlayerAbility) {
             Debug.Log("No ability selected");
             return false;
@@ -75,9 +83,54 @@ public class DungeonScript : MonoBehaviour
             Debug.Log("Not enough resource to use " + selectedPlayerAbility.getName());
             return false;
         }
-        else {
-            enemy.loseHealth(selectedPlayerAbility.getPower());
-            return true;
+       
+        //Finally if it gets here, player takes their turn and initiates the enemy turn
+        enemy.loseHealth(selectedPlayerAbility.getPower());
+        playerTurn = false;
+        takeEnemyTurns();
+        
+        return true;
+    }
+
+    public void takeEnemyTurns() {
+
+        int enemiesDead = 0;
+
+        //First loop to do the alive enemies turns and check if everyone's dead
+        for(int i = 0; i < enemies.Count; i++) {
+            EnemyScript enemy = enemies[i];
+            if(!enemy.isDead()) {
+                Debug.Log("Enemy " + enemy.getName() + " hits player for " + enemy.damage);
+                playerScript.loseHealth(enemy.damage);
+                if(playerScript.isDead()) {
+                    Debug.Log("Player dead!");
+                }
+            }
+            else {
+                enemiesDead++;
+            }
         }
+
+        if(enemiesDead < enemies.Count) {
+            Debug.Log("Enemy turns ended, player's turn");
+            playerTurn = true;
+            return;
+        }
+        
+        //Otherwise if made it here, all the enemies are dead, give the loot to the player
+        List<Item> lootFromEnemies = new List<Item>();
+        int goldFromEnemies = 0;
+        int expFromEnemies = 0;
+
+        for(int i = 0; i < enemies.Count; i++) {
+            EnemyScript enemy = enemies[i];
+            goldFromEnemies += enemy.goldWorth;
+            expFromEnemies += enemy.expWorth;
+        }
+
+        playerScript.gainExp(expFromEnemies);
+        playerScript.gainGold(goldFromEnemies);
+        Debug.Log("Dungeon level finished, gained " + goldFromEnemies + " gold and " + expFromEnemies + " experience");
+        SceneManager.LoadScene("TownScene");
     }
 }

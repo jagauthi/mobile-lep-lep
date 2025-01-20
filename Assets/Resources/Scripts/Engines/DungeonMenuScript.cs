@@ -26,7 +26,9 @@ public class DungeonMenuScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-      Debug.Log("DungeonMenuScript start");
+      if(null == playerGameObject) {
+         playerGameObject = GameObject.FindGameObjectWithTag("Player");
+      }
       if(null == playerScript) {
          playerScript = playerGameObject.GetComponent<PlayerScript>();
       }

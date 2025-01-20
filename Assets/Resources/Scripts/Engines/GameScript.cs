@@ -31,7 +31,7 @@ public class GameScript : MonoBehaviour {
     
     void Awake()
     {
-        // DontDestroyOnLoad(transform.gameObject);
+        DontDestroyOnLoad(transform.gameObject);
     }
 
     protected void Start()
@@ -59,11 +59,8 @@ public class GameScript : MonoBehaviour {
         currentStage = 1;
         scenes = new List<String>();
         scenes.Add("CharacterCreation");
-        scenes.Add("NewIntro");
-        scenes.Add("Stage1");
-        scenes.Add("Stage2");
-        scenes.Add("Stage3");
-        scenes.Add("FinalStage");
+        scenes.Add("DungeonScene");
+        scenes.Add("TownScene");
         initRects();
         initAbilities();   
     }

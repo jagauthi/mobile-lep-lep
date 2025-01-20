@@ -11,7 +11,11 @@ public class GuiUtil : MonoBehaviour {
 
     private static GUIStyle redStyle, blackStyle, greenStyle, blueStyle;
 
-    private static Rect enemyGroupRect, enemyBackgroundRect;
+    private static Rect enemyGroupRect, enemyBackgroundRect, npcGroupRect, npcBackgroundRect;
+
+    private static Rect shopkeeperGroupRect, shopkeeperBackgroundRect, shopkeeperCloseButton, shopkeeperIntroRect;
+
+    public static ShopKeeperScript shopkeeperShowingInventory;
 
     public static void initStyles() {
 
@@ -28,7 +32,15 @@ public class GuiUtil : MonoBehaviour {
         blueStyle.normal.background = MakeTex(2, 2, new Color(0f, 0f, 1f, 0.75f));
         
         enemyGroupRect = new Rect(4 * Screen.width / 8, 2* Screen.height / 8, 3* Screen.width / 8, 2 * Screen.height / 4);
-        enemyBackgroundRect = new Rect(0, 0, 3 * Screen.width / 4, 2 * Screen.height / 4);
+        enemyBackgroundRect = new Rect(0, 0, enemyGroupRect.width, enemyGroupRect.height);
+        
+        npcGroupRect = new Rect(1 * Screen.width / 4, 1 * Screen.height / 4, 1 * Screen.width / 2, 1 * Screen.height / 2);
+        npcBackgroundRect = new Rect(0, 0, npcGroupRect.width, npcGroupRect.height);
+        
+        shopkeeperGroupRect = new Rect(2 * Screen.width / 8, Screen.height / 8, Screen.width / 4, 3 * Screen.height / 4);
+        shopkeeperIntroRect = new Rect(shopkeeperGroupRect.width/16, shopkeeperGroupRect.height/16, 3 * shopkeeperGroupRect.width / 4, shopkeeperGroupRect.height/16);
+        shopkeeperBackgroundRect = new Rect(0, 0, shopkeeperGroupRect.width, shopkeeperGroupRect.height);
+        shopkeeperCloseButton = new Rect( 13 * shopkeeperGroupRect.width / 16, Screen.height / 32, shopkeeperGroupRect.width / 8, Screen.height / 16);
     }
 
     public static Texture2D MakeTex(int width, int height, Color col)
@@ -88,25 +100,6 @@ public class GuiUtil : MonoBehaviour {
         GUI.Box(new Rect(10, 60, GuiUtil.regularBarLength, 20), currentResource + "/" + maxResource);
     }
 
-    public static void drawEnemyHealthBar(EnemyScript enemyScript, int enemyNumber)
-    {
-        int xValue = 3 * Screen.width / 5;
-        int yValue = 10 + (enemyNumber * 30);
-
-        if(null == redStyle) {
-            initStyles();
-        }
-        if (enemyScript != null)
-        {
-            float healthBarLength = (regularBarLength) * (enemyScript.currentHealth / (float)enemyScript.maxHealth);
-            if (healthBarLength > 0)
-            {
-                GUI.Box(new Rect(xValue, yValue, healthBarLength, 20), "", redStyle);
-            }
-            GUI.Box(new Rect(xValue, yValue, regularBarLength, 20), enemyScript.currentHealth + "/" + enemyScript.maxHealth);
-        }
-    }
-
     public static void drawEnemies(List<EnemyScript> enemies, Func<EnemyScript, bool> getAttackedFunction)
     {
         int buttonLength = (int)(enemyGroupRect.width / 4);
@@ -121,12 +114,12 @@ public class GuiUtil : MonoBehaviour {
         GUI.Box(enemyBackgroundRect, "");
 
 
-        for(int enemyNumber = 0; enemyNumber < enemies.Count; enemyNumber++) {
-            int yValue = 10 + (enemyNumber * 30);
-            EnemyScript enemyScript = enemies[enemyNumber];
+        for(int i = 0; i < enemies.Count; i++) {
+            int yValue = 10 + (i * 30);
+            EnemyScript enemyScript = enemies[i];
             if (enemyScript != null)
             {
-                Rect slot = new Rect(buffer*(enemyNumber+1) + buttonLength*enemyNumber, 
+                Rect slot = new Rect(buffer*(i+1) + buttonLength*i, 
                     buffer, 
                     buttonLength, 
                     buttonLength); 
@@ -141,6 +134,8 @@ public class GuiUtil : MonoBehaviour {
 
                 //Enemy healthbar
                 float healthBarLength = (buttonLength) * (enemyScript.currentHealth / (float)enemyScript.maxHealth);
+                // Debug.Log("HealthbarLength " + healthBarLength);
+                // Debug.Log("redstyle " + redStyle);
                 if (healthBarLength > 0)
                 {
                     GUI.Box(new Rect(slot.x, slot.y, healthBarLength, 20), "", redStyle);
@@ -160,6 +155,110 @@ public class GuiUtil : MonoBehaviour {
             }
         }
 
+        GUI.EndGroup();
+    }
+
+    public static void drawNpcs(List<NpcScript> npcs)
+    {
+        int buttonLength = (int)(npcGroupRect.width / 4);
+        int buffer = (int)npcGroupRect.width/16;
+
+        if(null == redStyle) {
+            initStyles();
+        }
+
+        GUI.BeginGroup(npcGroupRect);
+        GUI.Box(npcBackgroundRect, "");
+
+        for(int i = 0; i < npcs.Count; i++) {
+            int yValue = 10 + (i * 30);
+            NpcScript npcScript = npcs[i];
+            if (npcScript != null)
+            {
+                Rect slot = new Rect(buffer*(i+1) + buttonLength*i, 
+                    buffer, 
+                    buttonLength, 
+                    buttonLength); 
+
+                GUI.DrawTexture( slot, npcScript.getTexture() );
+                
+                //Button to select enemy
+                if (GUI.Button(slot, "" + npcScript.getName())) {
+                    Debug.Log("Clicked on NPC " + npcScript.getName());
+                    npcScript.startInteraction();
+                }
+
+                //cursor tooltip
+                if (null != npcScript && slot.Contains(Event.current.mousePosition))
+                {
+                    String tooltipText = "Tooltip for " + npcScript.getName();
+                    Rect mouseTextRect = new Rect(
+                        Input.mousePosition.x - npcGroupRect.x + (buffer / 2),
+                        Screen.height - Input.mousePosition.y - npcGroupRect.y,
+                        tooltipText.Length*8, Screen.height / 16 / 2);
+                    GUI.Box(mouseTextRect, tooltipText);
+                }
+            }
+        }
+
+        GUI.EndGroup();
+    }
+
+    public static void shopkeeperMenu(ShopKeeperScript shopkeeper, PlayerScript playerScript)
+    {
+        if(!shopkeeper.showingInventory) {
+            return;
+        }
+        int buttonLength = (int)(shopkeeperGroupRect.width / 4);
+        int buffer = (int)shopkeeperGroupRect.width/16;
+        GUI.BeginGroup(shopkeeperGroupRect);
+        GUI.Box(shopkeeperBackgroundRect, "");
+        GUI.Box(shopkeeperIntroRect, shopkeeper.getName() + "'s Shop");
+        //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        for( int col = 0; col < 3; col++ ) {
+            for( int row = 0; row < 3; row++ ) {
+                int slotNum =  ( col * 3 ) + row;
+                if(shopkeeper.inventory.Count > slotNum) {
+                    Item item = shopkeeper.inventory[slotNum];
+                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+                        buffer*(col+1) + buttonLength*(col+1), 
+                        buttonLength, buttonLength);
+
+                    GUI.DrawTexture( slot, item.getIcon() );
+
+                    //Button to buy the item
+                    if (GUI.Button(slot, ""+slotNum)) {
+                        if( playerScript.buyItem(item, shopkeeper.getCost(item)) )
+                        {
+                            shopkeeper.inventory.Remove(item);
+                        }
+                    }
+                    
+                    //cursor tooltip
+                    if (null != item && slot.Contains(Event.current.mousePosition))
+                    {
+                        Rect mouseTextRect = new Rect(
+                            Input.mousePosition.x - shopkeeperGroupRect.x + (buffer / 2),
+                            Screen.height - Input.mousePosition.y - shopkeeperGroupRect.y,
+                            item.getTooltip().Length*8, Screen.height / 16 / 2);
+                        GUI.Box(mouseTextRect, item.getTooltip());
+                    }
+                }
+                else {
+                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+                        buffer*(col+1) + buttonLength*(col+1), 
+                        buttonLength, buttonLength);
+
+                    if (GUI.Button(slot, ""+slotNum)) {
+                        
+                    }
+                }
+                if (GUI.Button(shopkeeperCloseButton, "X"))
+                {
+                    shopkeeper.closeInventory();
+                }
+            }
+        }
         GUI.EndGroup();
     }
 }

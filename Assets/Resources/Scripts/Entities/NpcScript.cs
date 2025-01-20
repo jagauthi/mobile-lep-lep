@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class NpcScript
 {
@@ -17,7 +18,6 @@ public class NpcScript
 
     protected void DoInits()
     {
-        npcName = "NpcName";
         initValues();
     }
 
@@ -27,7 +27,9 @@ public class NpcScript
 
     protected void initValues()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        if(null == player) {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
         // if(player != null && player.GetComponent<MageScript>() != null) {
         //     playerScript = player.GetComponent<MageScript>();
         // }
@@ -64,7 +66,10 @@ public class NpcScript
         Debug.Log("Blehhh X.X");
     }
 
-    
+    public virtual void startInteraction() {
+        Debug.Log("Default start interaction..");
+        SceneManager.LoadScene("DungeonScene");
+    }
 
     void Awake() {}
 

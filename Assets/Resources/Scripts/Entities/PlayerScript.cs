@@ -28,7 +28,7 @@ public class PlayerScript : MonoBehaviour
 
     void Awake()
     {
-        //DontDestroyOnLoad(transform.gameObject);
+        DontDestroyOnLoad(transform.gameObject);
     }
 
     protected void Start ()
@@ -41,7 +41,9 @@ public class PlayerScript : MonoBehaviour
 
     protected void basicInits()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        if(null == player) {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
 
         abilities = new List<Ability>();
         loadAbilities();
@@ -177,7 +179,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    protected void loseHealth(int x)
+    public void loseHealth(int x)
     {
         float armorBlock = 0;
         foreach(Item item in equipment.getItems())
@@ -188,9 +190,13 @@ public class PlayerScript : MonoBehaviour
         }
         armorBlock = 1 - (armorBlock / 100);
         float newDamage = x * armorBlock;
-        Debug.Log("Armor block: " + armorBlock);
-        Debug.Log("Old damage: " + x + ", New Damage: " + newDamage);
+        // Debug.Log("Armor block: " + armorBlock);
+        // Debug.Log("Old damage: " + x + ", New Damage: " + newDamage);
         currentHealth -= (int)newDamage;
+    }
+
+    public bool isDead() {
+        return currentHealth <= 0;
     }
 
     protected virtual void fillResource() {

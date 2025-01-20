@@ -8,7 +8,8 @@ public class TownScript : MonoBehaviour
 
    private PlayerScript playerScript;
    private TownMenuScript townMenuScript;
-   protected List<EnemyScript> enemies;
+   protected List<NpcScript> npcs;
+   ShopKeeperScript shopkeeper;
 
 
     void Start()
@@ -21,28 +22,11 @@ public class TownScript : MonoBehaviour
             townMenuScript = townOptionsGameObject.GetComponent<TownMenuScript>();
         }
 
-        enemies = new List<EnemyScript>();
-    }
+        shopkeeper = new ShopKeeperScript("Shopkeeper", (Texture2D)Resources.Load("Images/LeatherHelm"));
 
-    public void doPlayerAbility(Ability ability) {
-        if(!playerScript.useAbility(ability)) {
-            Debug.Log("Not enough resource to use " + ability.getName());
-        }
-        else {
-            Debug.Log("Player used " + ability.getName());
-            for(int i = 0; i < enemies.Count; i++) {
-                if(enemies[i].isDead()) {
-                    continue;
-                }
-                else {
-                    enemies[i].loseHealth(ability.getPower());
-                    if(enemies[i].isDead()) {
-                        playerScript.gainExp(enemies[i].expWorth);
-                    }
-                    return;
-                }
-            }
-        }
+        npcs = new List<NpcScript>();
+        npcs.Add(new NpcScript("Sawah :3", (Texture2D)Resources.Load("Images/SawahBlacksmith1")));
+        npcs.Add(shopkeeper);
     }
 
     public void usePlayerItem(Item item) {
@@ -55,18 +39,12 @@ public class TownScript : MonoBehaviour
     }
     
     protected void OnGUI(){
-        drawDungeonThings();        
+        drawTownThings();        
     }
 
-    protected void drawDungeonThings() {
-        drawEnemies();
-        //drawAbilities();
+    protected void drawTownThings() {
+        GuiUtil.drawNpcs(npcs);
+        GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
     }
 
-    protected void drawEnemies()
-    {
-        for(int i = 0; i < enemies.Count; i++) {
-            GuiUtil.drawEnemyHealthBar(enemies[i], i);
-        }
-    }
 }
