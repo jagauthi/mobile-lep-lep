@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class PlayerScript : MonoBehaviour
     protected Inventory inventory;
     protected Equipment equipment;
     protected Weapon[] weapons;
+
+    public bool characterMenuOpen, inventoryMenuOpen, mainMenuOpen;
 
     void Awake()
     {
@@ -133,20 +136,6 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public void levelUpToggle() {
-        if(!gameScript.getMenuOpen()) {
-            gameScript.setMenuOpen(true);
-            levelUpMenuToggle = true;
-        }
-        else if(inventory.isOpen()) {
-            levelUpMenuToggle = !levelUpMenuToggle;
-        }
-        else if(levelUpMenuToggle) {
-            gameScript.setMenuOpen(false);
-            levelUpMenuToggle = false;
-        }
-    }
-
     protected void closeMenus() {
         levelUpMenuToggle = false;
         inventory.close();
@@ -158,7 +147,16 @@ public class PlayerScript : MonoBehaviour
     }
 
     protected void OnGUI(){
-        drawBasics();        
+        drawBasics();      
+        if(characterMenuOpen) {
+            GuiUtil.characterMenu(this);
+        }    
+        if(inventoryMenuOpen) {
+            GuiUtil.inventoryMenu(this);
+        }  
+        if(mainMenuOpen) {
+            GuiUtil.mainMenu();
+        }  
     }
 
     protected void drawBasics() {
@@ -405,5 +403,22 @@ public class PlayerScript : MonoBehaviour
 
     public bool useAbility(Ability ability) {
         return loseResource(ability.getResourceCost());
+    }
+
+    public void toggleMenu(String menu) {
+        if(menu == "Character") {
+            characterMenuOpen = !characterMenuOpen;
+        }
+        else if(menu == "Inventory") {
+            inventoryMenuOpen = !inventoryMenuOpen;
+        }
+        else if(menu == "Main") {
+            mainMenuOpen = !mainMenuOpen;
+            characterMenuOpen = false;
+            inventoryMenuOpen = false;
+        }
+    }
+    public bool anyMenuOpen() {
+        return characterMenuOpen || inventoryMenuOpen || mainMenuOpen;
     }
 }

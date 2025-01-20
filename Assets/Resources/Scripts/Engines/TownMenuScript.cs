@@ -22,13 +22,13 @@ public class TownMenuScript : MonoBehaviour
     void Start()
     {
       Debug.Log("TownMenuScript start");
-         if(null == playerScript) {
-            playerScript = playerGameObject.GetComponent<PlayerScript>();
-         }
          
         if(null == townScript) {
             townScript = townGameObject.GetComponent<TownScript>();
         }
+         if(null == playerScript) {
+            playerScript = townScript.playerScript;
+         }
         
     }
  

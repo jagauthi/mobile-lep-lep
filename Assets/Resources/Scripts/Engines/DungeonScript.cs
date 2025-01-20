@@ -104,6 +104,7 @@ public class DungeonScript : MonoBehaviour
                 playerScript.loseHealth(enemy.damage);
                 if(playerScript.isDead()) {
                     Debug.Log("Player dead!");
+                    SceneManager.LoadScene("TownScene");
                 }
             }
             else {

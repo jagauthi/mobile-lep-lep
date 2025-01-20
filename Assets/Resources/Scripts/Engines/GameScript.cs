@@ -168,34 +168,34 @@ public class GameScript : MonoBehaviour {
 
     void OnGUI()
     {
-        int width = 100;
-        int height = 30;
-        if (player != null)
-        {
-            if (mainMenuToggle)
-            {
-                mainMenu();
-            }
-            if (playerScript.getLevelupToggle())
-            {
-                levelUpMenu();
-            }
+        // int width = 100;
+        // int height = 30;
+        // if (player != null)
+        // {
+        //     if (mainMenuToggle)
+        //     {
+        //         mainMenu();
+        //     }
+        //     if (playerScript.getLevelupToggle())
+        //     {
+        //         levelUpMenu();
+        //     }
 
-            if (playerScript.getInventory().isOpen()) {
-                inventoryMenu();
-            }
-        }
-        else if(currentStage > 1 && playerScript.getCurrentHealth() > 0)
-        {
-            if (numEnemies == 0)
-            {
-                if (GUI.Button(new Rect(Screen.width / 2 - (width / 2), Screen.height / 2 - (height / 2), width, height), "Next Level"))
-                {
-                    currentStage++;
-                    switchStage(currentStage);
-                }
-            }
-        }
+        //     if (playerScript.getInventory().isOpen()) {
+        //         inventoryMenu();
+        //     }
+        // }
+        // else if(currentStage > 1 && playerScript.getCurrentHealth() > 0)
+        // {
+        //     if (numEnemies == 0)
+        //     {
+        //         if (GUI.Button(new Rect(Screen.width / 2 - (width / 2), Screen.height / 2 - (height / 2), width, height), "Next Level"))
+        //         {
+        //             currentStage++;
+        //             switchStage(currentStage);
+        //         }
+        //     }
+        // }
     }
 
     void mainMenu()
@@ -248,7 +248,7 @@ public class GameScript : MonoBehaviour {
 
         if (GUI.Button(quitRect, "X"))
         {
-            playerScript.levelUpToggle();
+            // playerScript.levelUpToggle();
         }
         GUI.EndGroup();
     }

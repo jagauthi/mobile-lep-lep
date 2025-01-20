@@ -6,7 +6,7 @@ public class TownScript : MonoBehaviour
    public GameObject playerGameObject;
    public GameObject townOptionsGameObject;
 
-   private PlayerScript playerScript;
+   public PlayerScript playerScript;
    private TownMenuScript townMenuScript;
    protected List<NpcScript> npcs;
    ShopKeeperScript shopkeeper;
@@ -14,9 +14,22 @@ public class TownScript : MonoBehaviour
 
     void Start()
     {
-        if(null == playerScript) {
-            playerScript = playerGameObject.GetComponent<PlayerScript>();
+        if(null == playerGameObject) {
+            Debug.Log("PlayerGameObject null");
+            playerGameObject = GameObject.FindGameObjectWithTag("Player");
+            if(null == playerGameObject) {
+                Debug.Log("Still didn't find it");
+                playerGameObject = (GameObject)Resources.Load("Prefabs/PlayerGameObject");
+                playerScript = Instantiate(playerGameObject).GetComponent<PlayerScript>();
+            }
+            else {
+                playerScript = playerGameObject.GetComponent<PlayerScript>();
+            }
         }
+
+        // if(null == playerScript) {
+        //     playerScript = playerGameObject.GetComponent<PlayerScript>();
+        // }
 
         if(null == townMenuScript) {
             townMenuScript = townOptionsGameObject.GetComponent<TownMenuScript>();
@@ -39,12 +52,35 @@ public class TownScript : MonoBehaviour
     }
     
     protected void OnGUI(){
-        drawTownThings();        
+        drawTownThings();   
+        GuiUtil.drawPlayerTownOptions(playerScript);  
     }
 
     protected void drawTownThings() {
-        GuiUtil.drawNpcs(npcs);
-        GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
+        
+        //If player has any menus open, we dont want to show most town options
+        if(playerScript.anyMenuOpen()) {
+            //Unless it's the inventory, then we can show shopkeeper
+            if(playerScript.inventoryMenuOpen) {
+                if(shopkeeper.showingInventory) {
+                    GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
+                    return;
+                }
+            }
+            return;
+        }
+        
+        //Otherwise if shopkeeper has inventory open, show that
+        if(shopkeeper.showingInventory) {
+            GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
+            return;
+        }
+        //Show the other NPCs if the shopkeeper isn't open
+        else {
+            GuiUtil.drawNpcs(npcs);
+        }
     }
+
+    
 
 }

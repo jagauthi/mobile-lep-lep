@@ -148,8 +148,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 564675329}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &304057309
@@ -301,52 +300,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &564675328
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 564675329}
-  - component: {fileID: 564675330}
-  m_Layer: 0
-  m_Name: PlayerGameObject
-  m_TagString: Player
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &564675329
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 564675328}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9775388, y: -1.8483217, z: -10.008415}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 304057308}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &564675330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 564675328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b86b162f44bda2a4daa9c90fbad9e2e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 564675328}
-  gameEngine: {fileID: 304057307}
 --- !u!1 &592311960
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fad2ce0706d5064abaeb3dd490937ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerGameObject: {fileID: 564675328}
+  playerGameObject: {fileID: 0}
   townGameObject: {fileID: 913059552}
 --- !u!1 &619394800
 GameObject:
@@ -793,7 +746,7 @@ PrefabInstance:
     - target: {fileID: 6559822757854248731, guid: 47979b393eae73f4aae906d21f8adb93, type: 3}
       propertyPath: playerGameObject
       value: 
-      objectReference: {fileID: 564675328}
+      objectReference: {fileID: 0}
     - target: {fileID: 6559822757854248731, guid: 47979b393eae73f4aae906d21f8adb93, type: 3}
       propertyPath: townOptionsGameObject
       value: 
@@ -809,8 +762,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 619394802}
+  - {fileID: 304057308}
   - {fileID: 2800443021364239163}
   - {fileID: 592311961}
-  - {fileID: 304057308}
   - {fileID: 784815692}
   - {fileID: 1767638697}

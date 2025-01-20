@@ -29,6 +29,7 @@ public class NpcScript
     {
         if(null == player) {
             player = GameObject.FindGameObjectWithTag("Player");
+            playerScript = player.GetComponent<PlayerScript>();
         }
         // if(player != null && player.GetComponent<MageScript>() != null) {
         //     playerScript = player.GetComponent<MageScript>();
@@ -67,8 +68,12 @@ public class NpcScript
     }
 
     public virtual void startInteraction() {
-        Debug.Log("Default start interaction..");
-        SceneManager.LoadScene("DungeonScene");
+        if(playerScript.isDead()) {
+            Debug.Log("Can't load dungeon when you're dead!");
+        }
+        else {
+            SceneManager.LoadScene("DungeonScene");
+        }
     }
 
     void Awake() {}
