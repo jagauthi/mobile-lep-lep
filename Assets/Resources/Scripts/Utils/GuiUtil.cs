@@ -14,7 +14,7 @@ public class GuiUtil : MonoBehaviour {
 
     private static Rect enemyGroupRect, enemyBackgroundRect, npcGroupRect, npcBackgroundRect;
 
-    private static Rect shopkeeperGroupRect, shopkeeperBackgroundRect, shopkeeperCloseButton, shopkeeperIntroRect;
+    private static Rect shopkeeperGroupRect, shopkeeperBackgroundRect, shopkeeperCloseButton, shopkeeperIntroRect, shopkeeperLeftButtonRect, shopkeeperRightButtonRect;
     private static Rect townOptionsGroupRect, townOptionsBackgroundRect;
     
     private static Rect mainGroupRect, levelGroupRect, inventoryGroupRect;
@@ -56,6 +56,9 @@ public class GuiUtil : MonoBehaviour {
         shopkeeperIntroRect = new Rect(shopkeeperGroupRect.width/16, shopkeeperGroupRect.height/16, 3 * shopkeeperGroupRect.width / 4, shopkeeperGroupRect.height/16);
         shopkeeperBackgroundRect = new Rect(0, 0, shopkeeperGroupRect.width, shopkeeperGroupRect.height);
         shopkeeperCloseButton = new Rect( 13 * shopkeeperGroupRect.width / 16, Screen.height / 32, shopkeeperGroupRect.width / 8, Screen.height / 16);
+        shopkeeperLeftButtonRect = new Rect( 1 * shopkeeperGroupRect.width / 8, 3 * shopkeeperGroupRect.height / 4, shopkeeperGroupRect.width / 4, shopkeeperGroupRect.height / 8);
+        shopkeeperRightButtonRect = new Rect( 5 * shopkeeperGroupRect.width / 8, 3 * shopkeeperGroupRect.height / 4, shopkeeperGroupRect.width / 4, shopkeeperGroupRect.height / 8);
+
         screenRect = new Rect(0, 0, Screen.width, Screen.height);
         startRect = new Rect(Screen.width/8, Screen.height/8, Screen.width / 4, Screen.height / 8);
         quit2Rect = new Rect(Screen.width / 8, Screen.height / 2, Screen.width / 4, Screen.height / 8);
@@ -255,6 +258,7 @@ public class GuiUtil : MonoBehaviour {
         for( int col = 0; col < 3; col++ ) {
             for( int row = 0; row < 3; row++ ) {
                 int slotNum =  ( col * 3 ) + row;
+                slotNum += (9 * shopkeeper.shopkeeperPageNumber);
                 if(shopkeeper.inventory.Count > slotNum) {
                     Item item = shopkeeper.inventory[slotNum];
                     Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
@@ -294,6 +298,14 @@ public class GuiUtil : MonoBehaviour {
                 {
                     shopkeeper.closeInventory();
                 }
+                if (GUI.Button(shopkeeperLeftButtonRect, "<-"))
+                {
+                    shopkeeper.movePage(-1);
+                }
+                if (GUI.Button(shopkeeperRightButtonRect, "->"))
+                {
+                    shopkeeper.movePage(1);
+                }
             }
         }
         GUI.EndGroup();
@@ -322,21 +334,21 @@ public class GuiUtil : MonoBehaviour {
             //2 = Open Escape Menu
             if(i == 0) {
                 if (GUI.Button(slot, "Character")) {
-                    Debug.Log("Character menu");
+                    // Debug.Log("Character menu");
                     playerScript.toggleMenu("Character");
                 }
                 // GUI.DrawTexture( slot, CHARACTER_MENU_ICON );
             }
             else if(i == 1) {
                 if (GUI.Button(slot, "Inventory")) {
-                    Debug.Log("Inventory menu");
+                    // Debug.Log("Inventory menu");
                     playerScript.toggleMenu("Inventory");
                 }
                 // GUI.DrawTexture( slot, INVENTORY_MENU_ICON );
             }
             else if(i == 2) {
                 if (GUI.Button(slot, "Main")) {
-                    Debug.Log("Main menu");
+                    // Debug.Log("Main menu");
                     playerScript.toggleMenu("Main");
                 }
                 // GUI.DrawTexture( slot, MAIN_MENU_ICON );
@@ -414,7 +426,7 @@ public class GuiUtil : MonoBehaviour {
         int armorSlotBuffer = levelGroupBuffer / 2;
         float armorSlotYBuffer = levelGroupRect.height / 8;
 
-        Hashtable playerEquipment = playerScript.getEquipment().getItemMap();
+        Dictionary<string, Armor> playerEquipment = playerScript.getEquipment().getItemMap();
 
         //Head slot
         Armor playerHead = (Armor)playerEquipment["Head"];

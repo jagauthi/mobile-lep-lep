@@ -97,7 +97,7 @@ public class PlayerScript : MonoBehaviour
 
     void initAbilities()
     {
-        abilityMap.Add("Melee Attack", new Ability("Melee Attack", "Melee", 5, 30,
+        abilityMap.Add("Melee Attack", new Ability("Melee Attack", "Melee", 0, 10,
                 (GameObject)Resources.Load("Prefabs/Weapon"),
                 (Texture2D)Resources.Load("Images/WeaponIcon")));
 
@@ -207,6 +207,10 @@ public class PlayerScript : MonoBehaviour
         return 100 + (level * 20) + (strength*10);
     }
 
+    protected virtual int getMaxResource() {
+        return 100 + (intelligence*20);
+    }
+
     public bool gainHealth(int health) { 
         if(currentHealth >= getMaxHealth()) {
             return false;
@@ -288,15 +292,6 @@ public class PlayerScript : MonoBehaviour
 
     public void fullHeal() {
         this.currentHealth = this.getMaxHealth();
-    }
-
-    protected int GetMaxHealth()
-    {
-        return 50 + (10 * level) + (10 * strength);
-    }
-
-    protected virtual int getMaxResource() {
-        return 100;
     }
 
     protected int GetExpToNextLevel()

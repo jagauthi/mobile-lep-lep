@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 public class NpcScript
 {
     protected string npcName;
-    protected GameObject player;
     protected PlayerScript playerScript;
     protected GameScript gameScript;
     protected Texture2D texture;
@@ -27,10 +26,7 @@ public class NpcScript
 
     protected void initValues()
     {
-        if(null == player) {
-            player = GameObject.FindGameObjectWithTag("Player");
-            playerScript = player.GetComponent<PlayerScript>();
-        }
+        getPlayerScript();
         // if(player != null && player.GetComponent<MageScript>() != null) {
         //     playerScript = player.GetComponent<MageScript>();
         // }
@@ -40,6 +36,13 @@ public class NpcScript
         // else if(player != null && player.GetComponent<WarriorScript>() != null){
         //     playerScript = player.GetComponent<WarriorScript>();
         // }
+    }
+
+    protected PlayerScript getPlayerScript() {
+        if(playerScript == null) {
+            playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        }
+        return playerScript;
     }
 
     protected void getGameScript()

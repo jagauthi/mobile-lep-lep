@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShopKeeperScript : NpcScript {
 
     public bool showingInventory = false;
+    public int shopkeeperPageNumber = 0;
     public List<Item> inventory;
 
     public ShopKeeperScript(string npcName, Texture2D texture) : base(npcName, texture) {
         this.npcName = npcName;
-        npcName = "Shopkeeper David";
         initInventory(npcName);
         initValues();
         getGameScript();
@@ -21,9 +22,9 @@ public class ShopKeeperScript : NpcScript {
         inventory = new List<Item>();
         inventory.Add(new Consumable(0, "Health Potion", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 50));
         inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
+        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
         inventory.Add(new Consumable(0, "Rage Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/RagePotion"), 50));
         inventory.Add(new Consumable(0, "Energy Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/EnergyPotion"), 50));
-        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
         inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
         inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
         inventory.Add(new Armor(0, "Armor", "Iron Helm", "Head", (Texture2D)Resources.Load("Images/IronHelm")));
@@ -35,12 +36,13 @@ public class ShopKeeperScript : NpcScript {
     public override void startInteraction()
     {
         showingInventory = true;
+        if(!getPlayerScript().inventoryMenuOpen) {
+            getPlayerScript().toggleMenu("Inventory");
+        }
     }
 
     protected new void Update () {
-        if(player == null || playerScript == null) {
-            initValues();
-        }
+       
     }
 
     
@@ -50,5 +52,12 @@ public class ShopKeeperScript : NpcScript {
 
     public void closeInventory() {
         showingInventory = false;
+    }
+
+    public void movePage(int direction) {
+        shopkeeperPageNumber += direction;
+        if(shopkeeperPageNumber < 0) {
+            shopkeeperPageNumber = 0;
+        }
     }
 }

@@ -24,10 +24,11 @@ public class Item {
         return false;
     }
 
-    protected void getPlayer() {
+    protected PlayerScript getPlayer() {
         if(playerScript == null) {
             playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         }
+        return playerScript;
     }
 
     public Texture2D getIcon() {

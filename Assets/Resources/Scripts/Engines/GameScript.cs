@@ -244,7 +244,7 @@ public class GameScript : MonoBehaviour {
             }
         }
 
-        drawArmorSlots();
+        // drawArmorSlots();
 
         if (GUI.Button(quitRect, "X"))
         {
@@ -260,7 +260,7 @@ public class GameScript : MonoBehaviour {
         int armorSlotBuffer = buffer / 2;
         float armorSlotYBuffer = levelGroupRect.height / 8;
 
-        Hashtable playerEquipment = playerScript.getEquipment().getItemMap();
+        Dictionary<string, Armor> playerEquipment = playerScript.getEquipment().getItemMap();
 
         //Head slot
         Armor playerHead = (Armor)playerEquipment["Head"];

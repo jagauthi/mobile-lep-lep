@@ -5,18 +5,18 @@ using UnityEngine;
 public class Equipment {
 
     bool open;
-    Hashtable equipment;
+    Dictionary<string, Armor> equipment;
 
     public Equipment() {
-        equipment = new Hashtable();
-        equipment.Add("Helm", null);
+        equipment = new Dictionary<string, Armor>();
+        equipment.Add("Head", null);
         equipment.Add("Chest", null);
         equipment.Add("Legs", null);
         equipment.Add("Feet", null);
         open = false;
     }
 
-    public Equipment(Hashtable equipment) {
+    public Equipment(Dictionary<string, Armor> equipment) {
         this.equipment = equipment;
         open = false;
     }
@@ -65,7 +65,7 @@ public class Equipment {
         return items;
     }
 
-    public Hashtable getItemMap() {
+    public Dictionary<string, Armor> getItemMap() {
         return equipment;
     }
 

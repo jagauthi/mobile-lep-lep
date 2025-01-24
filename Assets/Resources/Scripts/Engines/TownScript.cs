@@ -15,10 +15,10 @@ public class TownScript : MonoBehaviour
     void Start()
     {
         if(null == playerGameObject) {
-            Debug.Log("PlayerGameObject null");
+            // Debug.Log("PlayerGameObject null");
             playerGameObject = GameObject.FindGameObjectWithTag("Player");
             if(null == playerGameObject) {
-                Debug.Log("Still didn't find it");
+                // Debug.Log("Still didn't find it");
                 playerGameObject = (GameObject)Resources.Load("Prefabs/PlayerGameObject");
                 playerScript = Instantiate(playerGameObject).GetComponent<PlayerScript>();
             }
@@ -35,7 +35,7 @@ public class TownScript : MonoBehaviour
             townMenuScript = townOptionsGameObject.GetComponent<TownMenuScript>();
         }
 
-        shopkeeper = new ShopKeeperScript("Shopkeeper", (Texture2D)Resources.Load("Images/LeatherHelm"));
+        shopkeeper = new ShopKeeperScript("Shopkeeper Ben", (Texture2D)Resources.Load("Images/LeatherHelm"));
 
         npcs = new List<NpcScript>();
         npcs.Add(new NpcScript("Sawah :3", (Texture2D)Resources.Load("Images/SawahBlacksmith1")));

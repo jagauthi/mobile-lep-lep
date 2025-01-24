@@ -6,7 +6,6 @@ public class Armor : Item {
 
     protected string armorName, slot;
     protected int armorPower;
-    protected GameObject armorGameObject;
 
     public Armor(int itemNumber, string type, string armorName, string slot, Texture2D icon) 
     : base(itemNumber, type, icon) {
@@ -20,9 +19,7 @@ public class Armor : Item {
     }
 
     void loadArmorInfo(string armorName) {
-        if(playerScript == null) {
-            getPlayer();
-        }
+        getPlayer();
         if(armorName == "Iron Chest") {
             armorPower = 20;
         }
@@ -38,5 +35,9 @@ public class Armor : Item {
 
     public string getSlot() {
         return slot;
+    }
+
+    public override bool use() {
+        return getPlayer().getEquipment().equipArmor(playerScript, this);
     }
 }

@@ -17,7 +17,6 @@ public class QuestGiverScript : NpcScript {
 
     public QuestGiverScript(string npcName, Texture2D texture) : base(npcName, texture) {
         this.npcName = npcName;
-        npcName = "Questkeeper Ben";
         initQuests(npcName);
         initValues();
         getGameScript();
@@ -40,9 +39,7 @@ public class QuestGiverScript : NpcScript {
     }
 
     protected new void Update () {
-        if(player == null || playerScript == null) {
-            initValues();
-        }
+        getPlayerScript();
         // else
         // {
         //     controlColor();
