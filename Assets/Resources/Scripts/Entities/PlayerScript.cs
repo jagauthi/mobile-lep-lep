@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
+using Unity.VisualScripting;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -55,9 +56,9 @@ public class PlayerScript : MonoBehaviour
         inventory = new Inventory();
 
         equipment = new Equipment();
-        inventory.addItem(new Consumable(0, "Health Potion", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 50));
-        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
-        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
+        inventory.addItem(new Consumable(0, "Health Potion", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 10, 50));
+        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50));
+        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50));
 
         gold = 10;
 
@@ -122,25 +123,6 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    public void inventoryToggle() {
-        if(!gameScript.getMenuOpen()) {
-            gameScript.setMenuOpen(true);
-            inventory.toggle();
-        }
-        else if(levelUpMenuToggle) {
-            inventory.toggle();
-        }
-        else if(inventory.isOpen()) {
-            gameScript.setMenuOpen(false);
-            inventory.toggle();
-        }
-    }
-
-    protected void closeMenus() {
-        levelUpMenuToggle = false;
-        inventory.close();
-    }
-
     void OnDestroy()
     {
 
@@ -152,7 +134,7 @@ public class PlayerScript : MonoBehaviour
             GuiUtil.characterMenu(this);
         }    
         if(inventoryMenuOpen) {
-            GuiUtil.inventoryMenu(this);
+            GuiUtil.playerInventoryMenu(this, null);
         }  
         if(mainMenuOpen) {
             GuiUtil.mainMenu();
@@ -195,11 +177,6 @@ public class PlayerScript : MonoBehaviour
 
     public bool isDead() {
         return currentHealth <= 0;
-    }
-
-    protected virtual void fillResource() {
-        print("Ugh?");
-        //To be implemented by children classes (maybe?)
     }
 
     protected int getMaxHealth()
@@ -274,31 +251,6 @@ public class PlayerScript : MonoBehaviour
         this.skillPoints = skillPoints;
     }
 
-    public void completeQuest(Quest quest) {
-        removeQuest(quest);
-        gainExp(quest.expReward);
-        gainGold(quest.goldReward);
-        //TODO: Do something with gold reward
-    }
-
-    public void removeQuest(Quest quest) {
-        activeQuests.Remove(quest);
-    }
-
-    public int getCurrentHealth()
-    {
-        return currentHealth;
-    }
-
-    public void fullHeal() {
-        this.currentHealth = this.getMaxHealth();
-    }
-
-    protected int GetExpToNextLevel()
-    {
-        return (level * 50);
-    }
-
     public int getSkillPoints() {
         return skillPoints;
     }
@@ -317,6 +269,30 @@ public class PlayerScript : MonoBehaviour
 
     public int getGold() {
         return gold;
+    }
+
+    public void completeQuest(Quest quest) {
+        removeQuest(quest);
+        gainExp(quest.expReward);
+        gainGold(quest.goldReward);
+    }
+
+    public void removeQuest(Quest quest) {
+        activeQuests.Remove(quest);
+    }
+
+    public int getCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public void fullHeal() {
+        this.currentHealth = this.getMaxHealth();
+    }
+
+    protected int GetExpToNextLevel()
+    {
+        return (level * 50);
     }
 
     public void setGold(int gold) {
@@ -373,6 +349,15 @@ public class PlayerScript : MonoBehaviour
         return false;
     }
 
+    public bool sellItem(Item item, ShopKeeperScript shopkeeper) {
+        if(shopkeeper.buyItem(item)) {
+            inventory.loseItem(item);
+            gold += (item.getCost() / 2);
+            return true;
+        }
+        return false;
+    }
+
     public bool buyItem(Item item, int cost) {
         if(gold >= cost && inventory.addItem(item)) {
             gold -= cost;
@@ -413,6 +398,33 @@ public class PlayerScript : MonoBehaviour
             inventoryMenuOpen = false;
         }
     }
+
+    public void openMenu(String menu) {
+        if(menu == "Character") {
+            characterMenuOpen = true;
+        }
+        else if(menu == "Inventory") {
+            inventoryMenuOpen = true;
+        }
+        else if(menu == "Main") {
+            mainMenuOpen = true;
+            characterMenuOpen = false;
+            inventoryMenuOpen = false;
+        }
+    }
+
+    public void closeMenu(String menu) {
+        if(menu == "Character") {
+            characterMenuOpen = false;
+        }
+        else if(menu == "Inventory") {
+            inventoryMenuOpen = false;
+        }
+        else if(menu == "Main") {
+            mainMenuOpen = false;
+        }
+    }
+
     public bool anyMenuOpen() {
         return characterMenuOpen || inventoryMenuOpen || mainMenuOpen;
     }

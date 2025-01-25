@@ -5,16 +5,17 @@ using System;
 
 public class Item {
 
-    protected int itemNumber;
+    protected int itemNumber, cost;
     protected string type;
 	protected Texture2D icon;
     protected PlayerScript playerScript;
     protected string tooltip;
 
-    public Item(int itemNumber, string type, Texture2D icon) {
+    public Item(int itemNumber, string type, Texture2D icon, int cost) {
         this.itemNumber = itemNumber;
         this.type = type;
         this.icon = icon;
+        this.cost = cost;
         playerScript = null;
         tooltip = "testTooltip";
     }
@@ -42,5 +43,10 @@ public class Item {
     public string getTooltip()
     {
         return tooltip;
+    }
+
+    public int getCost()
+    {
+        return cost;
     }
 }

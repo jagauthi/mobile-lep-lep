@@ -9,8 +9,8 @@ public class Weapon : Item {
 
     int baseDamage, addedDamage;
 
-    public Weapon(int itemNumber, string type, string weaponName, Texture2D icon) 
-    : base(itemNumber, type, icon) {
+    public Weapon(int itemNumber, string type, string weaponName, Texture2D icon, int cost) 
+    : base(itemNumber, type, icon, cost) {
         this.weaponName = weaponName;
         basicInits();
     }

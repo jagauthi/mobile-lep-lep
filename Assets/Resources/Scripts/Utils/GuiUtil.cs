@@ -276,13 +276,14 @@ public class GuiUtil : MonoBehaviour {
                     }
                     
                     //cursor tooltip
+                    String tooltipMessage = item.getTooltip() + ". Cost: " + item.getCost();
                     if (null != item && slot.Contains(Event.current.mousePosition))
                     {
                         Rect mouseTextRect = new Rect(
                             Input.mousePosition.x - shopkeeperGroupRect.x + (buffer / 2),
                             Screen.height - Input.mousePosition.y - shopkeeperGroupRect.y,
-                            item.getTooltip().Length*8, Screen.height / 16 / 2);
-                        GUI.Box(mouseTextRect, item.getTooltip());
+                            tooltipMessage.Length*8, Screen.height / 16);
+                        GUI.Box(mouseTextRect, tooltipMessage);
                     }
                 }
                 else {
@@ -413,7 +414,7 @@ public class GuiUtil : MonoBehaviour {
 
         if (GUI.Button(quitRect, "X"))
         {
-            playerScript.toggleMenu("Character");
+            playerScript.closeMenu("Character");
         }
         GUI.EndGroup();
     }
@@ -497,7 +498,7 @@ public class GuiUtil : MonoBehaviour {
         }
     }
 
-    public static void inventoryMenu(PlayerScript playerScript)
+    public static void playerInventoryMenu(PlayerScript playerScript, ShopKeeperScript shopkeeper)
     {
         int buttonLength = (int)(inventoryGroupRect.width / 4);
         int buffer = (int)inventoryGroupRect.width/16;
@@ -517,17 +518,26 @@ public class GuiUtil : MonoBehaviour {
                     GUI.DrawTexture( slot, item.getIcon() );
 
                     if (GUI.Button(slot, ""+slotNum)) {
-                        playerScript.useItem(item);
+                        if(null == shopkeeper) {
+                            playerScript.useItem(item);
+                        }
+                        else {
+                            playerScript.sellItem(item, shopkeeper);
+                        }
                     }
 
                     //cursor tooltip
+                    String tooltipMessage = item.getTooltip();
+                    if(null != shopkeeper) {
+                        tooltipMessage += ". Sellprice: " + (item.getCost() / 2);
+                    }
                     if (null != item && slot.Contains(Event.current.mousePosition))
                     {
                         Rect mouseTextRect = new Rect(
                             Input.mousePosition.x - inventoryGroupRect.x + (buffer / 2),
                             Screen.height - Input.mousePosition.y - inventoryGroupRect.y,
-                            item.getTooltip().Length * 8, Screen.height / 16 / 2);
-                        GUI.Box(mouseTextRect, item.getTooltip());
+                            tooltipMessage.Length * 8, Screen.height / 16);
+                        GUI.Box(mouseTextRect, tooltipMessage);
                     }
 
                 }

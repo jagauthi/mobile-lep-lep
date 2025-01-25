@@ -90,7 +90,6 @@ public class QuestGiverScript : NpcScript {
     {
         if (showingQuests && playerInRange)
         {
-            gameScript.pauseGame();
             dialogBox();
         }
     }
@@ -143,6 +142,5 @@ public class QuestGiverScript : NpcScript {
 
     protected void closeDialog() {
         showingQuests = false;
-        gameScript.unpauseGame();
     }
 }

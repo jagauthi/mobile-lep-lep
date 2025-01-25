@@ -20,25 +20,25 @@ public class ShopKeeperScript : NpcScript {
     protected void initInventory(string name)
     {
         inventory = new List<Item>();
-        inventory.Add(new Consumable(0, "Health Potion", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 50));
-        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
-        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
-        inventory.Add(new Consumable(0, "Rage Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/RagePotion"), 50));
-        inventory.Add(new Consumable(0, "Energy Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/EnergyPotion"), 50));
-        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
-        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 50));
-        inventory.Add(new Armor(0, "Armor", "Iron Helm", "Head", (Texture2D)Resources.Load("Images/IronHelm")));
-        inventory.Add(new Armor(0, "Armor", "Iron Chest", "Chest", (Texture2D)Resources.Load("Images/IronChest")));
-        inventory.Add(new Armor(0, "Armor", "Iron Legs", "Legs", (Texture2D)Resources.Load("Images/IronLegs")));
-        inventory.Add(new Armor(0, "Armor", "Iron Boots", "Feet", (Texture2D)Resources.Load("Images/IronBoots")));
+        inventory.Add(new Consumable(0, "Health Potion", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 10, 50 ) );
+        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50 ) );
+        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50 ) );
+        inventory.Add(new Consumable(0, "Rage Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/RagePotion"), 10, 50 ) );
+        inventory.Add(new Consumable(0, "Energy Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/EnergyPotion"), 10, 50 ) );
+        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50 ) );
+        inventory.Add(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50 ) );
+        inventory.Add(new Armor(0, "Armor", "Iron Helm", "Head", (Texture2D)Resources.Load("Images/IronHelm"), 10 ) ) ;
+        inventory.Add(new Armor(0, "Armor", "Iron Chest", "Chest", (Texture2D)Resources.Load("Images/IronChest"), 30 ) );
+        inventory.Add(new Armor(0, "Armor", "Iron Legs", "Legs", (Texture2D)Resources.Load("Images/IronLegs"), 20 ) );
+        inventory.Add(new Armor(0, "Armor", "Iron Boots", "Feet", (Texture2D)Resources.Load("Images/IronBoots"), 10 ) );
     }
     
     public override void startInteraction()
     {
         showingInventory = true;
-        if(!getPlayerScript().inventoryMenuOpen) {
-            getPlayerScript().toggleMenu("Inventory");
-        }
+
+        //Closing the player inventory since shopkeeper will display it's own version of it to allow selling
+        getPlayerScript().closeMenu("Inventory");
     }
 
     protected new void Update () {
@@ -47,7 +47,7 @@ public class ShopKeeperScript : NpcScript {
 
     
     public int getCost(Item item) {
-        return 10;
+        return item.getCost();
     }
 
     public void closeInventory() {
@@ -59,5 +59,10 @@ public class ShopKeeperScript : NpcScript {
         if(shopkeeperPageNumber < 0) {
             shopkeeperPageNumber = 0;
         }
+    }
+
+    public bool buyItem(Item item) {
+        inventory.Add(item);
+        return true;
     }
 }

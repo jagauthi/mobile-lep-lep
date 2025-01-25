@@ -7,8 +7,8 @@ public class Armor : Item {
     protected string armorName, slot;
     protected int armorPower;
 
-    public Armor(int itemNumber, string type, string armorName, string slot, Texture2D icon) 
-    : base(itemNumber, type, icon) {
+    public Armor(int itemNumber, string type, string armorName, string slot, Texture2D icon, int cost) 
+    : base(itemNumber, type, icon, cost) {
         this.armorName = armorName;
         this.slot = slot;
         basicInits();

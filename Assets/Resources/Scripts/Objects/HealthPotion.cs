@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthPotion : Item {
 
-    public HealthPotion(int itemNumber, string type, Texture2D icon) : base(itemNumber, type, icon) {
+    public HealthPotion(int itemNumber, string type, Texture2D icon, int cost) : base(itemNumber, type, icon, cost) {
         
     }
 }

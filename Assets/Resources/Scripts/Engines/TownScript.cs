@@ -56,24 +56,19 @@ public class TownScript : MonoBehaviour
         GuiUtil.drawPlayerTownOptions(playerScript);  
     }
 
-    protected void drawTownThings() {
+    protected void drawTownThings() { 
         
         //If player has any menus open, we dont want to show most town options
         if(playerScript.anyMenuOpen()) {
-            //Unless it's the inventory, then we can show shopkeeper
-            if(playerScript.inventoryMenuOpen) {
-                if(shopkeeper.showingInventory) {
-                    GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
-                    return;
-                }
-            }
             return;
         }
         
         //Otherwise if shopkeeper has inventory open, show that
         if(shopkeeper.showingInventory) {
             GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
-            return;
+
+            //Displaying the player inventory which allows to sell items
+            GuiUtil.playerInventoryMenu(playerScript, shopkeeper);
         }
         //Show the other NPCs if the shopkeeper isn't open
         else {
