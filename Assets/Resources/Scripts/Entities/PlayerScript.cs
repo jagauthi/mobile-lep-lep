@@ -56,9 +56,8 @@ public class PlayerScript : MonoBehaviour
         inventory = new Inventory();
 
         equipment = new Equipment();
-        inventory.addItem(new Consumable(0, "Health Potion", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 10, 50));
-        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50));
-        inventory.addItem(new Consumable(0, "Mana Potion", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50));
+        inventory.addItem(ItemHandler.getItemMap()["Health Potion"]);
+        inventory.addItem(ItemHandler.getItemMap()["Mana Potion"]);
 
         gold = 10;
 
@@ -91,27 +90,25 @@ public class PlayerScript : MonoBehaviour
     protected virtual void loadAbilities()
     {
         initAbilities();
-        abilities.Add((Ability)abilityMap["Fireball"]);
-        abilities.Add((Ability)abilityMap["Frostball"]);
+        abilities.Add((Ability)abilityMap["Double Hammer Strike"]);
         abilities.Add((Ability)abilityMap["Melee Attack"]);
     }
 
     void initAbilities()
     {
         abilityMap.Add("Melee Attack", new Ability("Melee Attack", "Melee", 0, 10,
-                (GameObject)Resources.Load("Prefabs/Weapon"),
                 (Texture2D)Resources.Load("Images/WeaponIcon")));
+                
+        abilityMap.Add("Double Hammer Strike", new Ability("Double Hammer Strike", "Melee", 10, 40,
+                (Texture2D)Resources.Load("Images/DoubleHammerStrike")));
 
         abilityMap.Add("Ranged Attack", new Ability("Arrow", "RangedProjectile", 10, 40,
-                (GameObject)Resources.Load("Prefabs/Arrow"),
                 (Texture2D)Resources.Load("Images/ArrowIcon")));
 
         abilityMap.Add("Fireball", new Ability("Fireball", "MagicProjectile", 10, 40,
-                (GameObject)Resources.Load("Prefabs/Fireball"),
                 (Texture2D)Resources.Load("Images/FireballIcon")));
 
         abilityMap.Add("Frostball", new Ability("Frostball", "MagicProjectile", 5, 20,
-                (GameObject)Resources.Load("Prefabs/Frostball"),
                 (Texture2D)Resources.Load("Images/FrostballIcon")));
     }
 

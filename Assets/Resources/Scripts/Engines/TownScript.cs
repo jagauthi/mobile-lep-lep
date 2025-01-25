@@ -14,6 +14,7 @@ public class TownScript : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("TownScript start");
         if(null == playerGameObject) {
             // Debug.Log("PlayerGameObject null");
             playerGameObject = GameObject.FindGameObjectWithTag("Player");

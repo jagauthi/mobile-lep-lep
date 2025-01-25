@@ -21,7 +21,7 @@ public class GameRestClient {
         }
         else {
             Debug.Log("Text: " + unityWebRequest.downloadHandler.text);
-            gameScript.setItems(unityWebRequest.downloadHandler.text);
+            // gameScript.setItems(unityWebRequest.downloadHandler.text);
         }
     }
 
@@ -38,7 +38,7 @@ public class GameRestClient {
             Debug.Log("Error: " + unityWebRequest.error);
         }
         else {
-            gameScript.setItems(unityWebRequest.downloadHandler.text);
+            // gameScript.setItems(unityWebRequest.downloadHandler.text);
         }
     }
 }

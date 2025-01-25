@@ -4,29 +4,15 @@ using UnityEngine;
 
 public class Armor : Item {
 
-    protected string armorName, slot;
+    protected string slot;
     protected int armorPower;
 
-    public Armor(int itemNumber, string type, string armorName, string slot, Texture2D icon, int cost) 
-    : base(itemNumber, type, icon, cost) {
-        this.armorName = armorName;
+    public Armor(string baseName, string type, string slot, Texture2D icon, int cost, int armorPower) 
+    : base(baseName, type, icon, cost) {
         this.slot = slot;
-        basicInits();
-    }
-
-    public void basicInits() {
-        loadArmorInfo(armorName);
-    }
-
-    void loadArmorInfo(string armorName) {
-        getPlayer();
-        if(armorName == "Iron Chest") {
-            armorPower = 20;
-        }
-        else {
-            armorPower = 10;
-        }
+        this.armorPower = armorPower;
         this.tooltip = "Armor: " + armorPower;
+        getPlayer();
     }
 
     public int getArmorPower() {

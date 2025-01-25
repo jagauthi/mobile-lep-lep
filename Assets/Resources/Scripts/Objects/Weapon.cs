@@ -4,22 +4,20 @@ using UnityEngine;
 
 public class Weapon : Item {
 
-    protected string weaponName;
     protected GameObject weaponGameObject;
 
     int baseDamage, addedDamage;
 
-    public Weapon(int itemNumber, string type, string weaponName, Texture2D icon, int cost) 
-    : base(itemNumber, type, icon, cost) {
-        this.weaponName = weaponName;
+    public Weapon(string baseName, string type, Texture2D icon, int cost) 
+    : base(baseName, type, icon, cost) {
         basicInits();
     }
 
     public void basicInits() {
-        loadWeaponInfo(weaponName);
+        loadWeaponInfo(baseName);
     }
     
-    void loadWeaponInfo(string weaponName) {
+    void loadWeaponInfo(string baseName) {
         baseDamage = 10;
         addedDamage = 0;
     }

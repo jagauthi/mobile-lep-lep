@@ -7,32 +7,27 @@ using UnityEngine.SceneManagement;
 
 public class GameScript : MonoBehaviour {
     
-    int buffer;
-    int buttonLength;
-    int textLength;
     PlayerScript playerScript;
     AudioControlScript audioControl;
-    GameObject player;
     GameRestClient restClient;
-    ItemHandler itemHandler;
     
     void Awake()
     {
+        Debug.Log("GameScript Awake");
+
         DontDestroyOnLoad(transform.gameObject);
+        ItemHandler.loadItemsManually();
     }
 
     protected void Start()
     {
         Debug.Log("GameScript Start");
+        
+
         // restClient = new GameRestClient(this);
-        // itemHandler = new ItemHandler(this);
-        // getItems();
 
         // playerScript = player.GetComponent<PlayerScript>();
         audioControl = GetComponentInChildren<AudioControlScript>();
-        buffer = Screen.height / 16;
-        buttonLength = Screen.height / 16;
-        textLength = Screen.height / 8;
     }
 
     void Update()
@@ -59,11 +54,5 @@ public class GameScript : MonoBehaviour {
     public void getItems() {
         IEnumerator getter = restClient.getItems();
         StartCoroutine(getter);
-    }
-
-    public void setItems(String items) {
-        itemHandler.parseItems(items);
-        List<Item> allItems = itemHandler.getAllItems();
-        print(allItems);
     }
 }

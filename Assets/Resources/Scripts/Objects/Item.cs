@@ -5,14 +5,14 @@ using System;
 
 public class Item {
 
-    protected int itemNumber, cost;
-    protected string type;
+    protected int cost;
+    protected string baseName, type;
 	protected Texture2D icon;
     protected PlayerScript playerScript;
     protected string tooltip;
 
-    public Item(int itemNumber, string type, Texture2D icon, int cost) {
-        this.itemNumber = itemNumber;
+    public Item(string baseName, string type, Texture2D icon, int cost) {
+        this.baseName = baseName;
         this.type = type;
         this.icon = icon;
         this.cost = cost;
@@ -26,7 +26,7 @@ public class Item {
     }
 
     protected PlayerScript getPlayer() {
-        if(playerScript == null) {
+        if(playerScript == null && null != GameObject.FindGameObjectWithTag("Player")) {
             playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         }
         return playerScript;
@@ -34,6 +34,10 @@ public class Item {
 
     public Texture2D getIcon() {
         return icon;
+    }
+
+    public string getBaseName() {
+        return this.baseName;
     }
 
     public string getType() {
