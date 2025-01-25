@@ -13,7 +13,6 @@ public class ShopKeeperScript : NpcScript {
         this.npcName = npcName;
         initInventory(npcName);
         initValues();
-        getGameScript();
         // GetComponent<Renderer>().material.color = Color.magenta;
     }
 
@@ -24,16 +23,12 @@ public class ShopKeeperScript : NpcScript {
         inventory.AddRange(ItemHandler.generateItemsOfType(3, "Armor"));
     }
     
-    public override void startInteraction()
+    public override void startInteraction(TownScript townScript)
     {
         showingInventory = true;
 
         //Closing the player inventory since shopkeeper will display it's own version of it to allow selling
         getPlayerScript().closeMenu("Inventory");
-    }
-
-    protected new void Update () {
-       
     }
 
     

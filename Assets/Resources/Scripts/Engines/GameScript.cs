@@ -16,7 +16,9 @@ public class GameScript : MonoBehaviour {
         Debug.Log("GameScript Awake");
 
         DontDestroyOnLoad(transform.gameObject);
+
         ItemHandler.loadItemsManually();
+        EnemyHandler.loadEnemiesManually();
     }
 
     protected void Start()

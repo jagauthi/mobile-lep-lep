@@ -3,28 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class GuiUtil : MonoBehaviour {
     
     public static float regularBarLength = Screen.width / 3;
     public static float expBarLength = Screen.width / 3;
 
-    private static Texture2D redTex, blackTex, greenTex, blueTex;
     private static GUIStyle redStyle, blackStyle, greenStyle, blueStyle;
 
-    private static Rect enemyGroupRect, enemyBackgroundRect, npcGroupRect, npcBackgroundRect;
-
-    private static Rect shopkeeperGroupRect, shopkeeperBackgroundRect, shopkeeperCloseButton, shopkeeperIntroRect, shopkeeperLeftButtonRect, shopkeeperRightButtonRect;
-    private static Rect townOptionsGroupRect, townOptionsBackgroundRect;
+    private static Texture2D redTex, blackTex, greenTex, blueTex;
+    private static Texture2D selectedTexture;
+   
+    static int dungeonFloorOffset = 0;
     
+
+    //Shopkeeper rects
+    private static Rect shopkeeperGroupRect, shopkeeperBackgroundRect, shopkeeperCloseButton, shopkeeperIntroRect, shopkeeperLeftButtonRect, shopkeeperRightButtonRect;
+
+    //Profession dialog rects
+    private static Rect professionDialogGroupRect, professionDialogBackgroundRect, professionDialogCloseButton, professionDialogIntroRect, professionDialogImageRect;
+    private static Rect professionDialogTextRect, professionDialogStartDungeonButton, professionDialogDungeonFloorButton, professionDialogDungeonUpButton, professionDialogDungeonDownButton;
+
+    //Town script rects
+    private static Rect townOptionsGroupRect, townOptionsBackgroundRect, npcGroupRect, npcBackgroundRect;
+
+    //Dungeon script rects
+    private static Rect enemyGroupRect, enemyBackgroundRect;
+    private static Rect abilitiesGroupRect, abilitiesBackgroundRect, itemsGroupRect, itemsBackgroundRect;
+    
+    //Player Menu rects
     private static Rect mainGroupRect, levelGroupRect, inventoryGroupRect;
     private static Rect pointsRect, backgroundRect, strengthRect, strengthTextRect;
     private static Rect agilityRect, agilityTextRect, intelligenceRect, intelligenceTextRect, quitRect, goldRect;
-
-    private static Rect abilitiesGroupRect, abilitiesBackgroundRect, itemsGroupRect, itemsBackgroundRect;
-    private static Texture2D selectedTexture;
-
     private static Rect screenRect, startRect, quit2Rect;
+
 
     public static ShopKeeperScript shopkeeperShowingInventory;
 
@@ -46,22 +59,47 @@ public class GuiUtil : MonoBehaviour {
         blueTex = MakeTex(2, 2, new Color(0f, 0f, 1f, 0.75f));
         blueStyle.normal.background = blueTex;
         
-        enemyGroupRect = new Rect(4 * Screen.width / 8, 2* Screen.height / 8, 3* Screen.width / 8, 2 * Screen.height / 4);
-        enemyBackgroundRect = new Rect(0, 0, enemyGroupRect.width, enemyGroupRect.height);
-        
-        npcGroupRect = new Rect(1 * Screen.width / 4, 1 * Screen.height / 4, 1 * Screen.width / 2, 1 * Screen.height / 2);
-        npcBackgroundRect = new Rect(0, 0, npcGroupRect.width, npcGroupRect.height);
 
+        //Town script rects
         townOptionsGroupRect = new Rect(10, (7 * Screen.height / 8) - 10, Screen.width / 3, Screen.height / 8);
         townOptionsBackgroundRect = new Rect(0, 0, townOptionsGroupRect.width, townOptionsGroupRect.height);
+        npcGroupRect = new Rect(1 * Screen.width / 4, 1 * Screen.height / 4, 1 * Screen.width / 2, 1 * Screen.height / 2);
+        npcBackgroundRect = new Rect(0, 0, npcGroupRect.width, npcGroupRect.height);
         
+        //Shopkeeper rects
         shopkeeperGroupRect = new Rect(2 * Screen.width / 8, Screen.height / 8, Screen.width / 4, 3 * Screen.height / 4);
         shopkeeperIntroRect = new Rect(shopkeeperGroupRect.width/16, shopkeeperGroupRect.height/16, 3 * shopkeeperGroupRect.width / 4, shopkeeperGroupRect.height/16);
         shopkeeperBackgroundRect = new Rect(0, 0, shopkeeperGroupRect.width, shopkeeperGroupRect.height);
         shopkeeperCloseButton = new Rect( 13 * shopkeeperGroupRect.width / 16, Screen.height / 32, shopkeeperGroupRect.width / 8, Screen.height / 16);
         shopkeeperLeftButtonRect = new Rect( 1 * shopkeeperGroupRect.width / 8, 3 * shopkeeperGroupRect.height / 4, shopkeeperGroupRect.width / 4, shopkeeperGroupRect.height / 8);
         shopkeeperRightButtonRect = new Rect( 5 * shopkeeperGroupRect.width / 8, 3 * shopkeeperGroupRect.height / 4, shopkeeperGroupRect.width / 4, shopkeeperGroupRect.height / 8);
+        
 
+        //Profession dialog rects
+        professionDialogGroupRect = new Rect(2 * Screen.width / 8, Screen.height / 8, Screen.width / 2, 3 * Screen.height / 4);
+        professionDialogIntroRect = new Rect(professionDialogGroupRect.width/4, professionDialogGroupRect.height/16, 1 * professionDialogGroupRect.width / 2, professionDialogGroupRect.height/16);
+        professionDialogBackgroundRect = new Rect(0, 0, professionDialogGroupRect.width, professionDialogGroupRect.height);
+        professionDialogCloseButton = new Rect( 13 * professionDialogGroupRect.width / 16, professionDialogGroupRect.height / 16, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
+        professionDialogImageRect = new Rect( 0, 0, professionDialogGroupRect.width / 4, professionDialogGroupRect.height / 4);
+        professionDialogTextRect = new Rect( 1 * professionDialogGroupRect.width / 16, professionDialogGroupRect.height / 4, professionDialogGroupRect.width / 2, professionDialogGroupRect.height / 4);
+        professionDialogStartDungeonButton = new Rect( 1 * professionDialogGroupRect.width / 16, professionDialogGroupRect.height / 2, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
+        professionDialogDungeonFloorButton = new Rect( 3 * professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 4, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
+        professionDialogDungeonUpButton = new Rect( 6 * professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 2, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
+        professionDialogDungeonDownButton = new Rect( 6 * professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 2 + professionDialogDungeonUpButton.height, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
+
+
+        //Dungeon Script rects 
+        enemyGroupRect = new Rect(4 * Screen.width / 8, 2* Screen.height / 8, 3* Screen.width / 8, 2 * Screen.height / 4);
+        enemyBackgroundRect = new Rect(0, 0, enemyGroupRect.width, enemyGroupRect.height);
+
+        abilitiesGroupRect = new Rect(10, (7 * Screen.height / 8) - 10, Screen.width / 3, Screen.height / 8);
+        abilitiesBackgroundRect = new Rect(0, 0, abilitiesGroupRect.width, abilitiesGroupRect.height);
+        
+        itemsGroupRect = new Rect(abilitiesGroupRect.width + 20, (7 * Screen.height / 8) - 10, Screen.width / 3, Screen.height / 8);
+        itemsBackgroundRect = new Rect(0, 0, itemsGroupRect.width, itemsGroupRect.height);
+
+
+        //Player Menu rects
         screenRect = new Rect(0, 0, Screen.width, Screen.height);
         startRect = new Rect(Screen.width/8, Screen.height/8, Screen.width / 4, Screen.height / 8);
         quit2Rect = new Rect(Screen.width / 8, Screen.height / 2, Screen.width / 4, Screen.height / 8);
@@ -75,26 +113,21 @@ public class GuiUtil : MonoBehaviour {
         int buttonLength = (int)(levelGroupRect.width / 8);
         int textLength = (int)(levelGroupRect.width / 8);
         pointsRect = new Rect(levelGroupBuffer, 0, textLength, buttonLength); 
-        //Str
+        
         strengthTextRect = new Rect(levelGroupBuffer, Screen.height / 8, Screen.height / 4, textLength);
         strengthRect = new Rect(levelGroupBuffer + textLength + levelGroupBuffer, Screen.height / 8, buttonLength, buttonLength);
-        //Agil
+        
         agilityTextRect = new Rect(levelGroupBuffer, Screen.height / 8 * 2, Screen.height / 4, textLength);
         agilityRect = new Rect(levelGroupBuffer + textLength + levelGroupBuffer, Screen.height / 8 * 2, buttonLength, buttonLength);
-        //Intel
+        
         intelligenceTextRect = new Rect(levelGroupBuffer, Screen.height / 8 * 3, Screen.height / 4, textLength);
         intelligenceRect = new Rect(levelGroupBuffer + textLength + levelGroupBuffer, Screen.height / 8 * 3, buttonLength, buttonLength);
 
         quitRect = new Rect(Screen.width/2-buttonLength, 0, buttonLength, buttonLength);
         goldRect = new Rect(inventoryGroupRect.width/16, inventoryGroupRect.height/16, inventoryGroupRect.width/4, inventoryGroupRect.height/16);
 
+
         selectedTexture = (Texture2D)Resources.Load("Images/SelectedIcon");
-
-        abilitiesGroupRect = new Rect(10, (7 * Screen.height / 8) - 10, Screen.width / 3, Screen.height / 8);
-        abilitiesBackgroundRect = new Rect(0, 0, abilitiesGroupRect.width, abilitiesGroupRect.height);
-
-        itemsGroupRect = new Rect(abilitiesGroupRect.width + 20, (7 * Screen.height / 8) - 10, Screen.width / 3, Screen.height / 8);
-        itemsBackgroundRect = new Rect(0, 0, itemsGroupRect.width, itemsGroupRect.height);
     }
 
     public static Texture2D MakeTex(int width, int height, Color col)
@@ -167,13 +200,13 @@ public class GuiUtil : MonoBehaviour {
         GUI.BeginGroup(enemyGroupRect);
         GUI.Box(enemyBackgroundRect, "");
 
-
         for(int i = 0; i < enemies.Count; i++) {
             int yValue = 10 + (i * 30);
             EnemyScript enemyScript = enemies[i];
             if (enemyScript != null)
             {
-                Rect slot = new Rect(buffer*(i+1) + buttonLength*i, 
+                Rect slot = new Rect(
+                    buffer*(i+1) + buttonLength*i, 
                     buffer, 
                     buttonLength, 
                     buttonLength); 
@@ -212,7 +245,7 @@ public class GuiUtil : MonoBehaviour {
         GUI.EndGroup();
     }
 
-    public static void drawNpcs(List<NpcScript> npcs)
+    public static void drawNpcs(List<NpcScript> npcs, TownScript townScript)
     {
         int buttonLength = (int)(npcGroupRect.width / 4);
         int buffer = (int)npcGroupRect.width/16;
@@ -239,7 +272,7 @@ public class GuiUtil : MonoBehaviour {
                 //Button to select enemy
                 if (GUI.Button(slot, "" + npcScript.getName())) {
                     // Debug.Log("Clicked on NPC " + npcScript.getName());
-                    npcScript.startInteraction();
+                    npcScript.startInteraction(townScript);
                 }
 
                 //cursor tooltip
@@ -320,6 +353,66 @@ public class GuiUtil : MonoBehaviour {
                 }
             }
         }
+        GUI.EndGroup();
+    }
+
+    public static void professionDialog(TownProfessionNpc selectedProfession, PlayerScript playerScript, TownScript townScript)
+    {
+        int buttonLength = (int)(professionDialogGroupRect.width / 4);
+        int buffer = (int)professionDialogGroupRect.width/16;
+        GUI.BeginGroup(professionDialogGroupRect);
+        GUI.Box(professionDialogBackgroundRect, "");
+        GUI.Box(professionDialogIntroRect, selectedProfession.getName());
+        //GUI.DrawTexture(backgroundRect, backgroundTexture);
+
+        GUI.DrawTexture( professionDialogImageRect, selectedProfession.getTexture() );
+        
+        //First dialog option to let player choose between dungeon and crafting
+        if(selectedProfession.getDialogPhase() == 1) {
+
+            GUI.Label(professionDialogTextRect, selectedProfession.getDialog());
+
+            //Button to select start dungeon
+            if (GUI.Button(professionDialogStartDungeonButton, "Yes")) {
+                selectedProfession.setDialogPhase(2);
+            }
+        }
+        //Second dialog option lets the player choose which floor of the dungeon to go to
+        else if(selectedProfession.getDialogPhase() == 2) {
+            string dungeonSelectionText = "Which floor do you want to start on?";
+            GUI.Label(professionDialogTextRect, dungeonSelectionText);
+
+            int maxDungeonFloorNumCompleted = playerScript.getMaxDungeonFloorNumCompleted();
+            for(int i = 0; i < 5; i++) {
+                Rect floorButtonRect = new Rect( 
+                    professionDialogDungeonFloorButton.x, 
+                    professionDialogDungeonFloorButton.y + (professionDialogDungeonFloorButton.height * i + buffer), 
+                    professionDialogDungeonFloorButton.width, 
+                    professionDialogDungeonFloorButton.height
+                );
+
+                int floorNum = i + 1 + (dungeonFloorOffset * 5);
+                if(GUI.Button(floorButtonRect, "" + floorNum)) {
+                    playerScript.setDungeonFloor(floorNum);
+                    townScript.startDungeon();
+                }
+            }
+
+            if(GUI.Button(professionDialogDungeonUpButton, "^")) {
+                if(dungeonFloorOffset > 0) {
+                    dungeonFloorOffset -= 1;
+                }
+            }
+            if(GUI.Button(professionDialogDungeonDownButton, "V")) {
+                dungeonFloorOffset += 1;
+            }
+        }
+        
+        if (GUI.Button(professionDialogCloseButton, "X"))
+        {
+            townScript.setSelectedProfession(null);
+        }
+
         GUI.EndGroup();
     }
 

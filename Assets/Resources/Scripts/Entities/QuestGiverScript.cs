@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class QuestGiverScript : NpcScript {
 
-    bool showingQuests = false;
-    bool playerInRange = false;
+    // bool showingQuests = false;
     protected List<Quest> questList;
 
     Rect screenRect = new Rect(0, 0, Screen.width, Screen.height);
@@ -22,10 +21,6 @@ public class QuestGiverScript : NpcScript {
         getGameScript();
     }
 
-    protected new void Start ()
-    {
-    }
-
     protected void initQuests(string name)
     {
         questList = new List<Quest>();
@@ -35,63 +30,7 @@ public class QuestGiverScript : NpcScript {
     
     public void showQuests()
     {
-        showingQuests = true;
-    }
-
-    protected new void Update () {
-        getPlayerScript();
-        // else
-        // {
-        //     controlColor();
-        //     float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
-        //     if (distanceFromPlayer <= 20)
-        //     {
-        //         playerInRange = true;
-        //         //Look at player
-        //         transform.rotation = Quaternion.Slerp(transform.rotation,
-        //             Quaternion.LookRotation(player.transform.position - transform.position), 5f * Time.deltaTime);
-        //     }
-        //     else
-        //     {
-        //         playerInRange = false;
-        //         showingQuests = false;
-        //     }
-        // }
-    }
-
-    // void controlColor() {
-    //     Light questLight = GetComponentInChildren<Light>();
-    //     Renderer renderer = GetComponentInChildren<Renderer>();
-    //     if(questList.Count != 0) {
-    //         if(playerScript.hasQuest(questList[0])) {
-    //             if(questList[0].completed) {
-    //                 questLight.color = Color.green;
-    //                 renderer.material.color = Color.green;
-    //             }
-    //             else {
-    //                 questLight.color = Color.gray;
-    //                 renderer.material.color = Color.white;
-    //             }
-    //         }
-    //         else {
-    //             questLight.color = Color.yellow;
-    //             renderer.material.color = Color.yellow;
-                
-    //         }
-    //     }
-    //     else {
-    //         questLight.color = Color.gray;
-    //         questLight.intensity = 0;
-    //         renderer.material.color = Color.black;
-    //     }
-    // }
-    
-    void OnGUI()
-    {
-        if (showingQuests && playerInRange)
-        {
-            dialogBox();
-        }
+        // showingQuests = true;
     }
 
     void dialogBox()
@@ -141,6 +80,6 @@ public class QuestGiverScript : NpcScript {
     }
 
     protected void closeDialog() {
-        showingQuests = false;
+        // showingQuests = false;
     }
 }

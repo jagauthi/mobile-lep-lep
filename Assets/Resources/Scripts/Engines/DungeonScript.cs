@@ -12,7 +12,7 @@ public class DungeonScript : MonoBehaviour
     private PlayerScript playerScript;
     protected List<EnemyScript> enemies;
     public Ability selectedPlayerAbility;
-   bool playerTurn;
+    bool playerTurn;
 
 
     void Start()
@@ -24,9 +24,9 @@ public class DungeonScript : MonoBehaviour
             playerScript = playerGameObject.GetComponent<PlayerScript>();
         }
 
+        int floorNum = playerScript.getDungeonFloorNum();
         enemies = new List<EnemyScript>();
-        enemies.Add(new EnemyScript("Cube", (Texture2D)Resources.Load("Images/SawahCube1")));
-        enemies.Add(new EnemyScript("Dragon", (Texture2D)Resources.Load("Images/SawahDragon1")));
+        enemies.AddRange(EnemyHandler.generateEnemies(floorNum, EnemyHandler.getEnemyList()));
         
         playerTurn = true;
     }
@@ -78,6 +78,14 @@ public class DungeonScript : MonoBehaviour
        
         //Finally if it gets here, player takes their turn and initiates the enemy turn
         enemy.loseHealth(selectedPlayerAbility.getPower());
+
+        //Reshuffle the dead enemy to the end of the list
+        if(enemy.isDead()) {
+            enemies.Remove(enemy);
+            enemies.Add(enemy);
+        }
+
+
         playerTurn = false;
         takeEnemyTurns();
         

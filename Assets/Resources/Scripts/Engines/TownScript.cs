@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TownScript : MonoBehaviour
 {
@@ -9,11 +10,24 @@ public class TownScript : MonoBehaviour
    public PlayerScript playerScript;
    protected List<NpcScript> npcs;
    ShopKeeperScript shopkeeper;
+   TownProfessionNpc selectedProfession;
 
 
     void Start()
     {
         Debug.Log("TownScript start");
+        getPlayerScript();
+
+        shopkeeper = new ShopKeeperScript("Shopkeeper Ben", (Texture2D)Resources.Load("Images/LeatherHelm"));
+
+        TownProfessionNpc blacksmith = new TownProfessionNpc("Sarah the Blacksmith", (Texture2D)Resources.Load("Images/SawahBlacksmith1"));
+
+        npcs = new List<NpcScript>();
+        npcs.Add(shopkeeper);
+        npcs.Add(blacksmith);
+    }
+
+    private void getPlayerScript() {
         if(null == playerGameObject) {
             // Debug.Log("PlayerGameObject null");
             playerGameObject = GameObject.FindGameObjectWithTag("Player");
@@ -25,21 +39,6 @@ public class TownScript : MonoBehaviour
             else {
                 playerScript = playerGameObject.GetComponent<PlayerScript>();
             }
-        }
-
-        shopkeeper = new ShopKeeperScript("Shopkeeper Ben", (Texture2D)Resources.Load("Images/LeatherHelm"));
-
-        npcs = new List<NpcScript>();
-        npcs.Add(new NpcScript("Sawah :3", (Texture2D)Resources.Load("Images/SawahBlacksmith1")));
-        npcs.Add(shopkeeper);
-    }
-
-    public void usePlayerItem(Item item) {
-        if(playerScript.useItem(item)) {
-            Debug.Log("Player used " + item.getType());
-        }
-        else {
-            Debug.Log("Could not use " + item.getType());
         }
     }
     
@@ -64,10 +63,27 @@ public class TownScript : MonoBehaviour
         }
         //Show the other NPCs if the shopkeeper isn't open
         else {
-            GuiUtil.drawNpcs(npcs);
+            if(null == selectedProfession) {
+                GuiUtil.drawNpcs(npcs, this);
+            }
+            else {
+                GuiUtil.professionDialog(selectedProfession, playerScript, this);
+            }
         }
     }
 
+    public void setSelectedProfession(TownProfessionNpc townProfessionNpc) {
+        this.selectedProfession = townProfessionNpc;
+    }
+
+    public void startDungeon() {
+        if(playerScript.isDead()) {
+            Debug.Log("Can't load dungeon when you're dead!");
+        }
+        else {
+            SceneManager.LoadScene("DungeonScene");
+        }
+    }
     
 
 }

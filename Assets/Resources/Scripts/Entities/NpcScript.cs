@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class NpcScript
 {
@@ -12,16 +11,13 @@ public class NpcScript
     public NpcScript(string npcName, Texture2D texture) {
         this.npcName = npcName;
         this.texture = texture;
+        getGameScript();
         DoInits();
     }
 
     protected void DoInits()
     {
         initValues();
-    }
-
-    protected void basicInits() {
-        getGameScript();
     }
 
     protected void initValues()
@@ -35,11 +31,11 @@ public class NpcScript
         // }
         // else if(player != null && player.GetComponent<WarriorScript>() != null){
         //     playerScript = player.GetComponent<WarriorScript>();
-        // }
+        // } 
     }
 
     protected PlayerScript getPlayerScript() {
-        if(playerScript == null) {
+        if(playerScript == null && null != GameObject.FindGameObjectWithTag("Player")) {
             playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         }
         return playerScript;
@@ -70,18 +66,7 @@ public class NpcScript
         Debug.Log("Blehhh X.X");
     }
 
-    public virtual void startInteraction() {
-        if(playerScript.isDead()) {
-            Debug.Log("Can't load dungeon when you're dead!");
-        }
-        else {
-            SceneManager.LoadScene("DungeonScene");
-        }
+    public virtual void startInteraction(TownScript townScript) {
+        
     }
-
-    void Awake() {}
-
-    protected void Start () {}
-
-    protected void Update() {}
 }

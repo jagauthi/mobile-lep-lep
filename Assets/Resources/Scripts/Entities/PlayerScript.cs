@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
 using Unity.VisualScripting;
@@ -20,6 +19,8 @@ public class PlayerScript : MonoBehaviour
     protected int skillPoints = 5;
     protected int gold;
     protected bool levelUpMenuToggle = false;
+
+    int dungeonFloorNum, maxDungeonFloorNumCompleted;
 
     Hashtable abilityMap = new Hashtable();
     protected List<Ability> abilities;
@@ -60,6 +61,9 @@ public class PlayerScript : MonoBehaviour
         inventory.addItem(ItemHandler.getItemMap()["Mana Potion"]);
 
         gold = 10;
+
+        dungeonFloorNum = 1;
+        maxDungeonFloorNumCompleted = 0;
 
         retrieveGameScript();
     }
@@ -424,5 +428,21 @@ public class PlayerScript : MonoBehaviour
 
     public bool anyMenuOpen() {
         return characterMenuOpen || inventoryMenuOpen || mainMenuOpen;
+    }
+
+    public void setDungeonFloor(int floorNum) {
+        dungeonFloorNum = floorNum;
+    }
+
+    public int getDungeonFloorNum() {
+        return dungeonFloorNum;
+    }
+
+    public void setMaxDungeonFloorNumCompleted(int floorNum) {
+        maxDungeonFloorNumCompleted = floorNum;
+    }
+
+    public int getMaxDungeonFloorNumCompleted() {
+        return maxDungeonFloorNumCompleted;
     }
 }

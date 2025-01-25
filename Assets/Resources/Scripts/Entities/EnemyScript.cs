@@ -12,11 +12,11 @@ public class EnemyScript : NpcScript
         this.npcName = npcName;
         this.texture = texture;
         DoInits();
+
     }
 
     protected new void DoInits()
     {
-        basicInits();
         initStats();
         initValues();
         initAbilities();
@@ -42,11 +42,6 @@ public class EnemyScript : NpcScript
         rotationSpeed = 5f;
         aggrod = false;
         canShoot = true;
-    }
-
-    protected new void Update()
-    {
-        
     }
 
     protected void getHit(Weapon weapon) {
