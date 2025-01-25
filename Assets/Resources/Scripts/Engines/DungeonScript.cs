@@ -10,7 +10,6 @@ public class DungeonScript : MonoBehaviour
     public GameObject dungeonOptionsGameObject;
 
     private PlayerScript playerScript;
-    private DungeonMenuScript dungeonMenuScript;
     protected List<EnemyScript> enemies;
     public Ability selectedPlayerAbility;
    bool playerTurn;
@@ -23,10 +22,6 @@ public class DungeonScript : MonoBehaviour
         }
         if(null == playerScript) {
             playerScript = playerGameObject.GetComponent<PlayerScript>();
-        }
-
-        if(null == dungeonMenuScript) {
-            dungeonMenuScript = dungeonOptionsGameObject.GetComponent<DungeonMenuScript>();
         }
 
         enemies = new List<EnemyScript>();
@@ -54,11 +49,8 @@ public class DungeonScript : MonoBehaviour
     }
 
     protected void drawDungeonThings() { 
-        drawEnemies();
-    }
-
-    protected void drawEnemies()
-    {
+        GuiUtil.drawPlayerAbilities(playerScript, this);
+        GuiUtil.drawPlayerItems(playerScript, this);
         GuiUtil.drawEnemies(enemies, attackEnemy);
     }
 

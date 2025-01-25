@@ -300,52 +300,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &592311960
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 592311961}
-  - component: {fileID: 592311962}
-  m_Layer: 0
-  m_Name: TownOptions
-  m_TagString: TownOptions
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &592311961
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 592311960}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 163, y: 255, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &592311962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 592311960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fad2ce0706d5064abaeb3dd490937ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerGameObject: {fileID: 0}
-  townGameObject: {fileID: 913059552}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,11 +486,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &913059552 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1942335008023120369, guid: 47979b393eae73f4aae906d21f8adb93, type: 3}
-  m_PrefabInstance: {fileID: 2800443021364239163}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1113117090
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,7 +699,7 @@ PrefabInstance:
     - target: {fileID: 6559822757854248731, guid: 47979b393eae73f4aae906d21f8adb93, type: 3}
       propertyPath: townOptionsGameObject
       value: 
-      objectReference: {fileID: 592311960}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -764,6 +713,5 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 304057308}
   - {fileID: 2800443021364239163}
-  - {fileID: 592311961}
   - {fileID: 784815692}
   - {fileID: 1767638697}

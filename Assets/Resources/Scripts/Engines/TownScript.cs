@@ -7,7 +7,6 @@ public class TownScript : MonoBehaviour
    public GameObject townOptionsGameObject;
 
    public PlayerScript playerScript;
-   private TownMenuScript townMenuScript;
    protected List<NpcScript> npcs;
    ShopKeeperScript shopkeeper;
 
@@ -26,14 +25,6 @@ public class TownScript : MonoBehaviour
             else {
                 playerScript = playerGameObject.GetComponent<PlayerScript>();
             }
-        }
-
-        // if(null == playerScript) {
-        //     playerScript = playerGameObject.GetComponent<PlayerScript>();
-        // }
-
-        if(null == townMenuScript) {
-            townMenuScript = townOptionsGameObject.GetComponent<TownMenuScript>();
         }
 
         shopkeeper = new ShopKeeperScript("Shopkeeper Ben", (Texture2D)Resources.Load("Images/LeatherHelm"));
