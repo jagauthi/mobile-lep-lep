@@ -55,6 +55,9 @@ public class ItemHandler {
 
     public static List<Item> generateItems(int numItems, List<Item> itemList) {
         List<Item> itemsToReturn = new List<Item>();
+        if(null == itemList) {
+            itemList = allItems;
+        }
 
         for(int i = 0; i < numItems; i++) {
             itemsToReturn.Add(itemList[Random.Range(0, itemList.Count)]);

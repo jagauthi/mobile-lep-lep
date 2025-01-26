@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,9 +15,9 @@ public class DungeonScript : MonoBehaviour
     public Ability selectedPlayerAbility;
     bool playerTurn, inProgress;
     
-    List<Item> lootFromEnemies;
-    int goldFromEnemies = 0;
-    int expFromEnemies = 0;
+    List<Item> lootFromThisRoom, totalLoot;
+    int goldFromThisRoom, totalGold, expFromThisRoom, totalExp;
+    int roomNumber, maxRooms;
 
 
     void Start()
@@ -30,14 +31,58 @@ public class DungeonScript : MonoBehaviour
 
         int floorNum = playerScript.getDungeonFloorNum();
         enemies = new List<EnemyScript>();
-        enemies.AddRange(EnemyHandler.generateEnemies(floorNum, EnemyHandler.getEnemyList()));
         
         playerTurn = true;
         inProgress = true;
 
-        lootFromEnemies = new List<Item>();
-        goldFromEnemies = 0;
-        expFromEnemies = 0;
+        lootFromThisRoom = new List<Item>();
+        totalLoot = new List<Item>();
+        goldFromThisRoom = 0;
+        totalGold = 0;
+        expFromThisRoom = 0;
+        totalExp = 0;
+        
+        roomNumber = 0;
+
+        //There will be max of 3-5 rooms
+        maxRooms = UnityEngine.Random.Range(3, 6);
+
+        initDungeonRoom();
+    }
+
+    public void initDungeonRoom() {
+        roomNumber++;
+
+        //Clear the room tracking variables again for the next room
+        goldFromThisRoom = 0;
+        expFromThisRoom = 0;
+        lootFromThisRoom = new List<Item>();
+
+        inProgress = true;
+        playerTurn = true;
+
+        if(roomNumber == maxRooms) {
+            Debug.Log("Boss room!");
+            enemies.AddRange(EnemyHandler.generateEnemies(1, true));
+        }
+        else if(roomNumber < maxRooms) {
+            List<String> typesOfRooms = new List<String>();
+            typesOfRooms.Add("Monsters");
+            // typesOfRooms.Add("Treasure");
+
+            int roomType = UnityEngine.Random.Range(0, typesOfRooms.Count);
+            if(typesOfRooms[roomType] == "Monsters") {
+                //Generate 1-3 enemies
+                int numberOfEnemies = UnityEngine.Random.Range(1, 4);
+                enemies.AddRange(EnemyHandler.generateEnemies(numberOfEnemies, false));
+            }
+            else if(typesOfRooms[roomType] == "Treasure") {
+                
+            }
+        }
+        else {
+            Debug.Log("No more rooms");
+        }
     }
 
     public void selectPlayerAbility(Ability ability) {
@@ -64,7 +109,14 @@ public class DungeonScript : MonoBehaviour
             GuiUtil.drawEnemies(enemies, attackEnemy);
         }
         else {
-            // GuiUtil.drawRewardScreen(playerScript, this);
+            //Draw final rewards room if flag is true
+            if(roomNumber == maxRooms) {
+                // GuiUtil.drawFinalRewardScreen(playerScript, this);
+                GuiUtil.drawRewardScreen(playerScript, this, true);
+            }
+            else {
+                GuiUtil.drawRewardScreen(playerScript, this, false);
+            }
         }
     }
 
@@ -133,17 +185,83 @@ public class DungeonScript : MonoBehaviour
         }
         
         //Otherwise if made it here, all the enemies are dead, give the loot to the player
-
+        lootFromThisRoom = new List<Item>();
+        goldFromThisRoom = 0;
+        expFromThisRoom = 0;
         for(int i = 0; i < enemies.Count; i++) {
             EnemyScript enemy = enemies[i];
-            goldFromEnemies += enemy.goldWorth;
-            expFromEnemies += enemy.expWorth;
+
+            goldFromThisRoom += enemy.goldWorth;
+            expFromThisRoom += enemy.expWorth;
+            lootFromThisRoom.AddRange(ItemHandler.generateItems(1, null));
         }
 
-        playerScript.gainExp(expFromEnemies);
-        playerScript.gainGold(goldFromEnemies);
-        playerScript.setMaxDungeonFloorNumCompleted(playerScript.getDungeonFloorNum());
-        Debug.Log("Dungeon level finished, gained " + goldFromEnemies + " gold and " + expFromEnemies + " experience");
+        totalGold += goldFromThisRoom;
+        totalExp += expFromThisRoom;
+        totalLoot.AddRange(lootFromThisRoom);
+
+        //Dispense the rewards to the player
+        playerScript.gainExp(goldFromThisRoom);
+        playerScript.gainGold(expFromThisRoom);
+        // for(int i = 0; i < lootFromThisRoom.Count; i++) {
+        //     if(!playerScript.getInventory().addItem(lootFromThisRoom[i])) {
+        //         Debug.Log("Inventory full! Couldn't fit " + lootFromThisRoom[i].getBaseName());
+        //     }
+        // }
+
+        Debug.Log("Dungeon room finished, gained " + goldFromThisRoom + " gold and " + expFromThisRoom + " experience");
+
+        if(roomNumber == maxRooms) {
+            playerScript.setMaxDungeonFloorNumCompleted(playerScript.getDungeonFloorNum());
+        }
+
+        enemies = new List<EnemyScript>();
+        inProgress = false;
+    }
+
+    public string getLootFromThisRoomString() {
+        string returnString = "";
+
+        Dictionary<string, int> itemCountMap = new Dictionary<string, int>();
+        for(int i = 0; i < lootFromThisRoom.Count; i++) {
+            Item item = lootFromThisRoom[i];
+            if(!itemCountMap.ContainsKey(item.getBaseName())) {
+                itemCountMap.Add(item.getBaseName(), 0);
+            }
+            itemCountMap[item.getBaseName()] += 1;
+        }
+        foreach(var entry in itemCountMap) {
+            returnString += entry.Value + "x " + entry.Key + ". ";
+        }
+        return returnString;
+    }
+
+    public List<Item> getLootFromThisRoom() {
+        return lootFromThisRoom;
+    }
+
+    public int getGoldFromThisRoom() {
+        return goldFromThisRoom;
+    }
+
+    public int getExpFromThisRoom() {
+        return expFromThisRoom;
+    }
+
+    public void goBackToTown() {
+        inProgress = false;
         SceneManager.LoadScene("TownScene");
+    }
+
+    public void nextRoom() {
+        initDungeonRoom();
+    }
+
+    public int getRoomNum() {
+        return roomNumber;
+    }
+
+    public int getMaxRoomNum() {
+        return maxRooms;
     }
 }

@@ -10,7 +10,7 @@ public class GuiUtil : MonoBehaviour {
     public static float regularBarLength = Screen.width / 3;
     public static float expBarLength = Screen.width / 3;
 
-    private static GUIStyle redStyle, blackStyle, greenStyle, blueStyle;
+    private static GUIStyle redStyle, blackStyle, greenStyle, blueStyle, wordWrapLabelStyle, disabledButtonStyle;
 
     private static Texture2D redTex, blackTex, greenTex, blueTex;
     private static Texture2D selectedTexture;
@@ -31,6 +31,9 @@ public class GuiUtil : MonoBehaviour {
     //Dungeon script rects
     private static Rect enemyGroupRect, enemyBackgroundRect;
     private static Rect abilitiesGroupRect, abilitiesBackgroundRect, itemsGroupRect, itemsBackgroundRect;
+
+    private static Rect dungeonRewardsGroupRect, dungeonRewardsBackgroundRect, dungeonRewardsIntroRect, dungeonRewardsTextRect, dungeonRewardsFirstButton;
+    private static Rect dungeonRewardsSendToStashButton, dungeonRewardsContinueButton, dungeonRewardsGoToTownButton;
     
     //Player Menu rects
     private static Rect mainGroupRect, levelGroupRect, inventoryGroupRect;
@@ -58,6 +61,14 @@ public class GuiUtil : MonoBehaviour {
         blueStyle = new GUIStyle(GUI.skin.box);
         blueTex = MakeTex(2, 2, new Color(0f, 0f, 1f, 0.75f));
         blueStyle.normal.background = blueTex;
+
+        wordWrapLabelStyle = new GUIStyle(GUI.skin.label);
+        wordWrapLabelStyle.wordWrap = true;
+
+        disabledButtonStyle = new GUIStyle(GUI.skin.button);
+        disabledButtonStyle.normal.textColor = Color.gray; // Gray out the text
+        disabledButtonStyle.normal.background = MakeTex(2, 2, new Color(0.5f, 0.5f, 0.5f, 0.5f)); // Semi-transparent background
+
         
 
         //Town script rects
@@ -98,6 +109,15 @@ public class GuiUtil : MonoBehaviour {
         itemsGroupRect = new Rect(abilitiesGroupRect.width + 20, (7 * Screen.height / 8) - 10, Screen.width / 3, Screen.height / 8);
         itemsBackgroundRect = new Rect(0, 0, itemsGroupRect.width, itemsGroupRect.height);
 
+        dungeonRewardsGroupRect = new Rect(2 * Screen.width / 8, Screen.height / 8, Screen.width / 2, 3 * Screen.height / 4);
+        dungeonRewardsIntroRect = new Rect(dungeonRewardsGroupRect.width/4, dungeonRewardsGroupRect.height/16, 1 * dungeonRewardsGroupRect.width / 2, dungeonRewardsGroupRect.height/16);
+        dungeonRewardsBackgroundRect = new Rect(0, 0, dungeonRewardsGroupRect.width, dungeonRewardsGroupRect.height);
+        dungeonRewardsTextRect = new Rect( 1 * dungeonRewardsGroupRect.width / 16, dungeonRewardsGroupRect.height / 4, dungeonRewardsGroupRect.width / 2, dungeonRewardsGroupRect.height / 4);
+        dungeonRewardsFirstButton = new Rect( 1 * dungeonRewardsGroupRect.width / 16, dungeonRewardsGroupRect.height / 2, dungeonRewardsGroupRect.width / 8, dungeonRewardsGroupRect.height / 8);
+        dungeonRewardsSendToStashButton = new Rect( 1 * dungeonRewardsGroupRect.width / 16, 3 * dungeonRewardsGroupRect.height / 4, dungeonRewardsGroupRect.width / 4, dungeonRewardsGroupRect.height / 8);
+        dungeonRewardsContinueButton = new Rect( 6 * dungeonRewardsGroupRect.width / 16, 3 * dungeonRewardsGroupRect.height / 4, dungeonRewardsGroupRect.width / 4, dungeonRewardsGroupRect.height / 8);
+        dungeonRewardsGoToTownButton = new Rect( 11 * dungeonRewardsGroupRect.width / 16, 3 * dungeonRewardsGroupRect.height / 4, dungeonRewardsGroupRect.width / 4, dungeonRewardsGroupRect.height / 8);
+        
 
         //Player Menu rects
         screenRect = new Rect(0, 0, Screen.width, Screen.height);
@@ -392,9 +412,14 @@ public class GuiUtil : MonoBehaviour {
                 );
 
                 int floorNum = i + 1 + (dungeonFloorOffset * 5);
-                if(GUI.Button(floorButtonRect, "" + floorNum)) {
-                    playerScript.setDungeonFloor(floorNum);
-                    townScript.startDungeon();
+                if(maxDungeonFloorNumCompleted+1 < floorNum) {
+                    GUI.Button(floorButtonRect, "" + floorNum, disabledButtonStyle);
+                }
+                else {
+                    if(GUI.Button(floorButtonRect, "" + floorNum)) {
+                        playerScript.setDungeonFloor(floorNum);
+                        townScript.startDungeon();
+                    }
                 }
             }
 
@@ -768,4 +793,55 @@ public class GuiUtil : MonoBehaviour {
         
         GUI.EndGroup();
     }
+
+    public static void drawRewardScreen(PlayerScript playerScript, DungeonScript dungeonScript, bool lastRoomComplete)
+    {
+        int buttonLength = (int)(dungeonRewardsGroupRect.width / 4);
+        int buffer = (int)dungeonRewardsGroupRect.width/16;
+        GUI.BeginGroup(dungeonRewardsGroupRect);
+        GUI.Box(dungeonRewardsBackgroundRect, "");
+        GUI.Box(dungeonRewardsIntroRect, "Rewards for room " + dungeonScript.getRoomNum() + "/" + dungeonScript.getMaxRoomNum());
+        //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        
+        //Text for the rewards
+        String lootText = "Earned " + dungeonScript.getExpFromThisRoom() + " exp and " + dungeonScript.getGoldFromThisRoom() 
+                            + " gold, as well as these items from the dungeon room: ";
+        GUI.Label(dungeonRewardsTextRect, lootText, wordWrapLabelStyle);
+
+        //Buttons for each of the items the player can loot
+        List<Item> lootFromThisRoom = dungeonScript.getLootFromThisRoom();
+        for(int i = 0; i < lootFromThisRoom.Count; i++) {
+            Item thisItem = lootFromThisRoom[i];
+            Rect thisButtonRect = new Rect(
+                dungeonRewardsFirstButton.x + (i * dungeonRewardsFirstButton.width),
+                dungeonRewardsFirstButton.y,
+                dungeonRewardsFirstButton.width,
+                dungeonRewardsFirstButton.height
+            );
+
+            GUI.DrawTexture( thisButtonRect, thisItem.getIcon() );
+            if(GUI.Button(thisButtonRect, "")) {
+                if(playerScript.getInventory().addItem(thisItem)) {
+                    lootFromThisRoom.Remove(thisItem);
+                }
+            }
+        }
+
+        if(GUI.Button(dungeonRewardsSendToStashButton, "Send to stash")) {
+            Debug.Log("Send items to stash");
+        }
+        
+        if(GUI.Button(dungeonRewardsGoToTownButton, "Go to town")) {
+            dungeonScript.goBackToTown();
+        }
+        
+        if(!lastRoomComplete) {
+            if(GUI.Button(dungeonRewardsContinueButton, "Next room")) {
+                dungeonScript.nextRoom();
+            }
+        }
+
+        GUI.EndGroup();
+    }
+
 }
