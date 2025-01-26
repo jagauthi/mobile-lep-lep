@@ -19,6 +19,7 @@ public class PlayerScript : MonoBehaviour
     protected int skillPoints = 5;
     protected int gold;
     protected bool levelUpMenuToggle = false;
+    protected bool stashOpen = false;
 
     int dungeonFloorNum, maxDungeonFloorNumCompleted;
 
@@ -130,13 +131,19 @@ public class PlayerScript : MonoBehaviour
     }
 
     protected void OnGUI(){
-        drawBasics();      
+        drawBasics();
+
+        GuiUtil.drawPlayerMenuOptions(this);  
+
         if(characterMenuOpen) {
             GuiUtil.characterMenu(this);
         }    
         if(inventoryMenuOpen) {
-            GuiUtil.playerInventoryMenu(this, null);
+            GuiUtil.playerInventoryMenu(this, null, isStashOpen());
         }  
+        if(stashOpen) {
+            GuiUtil.playerStashMenu(this);
+        }
         if(mainMenuOpen) {
             GuiUtil.mainMenu();
         }  
@@ -392,6 +399,15 @@ public class PlayerScript : MonoBehaviour
         }
         else if(menu == "Inventory") {
             inventoryMenuOpen = !inventoryMenuOpen;
+            if(!inventoryMenuOpen) {
+                stashOpen = false;
+            }
+        }
+        else if(menu == "Stash") {
+            stashOpen = !stashOpen;
+            if(stashOpen) {
+                inventoryMenuOpen = true;
+            }
         }
         else if(menu == "Main") {
             mainMenuOpen = !mainMenuOpen;
@@ -428,6 +444,10 @@ public class PlayerScript : MonoBehaviour
 
     public bool anyMenuOpen() {
         return characterMenuOpen || inventoryMenuOpen || mainMenuOpen;
+    }
+
+    public bool isStashOpen() {
+        return stashOpen;
     }
 
     public void setDungeonFloor(int floorNum) {

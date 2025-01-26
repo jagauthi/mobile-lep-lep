@@ -5,15 +5,22 @@ using UnityEngine;
 public class Inventory {
 
     List<Item> items;
-    int maxSize;
+    List<Item> stashItems;
+    int maxSize, inventoryPage, stashPage;
 
     public Inventory() {
         items = new List<Item>();
+        stashItems = new List<Item>();
         maxSize = 12;
+        inventoryPage = 0;
+        stashPage = 0;
     }
 
     public Inventory(List<Item> items) {
         this.items = items;
+        maxSize = 12;
+        inventoryPage = 0;
+        stashPage = 0;
     }
 
     public bool addItem(Item item) {
@@ -37,5 +44,31 @@ public class Inventory {
 
     public int getSize() {
         return items.Count;
+    }
+
+    public List<Item> getStashItems() {
+        return stashItems;
+    }
+
+    public int getInventoryPageNumber() {
+        return inventoryPage;
+    }
+
+    public void moveInventoryPage(int direction) {
+        inventoryPage += direction;
+        if(inventoryPage < 0) {
+            inventoryPage = 0;
+        }
+    }
+
+    public int getStashPageNumber() {
+        return stashPage;
+    }
+
+    public void moveStashPage(int direction) {
+        stashPage += direction;
+        if(stashPage < 0) {
+            stashPage = 0;
+        }
     }
 }

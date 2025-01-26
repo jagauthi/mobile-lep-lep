@@ -36,7 +36,10 @@ public class GuiUtil : MonoBehaviour {
     private static Rect dungeonRewardsSendToStashButton, dungeonRewardsContinueButton, dungeonRewardsGoToTownButton;
     
     //Player Menu rects
-    private static Rect mainGroupRect, levelGroupRect, inventoryGroupRect;
+    private static Rect playerMenuOptionsGroupRect, playerMenuOptionsBackgroundRect;
+    private static Rect mainMenuGroupRect, levelGroupRect;
+    private static Rect inventoryGroupRect, inventoryIntroRect, inventoryLeftButton, inventoryRightButton;
+    private static Rect stashGroupRect, stashIntroRect, stashLeftButton, stashRightButton;
     private static Rect pointsRect, backgroundRect, strengthRect, strengthTextRect;
     private static Rect agilityRect, agilityTextRect, intelligenceRect, intelligenceTextRect, quitRect, goldRect;
     private static Rect screenRect, startRect, quit2Rect;
@@ -124,9 +127,21 @@ public class GuiUtil : MonoBehaviour {
         startRect = new Rect(Screen.width/8, Screen.height/8, Screen.width / 4, Screen.height / 8);
         quit2Rect = new Rect(Screen.width / 8, Screen.height / 2, Screen.width / 4, Screen.height / 8);
 
-        mainGroupRect = new Rect(Screen.width / 8, Screen.height / 6, 3 * Screen.width / 4, 2 * Screen.height / 3);
-        inventoryGroupRect = new Rect(11 * Screen.width / 16, Screen.height / 8, Screen.width / 4, 3 * Screen.height / 4);
+        playerMenuOptionsGroupRect = new Rect(3 * Screen.width / 4, (7 * Screen.height / 8) - 10, Screen.width / 4, Screen.height / 8);
+        playerMenuOptionsBackgroundRect = new Rect(0, 0, playerMenuOptionsGroupRect.width, playerMenuOptionsGroupRect.height);
+
+        mainMenuGroupRect = new Rect(Screen.width / 8, Screen.height / 6, 3 * Screen.width / 4, 2 * Screen.height / 3);
         backgroundRect = new Rect(0, 0, 3 * Screen.width / 4, 3 * Screen.height / 4);
+
+        inventoryGroupRect = new Rect(11 * Screen.width / 16, Screen.height / 8, Screen.width / 4, 3 * Screen.height / 4);
+        inventoryIntroRect = new Rect(inventoryGroupRect.width/4, inventoryGroupRect.height/16, 1 * inventoryGroupRect.width / 2, inventoryGroupRect.height/16);
+        inventoryLeftButton = new Rect( 1 * inventoryGroupRect.width / 8, 3 * inventoryGroupRect.height / 4, inventoryGroupRect.width / 4, inventoryGroupRect.height / 8);
+        inventoryRightButton = new Rect( 5 * inventoryGroupRect.width / 8, 3 * inventoryGroupRect.height / 4, inventoryGroupRect.width / 4, inventoryGroupRect.height / 8);
+        
+        stashGroupRect = new Rect(3 * Screen.width / 16, Screen.height / 8, Screen.width / 4, 3 * Screen.height / 4);
+        stashIntroRect = new Rect(stashGroupRect.width/4, stashGroupRect.height/16, 1 * stashGroupRect.width / 2, stashGroupRect.height/16);
+        stashLeftButton = new Rect( 1 * stashGroupRect.width / 8, 3 * stashGroupRect.height / 4, stashGroupRect.width / 4, stashGroupRect.height / 8);
+        stashRightButton = new Rect( 5 * stashGroupRect.width / 8, 3 * stashGroupRect.height / 4, stashGroupRect.width / 4, stashGroupRect.height / 8);
 
         levelGroupRect = new Rect(Screen.width / 6, Screen.height / 4, Screen.width / 2, 5 * Screen.height / 8);  
         int levelGroupBuffer = (int)levelGroupRect.width/16;
@@ -144,7 +159,7 @@ public class GuiUtil : MonoBehaviour {
         intelligenceRect = new Rect(levelGroupBuffer + textLength + levelGroupBuffer, Screen.height / 8 * 3, buttonLength, buttonLength);
 
         quitRect = new Rect(Screen.width/2-buttonLength, 0, buttonLength, buttonLength);
-        goldRect = new Rect(inventoryGroupRect.width/16, inventoryGroupRect.height/16, inventoryGroupRect.width/4, inventoryGroupRect.height/16);
+        goldRect = new Rect(inventoryGroupRect.width/16, 15 * inventoryGroupRect.height/16, inventoryGroupRect.width/4, inventoryGroupRect.height/16);
 
 
         selectedTexture = (Texture2D)Resources.Load("Images/SelectedIcon");
@@ -441,13 +456,48 @@ public class GuiUtil : MonoBehaviour {
         GUI.EndGroup();
     }
 
-    public static void drawPlayerTownOptions(PlayerScript playerScript)
+    public static void drawTownOptions(PlayerScript playerScript)
     {
         int buffer = (int)townOptionsGroupRect.width/16;
         int buttonLength = (int)(townOptionsGroupRect.width / 4 - buffer);
         int buttonHeight = (int)(townOptionsGroupRect.height  - buffer);
         GUI.BeginGroup(townOptionsGroupRect);
         GUI.Box(townOptionsBackgroundRect, "");
+      //   GUI.DrawTexture(backgroundRect, backgroundTexture);
+        for(int i = 0; i < 4; i++) {
+
+            //Create the rect for the slot for the ability
+            Rect slot = new Rect(
+               buffer/2*(i+1) + buttonLength*i, 
+               buffer/2, 
+               buttonLength, 
+               buttonHeight);
+
+            //For now, manually defining the buttons that player can press in town.
+            //0 = Open Stash
+            if(i == 0) {
+                if (GUI.Button(slot, "Stash")) {
+                    // Debug.Log("Character menu");
+                    playerScript.toggleMenu("Stash");
+                }
+                // GUI.DrawTexture( slot, CHARACTER_MENU_ICON );
+            }
+            else {
+                //...
+            }
+
+         }
+        
+        GUI.EndGroup();
+    }
+
+    public static void drawPlayerMenuOptions(PlayerScript playerScript)
+    {
+        int buffer = (int)playerMenuOptionsGroupRect.width/16;
+        int buttonLength = (int)(playerMenuOptionsGroupRect.width / 3 - buffer);
+        int buttonHeight = (int)(playerMenuOptionsGroupRect.height  - buffer);
+        GUI.BeginGroup(playerMenuOptionsGroupRect);
+        GUI.Box(playerMenuOptionsBackgroundRect, "");
       //   GUI.DrawTexture(backgroundRect, backgroundTexture);
         for(int i = 0; i < 4; i++) {
 
@@ -495,7 +545,7 @@ public class GuiUtil : MonoBehaviour {
     public static void mainMenu()
     {
         GUI.Box(screenRect, "");
-        GUI.BeginGroup(mainGroupRect);
+        GUI.BeginGroup(mainMenuGroupRect);
 
         GUI.Box(backgroundRect, "");
         if (GUI.Button(startRect, "Quit to Central Hub"))
@@ -627,17 +677,28 @@ public class GuiUtil : MonoBehaviour {
         }
     }
 
-    public static void playerInventoryMenu(PlayerScript playerScript, ShopKeeperScript shopkeeper)
+    public static void playerInventoryMenu(PlayerScript playerScript, ShopKeeperScript shopkeeper, bool stashOpen)
     {
         int buttonLength = (int)(inventoryGroupRect.width / 4);
         int buffer = (int)inventoryGroupRect.width/16;
         GUI.BeginGroup(inventoryGroupRect);
         GUI.Box(backgroundRect, "");
         GUI.Box(goldRect, playerScript.getGold() + " gp");
+
+        String introText = "Inventory";
+        // if(null != shopkeeper) {
+        //     introText += ", selling to " + shopkeeper.getName();
+        // }
+        // else if(stashOpen) {
+        //     introText += ", transfering to/from stash";
+        // }
+        GUI.Box(inventoryIntroRect, introText);
+
         //GUI.DrawTexture(backgroundRect, backgroundTexture);
         for( int col = 0; col < 3; col++ ) {
             for( int row = 0; row < 3; row++ ) {
                 int slotNum =  ( col * 3 ) + row;
+                slotNum += (9 * playerScript.getInventory().getInventoryPageNumber());
                 if(playerScript.getInventory().getSize() > slotNum) {
                     Item item = playerScript.getInventory().getItems()[slotNum];
                     Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
@@ -647,11 +708,15 @@ public class GuiUtil : MonoBehaviour {
                     GUI.DrawTexture( slot, item.getIcon() );
 
                     if (GUI.Button(slot, ""+slotNum)) {
-                        if(null == shopkeeper) {
-                            playerScript.useItem(item);
+                        if(null != shopkeeper) {
+                            playerScript.sellItem(item, shopkeeper);
+                        }
+                        else if(stashOpen) {
+                            playerScript.getInventory().getStashItems().Add(item);
+                            playerScript.getInventory().getItems().Remove(item);
                         }
                         else {
-                            playerScript.sellItem(item, shopkeeper);
+                            playerScript.useItem(item);
                         }
                     }
 
@@ -660,6 +725,7 @@ public class GuiUtil : MonoBehaviour {
                     if(null != shopkeeper) {
                         tooltipMessage += ". Sellprice: " + (item.getCost() / 2);
                     }
+
                     if (null != item && slot.Contains(Event.current.mousePosition))
                     {
                         Rect mouseTextRect = new Rect(
@@ -680,6 +746,77 @@ public class GuiUtil : MonoBehaviour {
                     }
                 }
             }
+        }
+
+        if(GUI.Button(inventoryLeftButton, "<")) {
+            playerScript.getInventory().moveInventoryPage(-1);
+        }
+
+        if(GUI.Button(inventoryRightButton, ">")) {
+            playerScript.getInventory().moveInventoryPage(1);
+        }
+
+        GUI.EndGroup();
+    }
+
+    public static void playerStashMenu(PlayerScript playerScript)
+    {
+        int buttonLength = (int)(stashGroupRect.width / 4);
+        int buffer = (int)stashGroupRect.width/16;
+        GUI.BeginGroup(stashGroupRect);
+        GUI.Box(backgroundRect, "");
+        GUI.Box(stashIntroRect, "Player stash");
+
+        //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        for( int col = 0; col < 3; col++ ) {
+            for( int row = 0; row < 3; row++ ) {
+                int slotNum =  ( col * 3 ) + row;
+                slotNum += (9 * playerScript.getInventory().getStashPageNumber());
+                if(playerScript.getInventory().getStashItems().Count > slotNum) {
+                    Item item = playerScript.getInventory().getStashItems()[slotNum];
+                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+                        buffer*(col+1) + buttonLength*(col+1), 
+                        buttonLength, buttonLength);
+
+                    GUI.DrawTexture( slot, item.getIcon() );
+
+                    if (GUI.Button(slot, ""+slotNum)) {
+                        if(playerScript.getInventory().addItem(item)) {
+                            playerScript.getInventory().getStashItems().Remove(item);
+                        }
+                    }
+
+                    //cursor tooltip
+                    String tooltipMessage = item.getTooltip();
+
+                    if (null != item && slot.Contains(Event.current.mousePosition))
+                    {
+                        Rect mouseTextRect = new Rect(
+                            Input.mousePosition.x - stashGroupRect.x + (buffer / 2),
+                            Screen.height - Input.mousePosition.y - stashGroupRect.y,
+                            tooltipMessage.Length * 8, Screen.height / 16);
+                        GUI.Box(mouseTextRect, tooltipMessage);
+                    }
+
+                }
+                else {
+                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+                        buffer*(col+1) + buttonLength*(col+1), 
+                        buttonLength, buttonLength);
+
+                    if (GUI.Button(slot, ""+slotNum)) {
+                        
+                    }
+                }
+            }
+        }
+
+        if(GUI.Button(stashLeftButton, "<")) {
+            playerScript.getInventory().moveStashPage(-1);
+        }
+
+        if(GUI.Button(stashRightButton, ">")) {
+            playerScript.getInventory().moveStashPage(1);
         }
         GUI.EndGroup();
     }
@@ -829,6 +966,8 @@ public class GuiUtil : MonoBehaviour {
 
         if(GUI.Button(dungeonRewardsSendToStashButton, "Send to stash")) {
             Debug.Log("Send items to stash");
+            playerScript.getInventory().getStashItems().AddRange(lootFromThisRoom);
+            lootFromThisRoom.Clear();
         }
         
         if(GUI.Button(dungeonRewardsGoToTownButton, "Go to town")) {

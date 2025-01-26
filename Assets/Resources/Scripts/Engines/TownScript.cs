@@ -44,7 +44,6 @@ public class TownScript : MonoBehaviour
     
     protected void OnGUI(){
         drawTownThings();   
-        GuiUtil.drawPlayerTownOptions(playerScript);  
     }
 
     protected void drawTownThings() { 
@@ -53,13 +52,15 @@ public class TownScript : MonoBehaviour
         if(playerScript.anyMenuOpen()) {
             return;
         }
+
+        GuiUtil.drawTownOptions(playerScript);
         
         //Otherwise if shopkeeper has inventory open, show that
         if(shopkeeper.showingInventory) {
             GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
 
             //Displaying the player inventory which allows to sell items
-            GuiUtil.playerInventoryMenu(playerScript, shopkeeper);
+            GuiUtil.playerInventoryMenu(playerScript, shopkeeper, false);
         }
         //Show the other NPCs if the shopkeeper isn't open
         else {
