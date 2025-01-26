@@ -12,7 +12,11 @@ public class DungeonScript : MonoBehaviour
     private PlayerScript playerScript;
     protected List<EnemyScript> enemies;
     public Ability selectedPlayerAbility;
-    bool playerTurn;
+    bool playerTurn, inProgress;
+    
+    List<Item> lootFromEnemies;
+    int goldFromEnemies = 0;
+    int expFromEnemies = 0;
 
 
     void Start()
@@ -29,6 +33,11 @@ public class DungeonScript : MonoBehaviour
         enemies.AddRange(EnemyHandler.generateEnemies(floorNum, EnemyHandler.getEnemyList()));
         
         playerTurn = true;
+        inProgress = true;
+
+        lootFromEnemies = new List<Item>();
+        goldFromEnemies = 0;
+        expFromEnemies = 0;
     }
 
     public void selectPlayerAbility(Ability ability) {
@@ -49,9 +58,14 @@ public class DungeonScript : MonoBehaviour
     }
 
     protected void drawDungeonThings() { 
-        GuiUtil.drawPlayerAbilities(playerScript, this);
-        GuiUtil.drawPlayerItems(playerScript, this);
-        GuiUtil.drawEnemies(enemies, attackEnemy);
+        if(inProgress) {
+            GuiUtil.drawPlayerAbilities(playerScript, this);
+            GuiUtil.drawPlayerItems(playerScript, this);
+            GuiUtil.drawEnemies(enemies, attackEnemy);
+        }
+        else {
+            // GuiUtil.drawRewardScreen(playerScript, this);
+        }
     }
 
     public bool attackEnemy(EnemyScript enemy) {
@@ -119,9 +133,6 @@ public class DungeonScript : MonoBehaviour
         }
         
         //Otherwise if made it here, all the enemies are dead, give the loot to the player
-        List<Item> lootFromEnemies = new List<Item>();
-        int goldFromEnemies = 0;
-        int expFromEnemies = 0;
 
         for(int i = 0; i < enemies.Count; i++) {
             EnemyScript enemy = enemies[i];
@@ -131,6 +142,7 @@ public class DungeonScript : MonoBehaviour
 
         playerScript.gainExp(expFromEnemies);
         playerScript.gainGold(goldFromEnemies);
+        playerScript.setMaxDungeonFloorNumCompleted(playerScript.getDungeonFloorNum());
         Debug.Log("Dungeon level finished, gained " + goldFromEnemies + " gold and " + expFromEnemies + " experience");
         SceneManager.LoadScene("TownScene");
     }
