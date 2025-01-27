@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 public class TownScript : MonoBehaviour
 {
    public GameObject playerGameObject;
-   public GameObject townOptionsGameObject;
 
    public PlayerScript playerScript;
    protected List<NpcScript> npcs;
@@ -83,6 +82,15 @@ public class TownScript : MonoBehaviour
         }
         else {
             SceneManager.LoadScene("DungeonScene");
+        }
+    }
+
+    public void startCrafting() {
+        if(playerScript.isDead()) {
+            Debug.Log("Can't craft when you're dead!");
+        }
+        else {
+            SceneManager.LoadScene("CraftingScene");
         }
     }
     

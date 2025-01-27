@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class TownProfessionNpc : NpcScript {
 
-    string dialog;
-    int dialogPhase;
+    string townDialog, craftingDialog, dialogPhase;
 
     public TownProfessionNpc(string npcName, Texture2D texture) : base(npcName, texture) {
         this.npcName = npcName;
         initValues();
 
-        dialogPhase = 1;
+        dialogPhase = "TownDialog";
 
         if(this.npcName == "Sarah the Blacksmith") {
-            dialog = "Heya! Whatcha wanna do, go into the dungeon?";
+            townDialog = "Heya! Whatcha wanna do, go into the dungeon?";
+            craftingDialog = "Cool lets make something :) Which crafting do you wanna do?";
         }
         else {
-            dialog = "Unimplemented dialog lol rip";
+            townDialog = "Unimplemented dialog lol rip";
         }
     }
     
@@ -25,20 +25,20 @@ public class TownProfessionNpc : NpcScript {
         townScript.setSelectedProfession(this);
     }
 
-    public string getDialog() {
-        return this.dialog;
+    public string getTownDialog() {
+        return this.townDialog;
     }
 
-    public int getDialogPhase() {
+    public string getCraftingDialog() {
+        return this.craftingDialog;
+    }
+
+    public string getDialogPhase() {
         return this.dialogPhase;
     }
 
-    public void setDialogPhase(int dialogPhase) {
+    public void setDialogPhase(string dialogPhase) {
         this.dialogPhase = dialogPhase;
-    }
-
-    public void incrementDialogPhase() {
-        this.dialogPhase++;
     }
 
 }

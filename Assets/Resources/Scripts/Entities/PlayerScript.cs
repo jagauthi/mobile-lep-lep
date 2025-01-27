@@ -20,6 +20,7 @@ public class PlayerScript : MonoBehaviour
     protected int gold;
     protected bool levelUpMenuToggle = false;
     protected bool stashOpen = false;
+    protected string currentCrafting;
 
     int dungeonFloorNum, maxDungeonFloorNumCompleted;
 
@@ -464,5 +465,13 @@ public class PlayerScript : MonoBehaviour
 
     public int getMaxDungeonFloorNumCompleted() {
         return maxDungeonFloorNumCompleted;
+    }
+    
+    public string getCurrentCrafting() {
+        return currentCrafting;
+    }
+
+    public void setCurrentCrafting(string crafting) {
+        this.currentCrafting = crafting;
     }
 }

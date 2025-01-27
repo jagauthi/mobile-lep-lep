@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class DungeonScript : MonoBehaviour
 {
     public GameObject playerGameObject;
-    public GameObject dungeonOptionsGameObject;
 
     private PlayerScript playerScript;
     protected List<EnemyScript> enemies;

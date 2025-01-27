@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 418611d9629a28e4baa835165f02abe6
+guid: efc628181fc79d24195af883ad024a3e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6647592660016775195
-    second: DoubleHammerStrike_0
+      213: -5780904505571354112
+    second: CopperOre_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DoubleHammerStrike_0
+      name: CopperOre_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5efb43832b10fb3a0800000000000000
-      internalID: -6647592660016775195
+      spriteID: 00ad6f01bf916cfa0800000000000000
+      internalID: -5780904505571354112
       vertices: []
       indices: 
       edges: []
@@ -147,8 +147,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      DoubleHammerStrike_0: -6647592660016775195
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

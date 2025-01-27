@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 418611d9629a28e4baa835165f02abe6
+guid: aee65639b20f86d48ad0154c20b68f25
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6647592660016775195
-    second: DoubleHammerStrike_0
+      213: 1298260404372906065
+    second: Forge_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DoubleHammerStrike_0
+      name: Forge_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 2048
-        height: 2048
+        width: 800
+        height: 600
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5efb43832b10fb3a0800000000000000
-      internalID: -6647592660016775195
+      spriteID: 1502a9495f8540210800000000000000
+      internalID: 1298260404372906065
       vertices: []
       indices: 
       edges: []
@@ -147,8 +147,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      DoubleHammerStrike_0: -6647592660016775195
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

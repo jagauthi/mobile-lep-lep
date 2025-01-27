@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GuiUtil : MonoBehaviour {
@@ -23,7 +24,8 @@ public class GuiUtil : MonoBehaviour {
 
     //Profession dialog rects
     private static Rect professionDialogGroupRect, professionDialogBackgroundRect, professionDialogCloseButton, professionDialogIntroRect, professionDialogImageRect;
-    private static Rect professionDialogTextRect, professionDialogStartDungeonButton, professionDialogDungeonFloorButton, professionDialogDungeonUpButton, professionDialogDungeonDownButton;
+    private static Rect professionDialogTextRect, professionDialogStartDungeonButton, professionDialogStartCraftingButton;
+    private static Rect professionDialogDungeonFloorButton, professionDialogDungeonUpButton, professionDialogDungeonDownButton;
 
     //Town script rects
     private static Rect townOptionsGroupRect, townOptionsBackgroundRect, npcGroupRect, npcBackgroundRect;
@@ -43,6 +45,12 @@ public class GuiUtil : MonoBehaviour {
     private static Rect pointsRect, backgroundRect, strengthRect, strengthTextRect;
     private static Rect agilityRect, agilityTextRect, intelligenceRect, intelligenceTextRect, quitRect, goldRect;
     private static Rect screenRect, startRect, quit2Rect;
+
+    
+    //Crafting screen rects
+    private static Rect craftingDialogGroupRect, craftingDialogBackgroundRect, craftingDialogIntroRect, craftingDialogImageRect;
+    private static Rect craftingDialogTextRect, craftingDialogOptionButton, craftingProgressBarRect;
+
 
 
     public static ShopKeeperScript shopkeeperShowingInventory;
@@ -97,6 +105,7 @@ public class GuiUtil : MonoBehaviour {
         professionDialogImageRect = new Rect( 0, 0, professionDialogGroupRect.width / 4, professionDialogGroupRect.height / 4);
         professionDialogTextRect = new Rect( 1 * professionDialogGroupRect.width / 16, professionDialogGroupRect.height / 4, professionDialogGroupRect.width / 2, professionDialogGroupRect.height / 4);
         professionDialogStartDungeonButton = new Rect( 1 * professionDialogGroupRect.width / 16, professionDialogGroupRect.height / 2, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
+        professionDialogStartCraftingButton = new Rect( 5 * professionDialogGroupRect.width / 16, professionDialogGroupRect.height / 2, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
         professionDialogDungeonFloorButton = new Rect( 3 * professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 4, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
         professionDialogDungeonUpButton = new Rect( 6 * professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 2, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
         professionDialogDungeonDownButton = new Rect( 6 * professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 2 + professionDialogDungeonUpButton.height, professionDialogGroupRect.width / 8, professionDialogGroupRect.height / 8);
@@ -163,6 +172,17 @@ public class GuiUtil : MonoBehaviour {
 
 
         selectedTexture = (Texture2D)Resources.Load("Images/SelectedIcon");
+
+
+        //Crafting dialog rects
+        craftingDialogGroupRect = new Rect(2 * Screen.width / 8, Screen.height / 8, Screen.width / 2, 3 * Screen.height / 4);
+        craftingDialogIntroRect = new Rect(craftingDialogGroupRect.width/4, craftingDialogGroupRect.height/16, 1 * craftingDialogGroupRect.width / 2, craftingDialogGroupRect.height/16);
+        craftingDialogBackgroundRect = new Rect(0, 0, craftingDialogGroupRect.width, craftingDialogGroupRect.height);
+        craftingDialogImageRect = new Rect( 0, 0, craftingDialogGroupRect.width / 4, craftingDialogGroupRect.height / 4);
+        craftingDialogTextRect = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 4, craftingDialogGroupRect.width / 2, craftingDialogGroupRect.height / 4);
+        craftingDialogOptionButton = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 2, craftingDialogGroupRect.width / 8, craftingDialogGroupRect.height / 8);
+        craftingProgressBarRect = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 2, craftingDialogGroupRect.width / 8, craftingDialogGroupRect.height / 8);
+
     }
 
     public static Texture2D MakeTex(int width, int height, Color col)
@@ -403,17 +423,21 @@ public class GuiUtil : MonoBehaviour {
         GUI.DrawTexture( professionDialogImageRect, selectedProfession.getTexture() );
         
         //First dialog option to let player choose between dungeon and crafting
-        if(selectedProfession.getDialogPhase() == 1) {
+        if(selectedProfession.getDialogPhase() == "TownDialog") {
 
-            GUI.Label(professionDialogTextRect, selectedProfession.getDialog());
+            GUI.Label(professionDialogTextRect, selectedProfession.getTownDialog());
 
             //Button to select start dungeon
             if (GUI.Button(professionDialogStartDungeonButton, "Yes")) {
-                selectedProfession.setDialogPhase(2);
+                selectedProfession.setDialogPhase("DungeonSelection");
+            }
+            //Button to select start dungeon
+            if (GUI.Button(professionDialogStartCraftingButton, "Crafting")) {
+                selectedProfession.setDialogPhase("CraftingSelection");
             }
         }
         //Second dialog option lets the player choose which floor of the dungeon to go to
-        else if(selectedProfession.getDialogPhase() == 2) {
+        else if(selectedProfession.getDialogPhase() == "DungeonSelection") {
             string dungeonSelectionText = "Which floor do you want to start on?";
             GUI.Label(professionDialogTextRect, dungeonSelectionText);
 
@@ -445,6 +469,21 @@ public class GuiUtil : MonoBehaviour {
             }
             if(GUI.Button(professionDialogDungeonDownButton, "V")) {
                 dungeonFloorOffset += 1;
+            }
+        }
+        //Third dialog option lets the player choose which crafting
+        else if(selectedProfession.getDialogPhase() == "CraftingSelection") {
+            GUI.Label(professionDialogTextRect, selectedProfession.getCraftingDialog());
+
+            //Button to select start dungeon
+            if (GUI.Button(professionDialogStartDungeonButton, "Mining")) {
+                playerScript.setCurrentCrafting("Mining");
+                townScript.startCrafting();
+            }
+            //Button to select start dungeon
+            if (GUI.Button(professionDialogStartCraftingButton, "Smithing")) {
+                playerScript.setCurrentCrafting("Smithing");
+                townScript.startCrafting();
             }
         }
         
@@ -981,6 +1020,67 @@ public class GuiUtil : MonoBehaviour {
         }
 
         GUI.EndGroup();
+    }
+
+    public static void craftingDialog(PlayerScript playerScript, CraftingScript craftingScript)
+    {
+        int buttonLength = (int)(craftingDialogGroupRect.width / 4);
+        int buffer = (int)craftingDialogGroupRect.width/16;
+        GUI.BeginGroup(craftingDialogGroupRect);
+        GUI.Box(craftingDialogBackgroundRect, "");
+        GUI.Box(craftingDialogIntroRect, playerScript.getCurrentCrafting());
+        //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        
+        //Let player choose which product to craft
+        if(null == craftingScript.getProductCurrentlyCrafting()) {
+
+            Dictionary<string, List<string>> craftingOptionsMap = craftingScript.getCraftingOptionsMap();
+            List<string> craftingOptions = craftingOptionsMap[playerScript.getCurrentCrafting()];
+
+            GUI.Label(craftingDialogTextRect, "Which product do you want to craft?");
+            for(int i = 0; i < craftingOptions.Count; i++) {
+                Rect craftingOptionButton = new Rect(
+                    craftingDialogOptionButton.x,
+                    craftingDialogOptionButton.y,
+                    craftingDialogOptionButton.width,
+                    craftingDialogOptionButton.height
+                );
+                if(GUI.Button(craftingOptionButton, craftingOptions[i])) {
+                    craftingScript.setProductCurrentlyCrafting(craftingOptions[i]);
+                }
+            }
+            
+        }
+        //Crafting
+        else {
+            //Draw button to increment crafting manually
+            if(GUI.Button(craftingDialogOptionButton, "")) {
+                Debug.Log("Crafting 1x" + craftingScript.getProductCurrentlyCrafting());
+            }
+
+            //Draw progress bar for the crafting
+            drawCraftingProgressBar(craftingScript);
+        }
+
+        GUI.EndGroup();
+    }
+
+
+    
+    public static void drawCraftingProgressBar(CraftingScript craftingScript)
+    { 
+        int craftingProgress = craftingScript.getCurrentCraftingProgress();
+        int maxCraftingProgress = craftingScript.getMaxCraftingProgress();
+        if(null == greenStyle) {
+            initStyles();
+        }
+        float craftingBarLength = regularBarLength * (craftingProgress / (float)maxCraftingProgress);
+
+        if (craftingBarLength > 0)
+        {
+            GUI.Box(new Rect(10, 10, craftingBarLength, 20), "", greenStyle);
+        }
+        GUI.Box(new Rect(10, 10, regularBarLength, 20), craftingProgress + "/" + maxCraftingProgress);
     }
 
 }
