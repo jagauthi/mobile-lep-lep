@@ -180,7 +180,7 @@ public class GuiUtil : MonoBehaviour {
         craftingDialogBackgroundRect = new Rect(0, 0, craftingDialogGroupRect.width, craftingDialogGroupRect.height);
         craftingDialogImageRect = new Rect( 0, 0, craftingDialogGroupRect.width / 4, craftingDialogGroupRect.height / 4);
         craftingDialogTextRect = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 4, craftingDialogGroupRect.width / 2, craftingDialogGroupRect.height / 4);
-        craftingDialogOptionButton = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 2, craftingDialogGroupRect.width / 8, craftingDialogGroupRect.height / 8);
+        craftingDialogOptionButton = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 2, craftingDialogGroupRect.width / 6, craftingDialogGroupRect.height / 8);
         craftingProgressBarRect = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 2, craftingDialogGroupRect.width / 8, craftingDialogGroupRect.height / 8);
 
     }
@@ -1040,7 +1040,7 @@ public class GuiUtil : MonoBehaviour {
             GUI.Label(craftingDialogTextRect, "Which product do you want to craft?");
             for(int i = 0; i < craftingOptions.Count; i++) {
                 Rect craftingOptionButton = new Rect(
-                    craftingDialogOptionButton.x,
+                    craftingDialogOptionButton.x + (i * craftingDialogOptionButton.width) + (i * buffer),
                     craftingDialogOptionButton.y,
                     craftingDialogOptionButton.width,
                     craftingDialogOptionButton.height
@@ -1054,8 +1054,8 @@ public class GuiUtil : MonoBehaviour {
         //Crafting
         else {
             //Draw button to increment crafting manually
-            if(GUI.Button(craftingDialogOptionButton, "")) {
-                Debug.Log("Crafting 1x" + craftingScript.getProductCurrentlyCrafting());
+            if(GUI.Button(craftingDialogOptionButton, "Click!")) {
+                craftingScript.clickIncrementCrafting();
             }
 
             //Draw progress bar for the crafting
@@ -1078,9 +1078,9 @@ public class GuiUtil : MonoBehaviour {
 
         if (craftingBarLength > 0)
         {
-            GUI.Box(new Rect(10, 10, craftingBarLength, 20), "", greenStyle);
+            GUI.Box(new Rect(1 * craftingDialogGroupRect.width / 8, 1 * craftingDialogGroupRect.height / 3, craftingBarLength, 20), "", greenStyle);
         }
-        GUI.Box(new Rect(10, 10, regularBarLength, 20), craftingProgress + "/" + maxCraftingProgress);
+        GUI.Box(new Rect(1 * craftingDialogGroupRect.width / 8, 1 * craftingDialogGroupRect.height / 3, regularBarLength, 20), craftingProgress + "/" + maxCraftingProgress);
     }
 
 }

@@ -12,6 +12,7 @@ public class CraftingScript : MonoBehaviour
     private PlayerScript playerScript;
 
     DateTime craftingStartTime;
+    int craftingClicks;
 
     string productCurrentlyCrafting;
 
@@ -28,13 +29,14 @@ public class CraftingScript : MonoBehaviour
             playerScript = playerGameObject.GetComponent<PlayerScript>();
         }
 
+        craftingClicks = 0;
         craftingOptionsMap = new Dictionary<string, List<string>>();
         
 
         //Mining
         List<string> miningOptions = new List<string>
         {
-            "Copper ore", "Iron ore"
+            "Copper Ore", "Iron Ore"
         };
         craftingOptionsMap.Add("Mining", miningOptions);
         
@@ -42,7 +44,7 @@ public class CraftingScript : MonoBehaviour
         //Smithing
         List<string> smithingOptions = new List<string>
         {
-            "Copper bar", "Iron bar"
+            "Copper Bar", "Iron Bar"
         };
         craftingOptionsMap.Add("Smithing", smithingOptions);
     }
@@ -65,7 +67,17 @@ public class CraftingScript : MonoBehaviour
     }
 
     public int getCurrentCraftingProgress() {
-        return 10;
+        int secondsCrafting = DateTime.Now.Subtract(craftingStartTime).Seconds;
+        if(secondsCrafting + craftingClicks >= getMaxCraftingProgress()) {
+            Item craftedItem = ItemHandler.getItemMap()[productCurrentlyCrafting];
+            if(!playerScript.getInventory().addItem(craftedItem)) {
+                playerScript.getInventory().getStashItems().Add(craftedItem);
+                Debug.Log("Sent " + craftedItem.getBaseName() + " to stash");
+            }
+            craftingStartTime = DateTime.Now;
+            craftingClicks = 0;
+        }
+        return secondsCrafting + craftingClicks;
     }
 
     public int getMaxCraftingProgress() {
@@ -78,9 +90,14 @@ public class CraftingScript : MonoBehaviour
 
     public void setProductCurrentlyCrafting(string product) {
         productCurrentlyCrafting = product;
+        craftingStartTime = DateTime.Now;
     }
 
     public string getProductCurrentlyCrafting() {
         return productCurrentlyCrafting;
+    }
+
+    public void clickIncrementCrafting() {
+        craftingClicks++;
     }
 }
