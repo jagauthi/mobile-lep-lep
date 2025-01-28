@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -121,28 +122,39 @@ public class DungeonScript : MonoBehaviour
 
     public bool attackEnemy(EnemyScript enemy) {
 
+        StartCoroutine(attackCoRoutine(enemy));
+        return true;
+    }
+
+    private IEnumerator attackCoRoutine(EnemyScript enemy) {
         //Check if this action can even happen
         if(!playerTurn) {
             Debug.Log("Not player's turn");
-            return false;
+            yield return false;
         }
         if(null == selectedPlayerAbility) {
             Debug.Log("No ability selected");
-            return false;
+            yield return false;
         }
         if(enemy.isDead()) {
             Debug.Log("Enemy " + enemy.getName() + " is already dead");
-            return false;
+            yield return false;
         }
 
         //Now actually use the ability
         if(!playerScript.useAbility(selectedPlayerAbility)) {
             Debug.Log("Not enough resource to use " + selectedPlayerAbility.getName());
-            return false;
+            yield return false;
         }
        
+        Debug.Log("Starting Attack");
+        yield return new WaitForSeconds(1.0f);
+        Debug.Log("Finished attack");
+
         //Finally if it gets here, player takes their turn and initiates the enemy turn
         enemy.loseHealth(selectedPlayerAbility.getPower());
+        yield return new WaitForSeconds(1.0f);
+        enemy.resetDamageTaken();
 
         //Reshuffle the dead enemy to the end of the list
         if(enemy.isDead()) {
@@ -150,11 +162,10 @@ public class DungeonScript : MonoBehaviour
             enemies.Add(enemy);
         }
 
-
         playerTurn = false;
         takeEnemyTurns();
         
-        return true;
+        yield return true;
     }
 
     public void takeEnemyTurns() {

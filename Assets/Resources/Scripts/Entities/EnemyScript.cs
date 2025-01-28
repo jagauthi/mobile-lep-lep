@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class EnemyScript : NpcScript
 {
     protected bool aggrod, canShoot;
     protected float range, moveSpeed, rotationSpeed, nextTime, interval;
     public int maxHealth, currentHealth, damage, expWorth, goldWorth;
+    protected float damageNumberY;
+    protected int damageAmountTaken;
+    protected DateTime damageTakenStartTime = DateTime.MinValue;
     
     
     public EnemyScript(string npcName, Texture2D texture) : base(npcName, texture) {
@@ -55,10 +59,29 @@ public class EnemyScript : NpcScript
         if(currentHealth < 0) {
             currentHealth = 0;
         }
+        damageAmountTaken = x;
+        damageTakenStartTime = DateTime.Now;
+    }
+
+    public void resetDamageTaken() {
+        damageTakenStartTime = DateTime.MinValue;
+        damageAmountTaken = 0;
     }
 
     public bool isDead() {
         return currentHealth <= 0;
+    }
+
+    public float getDamageNumberY() {
+        return damageNumberY;
+    }
+
+    public int getDamageAmountTaken() {
+        return damageAmountTaken;
+    }
+
+    public int getDamageTakenTimeElapsed() {
+        return DateTime.Now.Subtract(damageTakenStartTime).Milliseconds/10;
     }
 
 }

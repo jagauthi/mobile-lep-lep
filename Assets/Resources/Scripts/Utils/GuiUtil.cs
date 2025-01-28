@@ -262,7 +262,7 @@ public class GuiUtil : MonoBehaviour {
             {
                 Rect slot = new Rect(
                     buffer*(i+1) + buttonLength*i, 
-                    buffer, 
+                    buffer*2, 
                     buttonLength, 
                     buttonLength); 
 
@@ -272,6 +272,17 @@ public class GuiUtil : MonoBehaviour {
                 if (GUI.Button(slot, "" + enemyScript.getName())) {
                     // Debug.Log("Clicked on enemy " + enemyScript.getName());
                     getAttackedFunction(enemyScript);
+                }
+
+                if(enemyScript.getDamageAmountTaken() != 0) {
+                    Debug.Log("Damage number");
+                    Rect damageNumberRect = new Rect(
+                        slot.x,
+                        slot.y - enemyScript.getDamageTakenTimeElapsed(),
+                        slot.width,
+                        slot.height/4
+                    );
+                    GUI.Label(damageNumberRect, "" + enemyScript.getDamageAmountTaken(), redStyle);
                 }
 
                 //Enemy healthbar
@@ -746,7 +757,7 @@ public class GuiUtil : MonoBehaviour {
 
                     GUI.DrawTexture( slot, item.getIcon() );
 
-                    if (GUI.Button(slot, ""+slotNum)) {
+                    if (GUI.Button(slot, "")) {
                         if(null != shopkeeper) {
                             playerScript.sellItem(item, shopkeeper);
                         }
@@ -819,7 +830,7 @@ public class GuiUtil : MonoBehaviour {
 
                     GUI.DrawTexture( slot, item.getIcon() );
 
-                    if (GUI.Button(slot, ""+slotNum)) {
+                    if (GUI.Button(slot, "")) {
                         if(playerScript.getInventory().addItem(item)) {
                             playerScript.getInventory().getStashItems().Remove(item);
                         }
