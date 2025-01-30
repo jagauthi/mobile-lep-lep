@@ -32,9 +32,9 @@ public class ItemHandler {
 
         //Crafting materials
         allItems.Add(new Item("Copper Ore", "Crafting Material", (Texture2D)Resources.Load("Images/CopperOre"), 2 ) ) ;
-        allItems.Add(new Item("Iron Ore", "Crafting Material", (Texture2D)Resources.Load("Images/IronOre"), 5 ) ) ;
-        allItems.Add(new Item("Copper Bar", "Crafting Material", (Texture2D)Resources.Load("Images/CopperBar"), 5 ) ) ;
-        allItems.Add(new Item("Iron Bar", "Crafting Material", (Texture2D)Resources.Load("Images/IronBar"), 5 ) ) ;
+        allItems.Add(new Item("Iron Ore", "Crafting Material", (Texture2D)Resources.Load("Images/IronOre"), 3 ) ) ;
+        allItems.Add(new Item("Copper Bar", "Crafting Material", (Texture2D)Resources.Load("Images/CopperBar"), 4 ) ) ;
+        allItems.Add(new Item("Iron Bar", "Crafting Material", (Texture2D)Resources.Load("Images/IronBar"), 6 ) ) ;
 
         loadItemsIntoItemMaps(allItems);
     }
@@ -62,20 +62,30 @@ public class ItemHandler {
         return allItems;
     }
 
-    public static List<Item> generateItems(int numItems, List<Item> itemList) {
+    public static List<Item> generateItems(int minNumItems, int maxNumItems, List<Item> itemList) {
         List<Item> itemsToReturn = new List<Item>();
         if(null == itemList) {
             itemList = allItems;
         }
 
-        for(int i = 0; i < numItems; i++) {
-            itemsToReturn.Add(itemList[Random.Range(0, itemList.Count)]);
+        for(int i = 0; i < maxNumItems; i++) {
+            //50% chance to add an item
+            if(Random.Range(0, 2) == 1) {
+                itemsToReturn.Add(itemList[Random.Range(0, itemList.Count)]);
+            }
+        }
+
+        //If we didn't get atleast min number of items, add the rest
+        if(itemsToReturn.Count < minNumItems) {
+            for(int i = 0; i < minNumItems - itemsToReturn.Count; i++) {
+                itemsToReturn.Add(itemList[Random.Range(0, itemList.Count)]);
+            }
         }
 
         return itemsToReturn;
     }
 
-    public static List<Item> generateItemsOfType(int numItems, string type) {
-        return generateItems(numItems, itemsMappedByType[type]);
+    public static List<Item> generateItemsOfType(int minNumItems, int maxNumItems, string type) {
+        return generateItems(minNumItems, maxNumItems, itemsMappedByType[type]);
     }
 }

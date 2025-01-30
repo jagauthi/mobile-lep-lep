@@ -15,8 +15,8 @@ public class EnemyHandler {
         allEnemies = new List<EnemyScript>();
         allBosses = new List<EnemyScript>();
         
-        allEnemies.Add(new EnemyScript("Cube", (Texture2D)Resources.Load("Images/SawahCube1")));
-        allBosses.Add(new EnemyScript("Dragon", (Texture2D)Resources.Load("Images/SawahDragon1")));
+        allEnemies.Add(new EnemyScript("Cube", (Texture2D)Resources.Load("Images/SawahCube1"), 100, 10, 20, 10, 1));
+        allBosses.Add(new EnemyScript("Dragon", (Texture2D)Resources.Load("Images/SawahDragon1"), 200, 20, 40, 30, 3));
 
         loaEnemiesIntoEnemyMaps(allEnemies, enemiesMappedByName);
         loaEnemiesIntoEnemyMaps(allBosses, bossesMappedByName);
@@ -50,8 +50,9 @@ public class EnemyHandler {
         }
 
         for(int i = 0; i < numEnemies; i++) {
-            EnemyScript enemyToCopy = enemyList[Random.Range(0, enemyList.Count)];
-            enemiesToReturn.Add(new EnemyScript(enemyToCopy.getName(), enemyToCopy.getTexture()));
+            EnemyScript enemy = enemyList[Random.Range(0, enemyList.Count)];
+            enemiesToReturn.Add(new EnemyScript(enemy.getName(), enemy.getTexture(), enemy.maxHealth, enemy.getDamage(), 
+                                                    enemy.getExpWorth(), enemy.getGoldWorth(), enemy.getNumLoot()));
         }
 
         return enemiesToReturn;

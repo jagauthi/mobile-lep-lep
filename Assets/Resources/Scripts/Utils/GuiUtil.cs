@@ -49,7 +49,7 @@ public class GuiUtil : MonoBehaviour {
     
     //Crafting screen rects
     private static Rect craftingDialogGroupRect, craftingDialogBackgroundRect, craftingDialogIntroRect, craftingDialogImageRect;
-    private static Rect craftingDialogTextRect, craftingDialogOptionButton, craftingProgressBarRect;
+    private static Rect craftingDialogTextRect, craftingDialogOptionButton, craftingDialogBackToTownButton, craftingProgressBarRect;
 
 
 
@@ -181,7 +181,8 @@ public class GuiUtil : MonoBehaviour {
         craftingDialogImageRect = new Rect( 0, 0, craftingDialogGroupRect.width / 4, craftingDialogGroupRect.height / 4);
         craftingDialogTextRect = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 4, craftingDialogGroupRect.width / 2, craftingDialogGroupRect.height / 4);
         craftingDialogOptionButton = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 2, craftingDialogGroupRect.width / 6, craftingDialogGroupRect.height / 8);
-        craftingProgressBarRect = new Rect( 1 * craftingDialogGroupRect.width / 16, craftingDialogGroupRect.height / 2, craftingDialogGroupRect.width / 8, craftingDialogGroupRect.height / 8);
+        craftingDialogBackToTownButton = new Rect( 12 * craftingDialogGroupRect.width / 16, 3 * craftingDialogGroupRect.height / 4, craftingDialogGroupRect.width / 6, craftingDialogGroupRect.height / 8);
+        craftingProgressBarRect = new Rect( 1 * craftingDialogGroupRect.width / 8, craftingDialogGroupRect.height / 3, regularBarLength, 20);
 
     }
 
@@ -275,7 +276,6 @@ public class GuiUtil : MonoBehaviour {
                 }
 
                 if(enemyScript.getDamageAmountTaken() != 0) {
-                    Debug.Log("Damage number");
                     Rect damageNumberRect = new Rect(
                         slot.x,
                         slot.y - enemyScript.getDamageTakenTimeElapsed(),
@@ -378,7 +378,7 @@ public class GuiUtil : MonoBehaviour {
                     GUI.DrawTexture( slot, item.getIcon() );
 
                     //Button to buy the item
-                    if (GUI.Button(slot, ""+slotNum)) {
+                    if (GUI.Button(slot, "")) {
                         if( playerScript.buyItem(item, shopkeeper.getCost(item)) )
                         {
                             shopkeeper.inventory.Remove(item);
@@ -1060,6 +1060,10 @@ public class GuiUtil : MonoBehaviour {
                     craftingScript.setProductCurrentlyCrafting(craftingOptions[i]);
                 }
             }
+
+            if(GUI.Button(craftingDialogBackToTownButton, "Back to town")) {
+                craftingScript.goBackToTown();
+            }
             
         }
         //Crafting
@@ -1067,6 +1071,17 @@ public class GuiUtil : MonoBehaviour {
             //Draw button to increment crafting manually
             if(GUI.Button(craftingDialogOptionButton, "Click!")) {
                 craftingScript.clickIncrementCrafting();
+            }
+
+            Rect stopCraftingButton = new Rect(
+                craftingDialogOptionButton.x + craftingDialogOptionButton.width + buffer,
+                craftingDialogOptionButton.y,
+                craftingDialogOptionButton.width,
+                craftingDialogOptionButton.height
+            );
+            //Draw button to increment crafting manually
+            if(GUI.Button(stopCraftingButton, "Stop")) {
+                craftingScript.setProductCurrentlyCrafting(null);
             }
 
             //Draw progress bar for the crafting
@@ -1089,9 +1104,9 @@ public class GuiUtil : MonoBehaviour {
 
         if (craftingBarLength > 0)
         {
-            GUI.Box(new Rect(1 * craftingDialogGroupRect.width / 8, 1 * craftingDialogGroupRect.height / 3, craftingBarLength, 20), "", greenStyle);
+            GUI.Box(new Rect(craftingProgressBarRect.x, craftingProgressBarRect.y, craftingBarLength, 20), "", greenStyle);
         }
-        GUI.Box(new Rect(1 * craftingDialogGroupRect.width / 8, 1 * craftingDialogGroupRect.height / 3, regularBarLength, 20), craftingProgress + "/" + maxCraftingProgress);
+        GUI.Box(new Rect(craftingProgressBarRect.x, craftingProgressBarRect.y, regularBarLength, 20), craftingProgress + "/" + maxCraftingProgress);
     }
 
 }

@@ -6,15 +6,20 @@ public class EnemyScript : NpcScript
 {
     protected bool aggrod, canShoot;
     protected float range, moveSpeed, rotationSpeed, nextTime, interval;
-    public int maxHealth, currentHealth, damage, expWorth, goldWorth;
+    public int maxHealth, currentHealth, damage, expWorth, goldWorth, numLoot;
     protected float damageNumberY;
     protected int damageAmountTaken;
     protected DateTime damageTakenStartTime = DateTime.MinValue;
     
     
-    public EnemyScript(string npcName, Texture2D texture) : base(npcName, texture) {
+    public EnemyScript(string npcName, Texture2D texture, int maxHealth, int damage, int expWorth, int goldWorth, int numLoot) : base(npcName, texture) {
         this.npcName = npcName;
         this.texture = texture;
+        this.maxHealth = maxHealth;
+        this.damage = damage;
+        this.expWorth = expWorth;
+        this.goldWorth = goldWorth;
+        this.numLoot = numLoot;
         DoInits();
 
     }
@@ -36,11 +41,7 @@ public class EnemyScript : NpcScript
     {
         nextTime = 0;
         interval = 0.2f;
-        maxHealth = 100;
-        currentHealth = 100;
-        damage = 10;
-        expWorth = 20;
-        goldWorth = 10;
+        currentHealth = maxHealth;
         range = 10f;
         moveSpeed = 5f;
         rotationSpeed = 5f;
@@ -82,6 +83,22 @@ public class EnemyScript : NpcScript
 
     public int getDamageTakenTimeElapsed() {
         return DateTime.Now.Subtract(damageTakenStartTime).Milliseconds/10;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public int getGoldWorth() {
+        return goldWorth;
+    }
+
+    public int getExpWorth() {
+        return expWorth;
+    }
+
+    public int getNumLoot() {
+        return numLoot;
     }
 
 }

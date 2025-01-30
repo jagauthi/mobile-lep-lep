@@ -81,7 +81,7 @@ public class CraftingScript : MonoBehaviour
     }
 
     public int getMaxCraftingProgress() {
-        return 50;
+        return 30;
     }
 
     public Dictionary<string, List<string>> getCraftingOptionsMap() {
@@ -90,6 +90,7 @@ public class CraftingScript : MonoBehaviour
 
     public void setProductCurrentlyCrafting(string product) {
         productCurrentlyCrafting = product;
+        craftingClicks = 0;
         craftingStartTime = DateTime.Now;
     }
 

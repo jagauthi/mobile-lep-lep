@@ -19,8 +19,12 @@ public class ShopKeeperScript : NpcScript {
     protected void initInventory(string name)
     {
         inventory = new List<Item>();
-        inventory.AddRange(ItemHandler.generateItemsOfType(5, "Consumable"));
-        inventory.AddRange(ItemHandler.generateItemsOfType(3, "Armor"));
+
+        //Add 2-4 consumeables
+        inventory.AddRange(ItemHandler.generateItemsOfType(2, 4, "Consumable"));
+
+        //Add 0-2 pieces of armor
+        inventory.AddRange(ItemHandler.generateItemsOfType(0, 2, "Armor"));
     }
     
     public override void startInteraction(TownScript townScript)

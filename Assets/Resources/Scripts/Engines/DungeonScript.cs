@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class DungeonScript : MonoBehaviour
 {
+
+    public static float ANIMATION_WAIT_TIME = 0.5f;
     public GameObject playerGameObject;
 
     private PlayerScript playerScript;
@@ -127,45 +129,51 @@ public class DungeonScript : MonoBehaviour
     }
 
     private IEnumerator attackCoRoutine(EnemyScript enemy) {
+        Debug.Log("Attack Coroutine");
         //Check if this action can even happen
         if(!playerTurn) {
             Debug.Log("Not player's turn");
             yield return false;
         }
-        if(null == selectedPlayerAbility) {
+        else if(null == selectedPlayerAbility) {
             Debug.Log("No ability selected");
             yield return false;
         }
-        if(enemy.isDead()) {
+        else if(enemy.isDead()) {
             Debug.Log("Enemy " + enemy.getName() + " is already dead");
             yield return false;
         }
 
         //Now actually use the ability
-        if(!playerScript.useAbility(selectedPlayerAbility)) {
+        else if(!playerScript.useAbility(selectedPlayerAbility)) {
             Debug.Log("Not enough resource to use " + selectedPlayerAbility.getName());
             yield return false;
         }
+        else {
        
-        Debug.Log("Starting Attack");
-        yield return new WaitForSeconds(1.0f);
-        Debug.Log("Finished attack");
+             /*****
+            Uncomment this once there's some animation for attacking
+            */
+            // Debug.Log("Starting Attack");
+            //yield return new WaitForSeconds(ANIMATION_WAIT_TIME);
+            // Debug.Log("Finished attack");
 
-        //Finally if it gets here, player takes their turn and initiates the enemy turn
-        enemy.loseHealth(selectedPlayerAbility.getPower());
-        yield return new WaitForSeconds(1.0f);
-        enemy.resetDamageTaken();
+            //Finally if it gets here, player takes their turn and initiates the enemy turn
+            enemy.loseHealth(selectedPlayerAbility.getPower());
+            playerTurn = false;
+            yield return new WaitForSeconds(ANIMATION_WAIT_TIME);
+            enemy.resetDamageTaken();
 
-        //Reshuffle the dead enemy to the end of the list
-        if(enemy.isDead()) {
-            enemies.Remove(enemy);
-            enemies.Add(enemy);
+            //Reshuffle the dead enemy to the end of the list
+            if(enemy.isDead()) {
+                enemies.Remove(enemy);
+                enemies.Add(enemy);
+            }
+
+            takeEnemyTurns();
+            
+            yield return true;
         }
-
-        playerTurn = false;
-        takeEnemyTurns();
-        
-        yield return true;
     }
 
     public void takeEnemyTurns() {
@@ -201,9 +209,16 @@ public class DungeonScript : MonoBehaviour
         for(int i = 0; i < enemies.Count; i++) {
             EnemyScript enemy = enemies[i];
 
-            goldFromThisRoom += enemy.goldWorth;
-            expFromThisRoom += enemy.expWorth;
-            lootFromThisRoom.AddRange(ItemHandler.generateItems(1, null));
+            goldFromThisRoom += enemy.getGoldWorth();
+            expFromThisRoom += enemy.getExpWorth();
+
+            //If it's a boss room, guarentee more loot
+            if(roomNumber == maxRooms) {
+                lootFromThisRoom.AddRange(ItemHandler.generateItems(enemy.getNumLoot(), enemy.getNumLoot(), null));
+            }
+            else {
+                lootFromThisRoom.AddRange(ItemHandler.generateItems(0, enemy.getNumLoot(), null));
+            }
         }
 
         totalGold += goldFromThisRoom;
@@ -211,13 +226,8 @@ public class DungeonScript : MonoBehaviour
         totalLoot.AddRange(lootFromThisRoom);
 
         //Dispense the rewards to the player
-        playerScript.gainExp(goldFromThisRoom);
-        playerScript.gainGold(expFromThisRoom);
-        // for(int i = 0; i < lootFromThisRoom.Count; i++) {
-        //     if(!playerScript.getInventory().addItem(lootFromThisRoom[i])) {
-        //         Debug.Log("Inventory full! Couldn't fit " + lootFromThisRoom[i].getBaseName());
-        //     }
-        // }
+        playerScript.gainExp(expFromThisRoom);
+        playerScript.gainGold(goldFromThisRoom);
 
         Debug.Log("Dungeon room finished, gained " + goldFromThisRoom + " gold and " + expFromThisRoom + " experience");
 
