@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -29,7 +30,22 @@ public class UiManager : MonoBehaviour
     {
         Debug.Log("UiManager :: CreateButton");
 
-        GameObject newButton = Instantiate(buttonPrefab, panel);
-        newButton.GetComponent<UiButton>().Setup(text, onClick);
+        // Find the first empty slot in the container
+        Transform emptySlot = panel
+            .GetComponentsInChildren<UiSlot>()
+            .Select(slot => slot.transform)
+            .FirstOrDefault(slot => slot.childCount == 0); // Check if the slot has no children
+
+        if (emptySlot != null) 
+        {
+            GameObject newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
+            UiButton uiButton = newButton.GetComponent<UiButton>();
+            if (uiButton != null) uiButton.Setup(text, onClick);
+        }
+        else
+        {
+            Debug.LogWarning("No empty slots available!");
+        }
+
     }
 }
