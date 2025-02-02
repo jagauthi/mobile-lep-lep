@@ -30,6 +30,7 @@ public class PlayerScript : MonoBehaviour
     protected Inventory inventory;
     protected Equipment equipment;
     protected Weapon[] weapons;
+    Transform playerOptionsPanel;
 
     public bool characterMenuOpen, inventoryMenuOpen, mainMenuOpen;
 
@@ -44,6 +45,11 @@ public class PlayerScript : MonoBehaviour
         Debug.Log("PlayerScript Start");
         basicInits();
         initStats();
+        
+        playerOptionsPanel = GameObject.FindGameObjectWithTag("PlayerOptionsPanel").GetComponent<Transform>();
+        UiManager.Instance.CreateButton(playerOptionsPanel, "Character", () => toggleMenu("Character"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, "Inventory", () => toggleMenu("Inventory"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, "Main", () => toggleMenu("Main"));
     }
 
     protected void basicInits()
@@ -132,22 +138,22 @@ public class PlayerScript : MonoBehaviour
     }
 
     protected void OnGUI(){
-        drawBasics();
+        // drawBasics();
 
-        GuiUtil.drawPlayerMenuOptions(this);  
+        // GuiUtil.drawPlayerMenuOptions(this);  
 
-        if(characterMenuOpen) {
-            GuiUtil.characterMenu(this);
-        }    
-        if(inventoryMenuOpen) {
-            GuiUtil.playerInventoryMenu(this, null, isStashOpen());
-        }  
-        if(stashOpen) {
-            GuiUtil.playerStashMenu(this);
-        }
-        if(mainMenuOpen) {
-            GuiUtil.mainMenu();
-        }  
+        // if(characterMenuOpen) {
+        //     GuiUtil.characterMenu(this);
+        // }    
+        // if(inventoryMenuOpen) {
+        //     GuiUtil.playerInventoryMenu(this, null, isStashOpen());
+        // }  
+        // if(stashOpen) {
+        //     GuiUtil.playerStashMenu(this);
+        // }
+        // if(mainMenuOpen) {
+        //     GuiUtil.mainMenu();
+        // }  
     }
 
     protected void drawBasics() {
@@ -395,6 +401,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     public void toggleMenu(String menu) {
+        Debug.Log("Toggle: " + menu);
         if(menu == "Character") {
             characterMenuOpen = !characterMenuOpen;
         }

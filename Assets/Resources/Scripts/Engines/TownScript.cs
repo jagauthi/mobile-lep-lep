@@ -10,6 +10,7 @@ public class TownScript : MonoBehaviour
    protected List<NpcScript> npcs;
    ShopKeeperScript shopkeeper;
    TownProfessionNpc selectedProfession;
+   Transform townOptionsButtonPanel;
 
 
     void Start()
@@ -24,6 +25,9 @@ public class TownScript : MonoBehaviour
         npcs = new List<NpcScript>();
         npcs.Add(shopkeeper);
         npcs.Add(blacksmith);
+
+        townOptionsButtonPanel = GameObject.FindGameObjectWithTag("TownOptionsPanel").GetComponent<Transform>();
+        UiManager.Instance.CreateButton(townOptionsButtonPanel, "Stash", () => playerScript.toggleMenu("Stash"));
     }
 
     private void getPlayerScript() {
@@ -42,7 +46,7 @@ public class TownScript : MonoBehaviour
     }
     
     protected void OnGUI(){
-        drawTownThings();   
+        // drawTownThings();   
     }
 
     protected void drawTownThings() { 
