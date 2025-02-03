@@ -3,13 +3,21 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    public enum ButtonType { Ability, Item, PlayerMenuOption, TownMenuOption }
+
     public Button button;
     public Text buttonText;
+    public Image buttonIcon;
+    public Image buttonBackground;
+    public Item.Rarity itemRarity;
+    public ButtonType buttonType;
 
-    private Transform originalParent;
+    public Transform originalParent;
     private CanvasGroup canvasGroup;
 
     void Awake()
@@ -19,12 +27,23 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
         if (buttonText == null)
             buttonText = GetComponentInChildren<Text>(); // Auto-assign Text component
+
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>(); // Ensure it exists
     }
 
-    public void Setup(string text, UnityAction onClickAction)
+    public void Setup(string text, UnityAction onClickAction, ButtonType buttonType, Item.Rarity rarity, Texture2D icon)
     {
-        Debug.Log("Button setup");
+        this.buttonType = buttonType;
+        this.itemRarity = rarity;
+
         buttonText.text = text;
+
+        if (icon != null) {
+            // iconImage.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.5f, 0.5f));
+        }
+
+
         button.onClick.RemoveAllListeners(); // Clear old listeners
         button.onClick.AddListener(onClickAction); // Assign new action
     }
@@ -44,8 +63,33 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        transform.SetParent(originalParent); // Snap back if no valid drop slot
-        canvasGroup.blocksRaycasts = true; 
+        UiSlot newSlot = GetSlotUnderMouse(eventData);
+
+        if (newSlot == null || !newSlot.AcceptsType(buttonType))
+        {
+            // No valid slot found, return to original parent
+            transform.SetParent(originalParent);
+            transform.localPosition = Vector3.zero;
+        }
+
+        canvasGroup.blocksRaycasts = true; // Enable interactions again
         canvasGroup.alpha = 1f;
+    }
+
+    private UiSlot GetSlotUnderMouse(PointerEventData eventData)
+    {
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            UiSlot slot = result.gameObject.GetComponent<UiSlot>();
+            if (slot != null)
+            {
+                return slot; // Found a valid slot
+            }
+        }
+
+        return null; // No valid slot found
     }
 }

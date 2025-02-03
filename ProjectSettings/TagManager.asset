@@ -6,12 +6,12 @@ TagManager:
   tags:
   - GameEngine
   - Dungeon
-  - AbilityButton
-  - ItemButton
   - Town
   - PlayerOptionsPanel
   - TownOptionsPanel
   - DungeonOptionsPanel
+  - PlayerInventoryPanel
+  - ShopkeeperInventoryPanel
   layers:
   - Default
   - TransparentFX

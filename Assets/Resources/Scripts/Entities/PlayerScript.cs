@@ -47,9 +47,10 @@ public class PlayerScript : MonoBehaviour
         initStats();
         
         playerOptionsPanel = GameObject.FindGameObjectWithTag("PlayerOptionsPanel").GetComponent<Transform>();
-        UiManager.Instance.CreateButton(playerOptionsPanel, "Character", () => toggleMenu("Character"));
-        UiManager.Instance.CreateButton(playerOptionsPanel, "Inventory", () => toggleMenu("Inventory"));
-        UiManager.Instance.CreateButton(playerOptionsPanel, "Main", () => toggleMenu("Main"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", () => toggleMenu("Character"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", () => toggleMenu("Inventory"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", () => toggleMenu("Main"));
+        
     }
 
     protected void basicInits()
@@ -97,6 +98,8 @@ public class PlayerScript : MonoBehaviour
         agility = 1;
         currentHealth = getMaxHealth();
         currentResource = getMaxResource();
+
+        currentHealth -= 50;
     }
 
     protected virtual void loadAbilities()

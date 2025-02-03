@@ -26,7 +26,7 @@ public class UiManager : MonoBehaviour
 
     }
 
-    public void CreateButton(Transform panel, string text, UnityAction onClick)
+    public void CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, UnityAction onClick)
     {
         Debug.Log("UiManager :: CreateButton");
 
@@ -40,12 +40,25 @@ public class UiManager : MonoBehaviour
         {
             GameObject newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
             UiButton uiButton = newButton.GetComponent<UiButton>();
-            if (uiButton != null) uiButton.Setup(text, onClick);
+            if (uiButton != null) {
+                // uiButton.Setup(text, onClick, buttonType);
+            }
         }
         else
         {
-            Debug.LogWarning("No empty slots available!");
+            Debug.Log("No empty slots available!");
         }
+    }
 
+    public void RemoveButton(Transform panel, string buttonText) {
+        UiSlot[] slots = panel.GetComponentsInChildren<UiSlot>();
+        foreach(UiSlot slot in slots) {
+            UiButton button = slot.GetComponentInChildren<UiButton>();
+            if(null != button && null != button.buttonText && button.buttonText.text == buttonText) {
+                //Remove this button from the slot
+                GameObject.Destroy(button.gameObject);
+                return;
+            }
+        }
     }
 }

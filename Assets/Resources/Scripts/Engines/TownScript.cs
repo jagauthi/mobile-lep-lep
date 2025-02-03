@@ -7,7 +7,7 @@ public class TownScript : MonoBehaviour
    public GameObject playerGameObject;
 
    public PlayerScript playerScript;
-   protected List<NpcScript> npcs;
+   protected List<NpcScript> npcs; 
    ShopKeeperScript shopkeeper;
    TownProfessionNpc selectedProfession;
    Transform townOptionsButtonPanel;
@@ -27,7 +27,7 @@ public class TownScript : MonoBehaviour
         npcs.Add(blacksmith);
 
         townOptionsButtonPanel = GameObject.FindGameObjectWithTag("TownOptionsPanel").GetComponent<Transform>();
-        UiManager.Instance.CreateButton(townOptionsButtonPanel, "Stash", () => playerScript.toggleMenu("Stash"));
+        UiManager.Instance.CreateButton(townOptionsButtonPanel, UiButton.ButtonType.TownMenuOption, "Stash", () => playerScript.toggleMenu("Stash"));
     }
 
     private void getPlayerScript() {
