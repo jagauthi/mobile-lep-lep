@@ -26,7 +26,7 @@ public class UiManager : MonoBehaviour
 
     }
 
-    public void CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, UnityAction onClick)
+    public void CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick)
     {
         Debug.Log("UiManager :: CreateButton");
 
@@ -41,7 +41,7 @@ public class UiManager : MonoBehaviour
             GameObject newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
             UiButton uiButton = newButton.GetComponent<UiButton>();
             if (uiButton != null) {
-                // uiButton.Setup(text, onClick, buttonType);
+                uiButton.Setup(text, onClick, buttonType, rarity, icon);
             }
         }
         else

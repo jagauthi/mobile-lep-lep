@@ -8,8 +8,8 @@ public class Weapon : Item {
 
     int baseDamage, addedDamage;
 
-    public Weapon(string baseName, string type, Texture2D icon, int cost) 
-    : base(baseName, type, icon, cost) {
+    public Weapon(string baseName, string type, Texture2D icon, int cost, Rarity rarity) 
+    : base(baseName, type, icon, cost, rarity) {
         basicInits();
     }
 

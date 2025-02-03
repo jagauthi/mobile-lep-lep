@@ -40,12 +40,37 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         buttonText.text = text;
 
         if (icon != null) {
-            // iconImage.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.5f, 0.5f));
+            buttonIcon.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.5f, 0.5f));
         }
 
+        SetRarityColor();
 
         button.onClick.RemoveAllListeners(); // Clear old listeners
         button.onClick.AddListener(onClickAction); // Assign new action
+    }
+
+     private void SetRarityColor()
+    {
+        if (buttonBackground == null) return;
+
+        switch (itemRarity)
+        {
+            case Item.Rarity.Common:
+                buttonBackground.color = Color.gray;
+                break;
+            case Item.Rarity.Uncommon:
+                buttonBackground.color = Color.green;
+                break;
+            case Item.Rarity.Rare:
+                buttonBackground.color = Color.blue;
+                break;
+            case Item.Rarity.Epic:
+                buttonBackground.color = new Color(0.6f, 0, 0.8f); // Purple
+                break;
+            case Item.Rarity.Legendary:
+                buttonBackground.color = new Color(1f, 0.5f, 0); // Orange
+                break;
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)

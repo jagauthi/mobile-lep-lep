@@ -34,14 +34,14 @@ public class Inventory {
         }
 
         foreach(Item item in items) {
-            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), () => playerScript.useItem(item));
+            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item));
         }
     }
 
     public bool addItem(Item item) {
         if(items.Count < maxSize) {
             items.Add(item);
-            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), () => playerScript.useItem(item));
+            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item));
             return true;
         }
         else {

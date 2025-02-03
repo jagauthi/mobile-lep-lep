@@ -12,12 +12,14 @@ public class Item {
 	protected Texture2D icon;
     protected PlayerScript playerScript;
     protected string tooltip;
+    Rarity rarity;
 
-    public Item(string baseName, string type, Texture2D icon, int cost) {
+    public Item(string baseName, string type, Texture2D icon, int cost, Rarity rarity) {
         this.baseName = baseName;
         this.type = type;
         this.icon = icon;
         this.cost = cost;
+        this.rarity = rarity;
         playerScript = null;
         tooltip = "testTooltip";
     }
@@ -32,6 +34,10 @@ public class Item {
             playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         }
         return playerScript;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
     }
 
     public Texture2D getIcon() {

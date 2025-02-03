@@ -7,8 +7,8 @@ public class Consumable : Item {
     protected string consumableType;
     protected int power;
 
-    public Consumable(string baseName, string type, string consumableType, Texture2D icon, int cost, int power)
-         : base(baseName, type, icon, cost) {
+    public Consumable(string baseName, string type, string consumableType, Texture2D icon, int cost, int power, Rarity rarity)
+         : base(baseName, type, icon, cost, rarity) {
         this.consumableType = consumableType;
         this.power = power;
         this.tooltip = consumableType + ": " + power;

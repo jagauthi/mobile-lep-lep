@@ -47,9 +47,9 @@ public class PlayerScript : MonoBehaviour
         initStats();
         
         playerOptionsPanel = GameObject.FindGameObjectWithTag("PlayerOptionsPanel").GetComponent<Transform>();
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", () => toggleMenu("Character"));
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", () => toggleMenu("Inventory"));
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", () => toggleMenu("Main"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.Common, null, () => toggleMenu("Character"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.Common, null, () => toggleMenu("Inventory"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.Common, null, () => toggleMenu("Main"));
         
     }
 
@@ -68,6 +68,7 @@ public class PlayerScript : MonoBehaviour
         equipment = new Equipment();
         inventory.addItem(ItemHandler.getItemMap()["Health Potion"]);
         inventory.addItem(ItemHandler.getItemMap()["Mana Potion"]);
+        inventory.addItem(ItemHandler.getItemMap()["Iron Chest"]);
 
         gold = 10;
 

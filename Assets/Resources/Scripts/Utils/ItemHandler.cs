@@ -19,22 +19,22 @@ public class ItemHandler {
         allItems = new List<Item>();
         
         //Consumables
-        allItems.Add(new Consumable("Health Potion", "Consumable", "Heal", (Texture2D)Resources.Load("Images/HealthPotion"), 10, 50));
-        allItems.Add(new Consumable("Mana Potion", "Consumable", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50));
-        allItems.Add(new Consumable("Rage Potion", "Consumable", "ResourceHeal", (Texture2D)Resources.Load("Images/RagePotion"), 10, 50 ) );
-        allItems.Add(new Consumable("Energy Potion", "Consumable", "ResourceHeal", (Texture2D)Resources.Load("Images/EnergyPotion"), 10, 50 ) );
+        allItems.Add(new Consumable("Health Potion", "Consumable", "Heal", (Texture2D)Resources.Load("Images/HealthPotion2"), 10, 50, Item.Rarity.Common ) );
+        allItems.Add(new Consumable("Mana Potion", "Consumable", "ResourceHeal", (Texture2D)Resources.Load("Images/ManaPotion"), 10, 50, Item.Rarity.Common ) );
+        allItems.Add(new Consumable("Rage Potion", "Consumable", "ResourceHeal", (Texture2D)Resources.Load("Images/RagePotion"), 10, 50, Item.Rarity.Common ) );
+        allItems.Add(new Consumable("Energy Potion", "Consumable", "ResourceHeal", (Texture2D)Resources.Load("Images/EnergyPotion"), 10, 50, Item.Rarity.Common ) );
 
         //Armor
-        allItems.Add(new Armor("Iron Helm", "Armor", "Head", (Texture2D)Resources.Load("Images/IronHelm"), 10, 10 ) ) ;
-        allItems.Add(new Armor("Iron Chest", "Armor", "Chest", (Texture2D)Resources.Load("Images/IronChest"), 30, 30 ) );
-        allItems.Add(new Armor("Iron Legs", "Armor", "Legs", (Texture2D)Resources.Load("Images/IronLegs"), 20, 20 ) );
-        allItems.Add(new Armor("Iron Boots", "Armor", "Feet", (Texture2D)Resources.Load("Images/IronBoots"), 10, 10 ) );
+        allItems.Add(new Armor("Iron Helm", "Armor", "Head", (Texture2D)Resources.Load("Images/IronHelm"), 10, Item.Rarity.Uncommon, 10 ) ) ;
+        allItems.Add(new Armor("Iron Chest", "Armor", "Chest", (Texture2D)Resources.Load("Images/IronChest2"), 30, Item.Rarity.Uncommon, 30 ) );
+        allItems.Add(new Armor("Iron Legs", "Armor", "Legs", (Texture2D)Resources.Load("Images/IronLegs"), 20, Item.Rarity.Uncommon, 20 ) );
+        allItems.Add(new Armor("Iron Boots", "Armor", "Feet", (Texture2D)Resources.Load("Images/IronBoots"), 10, Item.Rarity.Uncommon, 10 ) );
 
         //Crafting materials
-        allItems.Add(new Item("Copper Ore", "Crafting Material", (Texture2D)Resources.Load("Images/CopperOre"), 2 ) ) ;
-        allItems.Add(new Item("Iron Ore", "Crafting Material", (Texture2D)Resources.Load("Images/IronOre"), 3 ) ) ;
-        allItems.Add(new Item("Copper Bar", "Crafting Material", (Texture2D)Resources.Load("Images/CopperBar"), 4 ) ) ;
-        allItems.Add(new Item("Iron Bar", "Crafting Material", (Texture2D)Resources.Load("Images/IronBar"), 6 ) ) ;
+        allItems.Add(new Item("Copper Ore", "Crafting Material", (Texture2D)Resources.Load("Images/CopperOre"), 2, Item.Rarity.Common ) ) ;
+        allItems.Add(new Item("Iron Ore", "Crafting Material", (Texture2D)Resources.Load("Images/IronOre"), 3, Item.Rarity.Common ) ) ;
+        allItems.Add(new Item("Copper Bar", "Crafting Material", (Texture2D)Resources.Load("Images/CopperBar"), 4, Item.Rarity.Common ) ) ;
+        allItems.Add(new Item("Iron Bar", "Crafting Material", (Texture2D)Resources.Load("Images/IronBar"), 6, Item.Rarity.Common ) ) ;
 
         loadItemsIntoItemMaps(allItems);
     }
