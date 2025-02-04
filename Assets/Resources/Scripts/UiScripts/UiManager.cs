@@ -26,8 +26,9 @@ public class UiManager : MonoBehaviour
 
     }
 
-    public void CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick)
+    public GameObject CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick)
     {
+        GameObject newButton = null;
         Debug.Log("UiManager :: CreateButton");
 
         // Find the first empty slot in the container
@@ -38,7 +39,7 @@ public class UiManager : MonoBehaviour
 
         if (emptySlot != null) 
         {
-            GameObject newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
+            newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
             UiButton uiButton = newButton.GetComponent<UiButton>();
             if (uiButton != null) {
                 uiButton.Setup(text, onClick, buttonType, rarity, icon);
@@ -48,6 +49,7 @@ public class UiManager : MonoBehaviour
         {
             Debug.Log("No empty slots available!");
         }
+        return newButton;
     }
 
     public void RemoveButton(Transform panel, string buttonText) {

@@ -5,7 +5,7 @@ using System;
 
 public class Item {
 
-    public enum Rarity { Common, Uncommon, Rare, Epic, Legendary }
+    public enum Rarity { None, Common, Uncommon, Rare, Epic, Legendary }
     
     protected int cost;
     protected string baseName, type;

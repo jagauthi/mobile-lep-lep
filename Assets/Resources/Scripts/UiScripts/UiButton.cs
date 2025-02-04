@@ -40,7 +40,7 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         buttonText.text = text;
 
         if (icon != null) {
-            buttonIcon.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.5f, 0.5f));
+            buttonIcon.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.95f, 0.95f));
         }
 
         SetRarityColor();
@@ -55,6 +55,9 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
         switch (itemRarity)
         {
+            case Item.Rarity.None:
+                buttonBackground.color = Color.white;
+                break;
             case Item.Rarity.Common:
                 buttonBackground.color = Color.gray;
                 break;
@@ -73,8 +76,15 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
     }
 
+    public bool isNonDraggable() {
+        return buttonType == ButtonType.PlayerMenuOption || buttonType == ButtonType.TownMenuOption;
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if(isNonDraggable()) {
+            return;
+        }
         originalParent = transform.parent; // Remember where it started
         transform.SetParent(transform.root); // Move it to the root so it stays on top
         canvasGroup.blocksRaycasts = false; // Allow it to pass through UI elements while dragging
@@ -83,11 +93,17 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnDrag(PointerEventData eventData)
     {
+        if(isNonDraggable()) {
+            return;
+        }
         transform.position = eventData.position; // Move button with cursor
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if(isNonDraggable()) {
+            return;
+        }
         UiSlot newSlot = GetSlotUnderMouse(eventData);
 
         if (newSlot == null || !newSlot.AcceptsType(buttonType))

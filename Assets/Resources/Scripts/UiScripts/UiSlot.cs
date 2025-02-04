@@ -14,6 +14,9 @@ public class UiSlot : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         UiButton droppedButton = eventData.pointerDrag.GetComponent<UiButton>();
+        if(droppedButton.isNonDraggable()) {
+            return;
+        }
 
         if (droppedButton != null && AcceptsType(droppedButton.buttonType))
         {

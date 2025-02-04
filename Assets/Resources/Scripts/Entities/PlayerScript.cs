@@ -47,9 +47,9 @@ public class PlayerScript : MonoBehaviour
         initStats();
         
         playerOptionsPanel = GameObject.FindGameObjectWithTag("PlayerOptionsPanel").GetComponent<Transform>();
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.Common, null, () => toggleMenu("Character"));
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.Common, null, () => toggleMenu("Inventory"));
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.Common, null, () => toggleMenu("Main"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"));
         
     }
 

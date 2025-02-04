@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Inventory {
 
@@ -9,6 +10,14 @@ public class Inventory {
     int maxSize, inventoryPage, stashPage;
     Transform playerInventoryPanel;
     PlayerScript playerScript;
+
+    private List<GameObject> slots = new List<GameObject>();
+    private List<GameObject> itemButtons = new List<GameObject>(); 
+    private int totalSlots = 30;
+    private int slotsPerPage = 9;
+    private int currentPage = 0;
+
+    public Button nextPageButton, prevPageButton;
 
     public Inventory() {
         items = new List<Item>();
@@ -19,6 +28,84 @@ public class Inventory {
         
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         initPlayerInventoryPanel();
+
+        CreateInventorySlots();
+        LoadInventoryItems();
+        UpdatePage();
+        
+        nextPageButton.onClick.AddListener(NextPage);
+        prevPageButton.onClick.AddListener(PreviousPage);
+    }
+
+    public void toggleInventory() {
+        playerInventoryPanel.gameObject.SetActive(playerInventoryPanel.gameObject.activeSelf);
+    }
+
+    void CreateInventorySlots()
+    {
+        for (int i = 0; i < totalSlots; i++)
+        {
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerInventoryPanel);
+            slots.Add(newSlot);
+        }
+    }
+
+    void LoadInventoryItems()
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            if(i >= totalSlots) {
+                Debug.Log("Out of slots");
+                return;
+            }
+            Item item = items[i];
+            GameObject newItem = UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, 
+                                (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => playerScript.useItem(item));
+
+            newItem.SetActive(false); // Initially hidden
+            itemButtons.Add(newItem);
+        }
+    }
+
+    void UpdatePage()
+    {
+        // Hide all slots and buttons
+        foreach (GameObject slot in slots) slot.SetActive(false);
+        foreach (GameObject item in itemButtons) item.SetActive(false);
+
+        // Show slots & buttons for current page
+        int start = currentPage * slotsPerPage;
+        int end = Mathf.Min(start + slotsPerPage, totalSlots);
+
+        for (int i = start; i < end; i++)
+        {
+            slots[i].SetActive(true);
+            if(itemButtons.Count > i) {
+                itemButtons[i].SetActive(true);
+            }
+        }
+
+        // Enable/Disable buttons based on page limits
+        prevPageButton.interactable = currentPage > 0;
+        nextPageButton.interactable = end < totalSlots;
+    }
+
+    public void NextPage()
+    {
+        if ((currentPage + 1) * slotsPerPage < totalSlots)
+        {
+            currentPage++;
+            UpdatePage();
+        }
+    }
+
+    public void PreviousPage()
+    {
+        if (currentPage > 0)
+        {
+            currentPage--;
+            UpdatePage();
+        }
     }
 
     public Inventory(List<Item> items) {
