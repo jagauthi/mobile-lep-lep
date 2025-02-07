@@ -12,6 +12,9 @@ TagManager:
   - DungeonOptionsPanel
   - PlayerInventoryPanel
   - ShopkeeperInventoryPanel
+  - LeftPagination
+  - RightPagination
+  - Canvas
   layers:
   - Default
   - TransparentFX

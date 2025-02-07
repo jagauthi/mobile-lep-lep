@@ -34,6 +34,9 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void Setup(string text, UnityAction onClickAction, ButtonType buttonType, Item.Rarity rarity, Texture2D icon)
     {
+        if(null == buttonText) {
+            Awake();
+        }
         this.buttonType = buttonType;
         this.itemRarity = rarity;
 

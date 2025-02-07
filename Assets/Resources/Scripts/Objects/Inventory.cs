@@ -32,13 +32,47 @@ public class Inventory {
         CreateInventorySlots();
         LoadInventoryItems();
         UpdatePage();
+
+        closeInventory();
+    }
+
+    private void initPlayerInventoryPanel() {
+
+
+        if(null == playerInventoryPanel) {
+            GameObject playerInventoryPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerInventoryPanel");
+            playerInventoryPanel = MonoBehaviour.Instantiate(playerInventoryPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            playerInventoryPanel.SetParent(canvas.transform, false);
+        }
+
         
-        nextPageButton.onClick.AddListener(NextPage);
-        prevPageButton.onClick.AddListener(PreviousPage);
+        Button[] paginationButtons = playerInventoryPanel.GetComponentsInChildren<Button>();
+        foreach (Button button in paginationButtons){
+            if (button.gameObject.tag == "LeftPagination"){
+                prevPageButton = button;
+                prevPageButton.onClick.AddListener(PreviousPage);
+            }
+            else if(button.gameObject.tag == "RightPagination"){
+                nextPageButton = button;
+                nextPageButton.onClick.AddListener(NextPage);
+            }
+        }
+        
+
+        foreach(Item item in items) {
+            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item));
+        }
     }
 
     public void toggleInventory() {
-        playerInventoryPanel.gameObject.SetActive(playerInventoryPanel.gameObject.activeSelf);
+        playerInventoryPanel.gameObject.SetActive(!playerInventoryPanel.gameObject.activeSelf);
+    }
+    public void closeInventory() {
+        playerInventoryPanel.gameObject.SetActive(false);
+    }
+    public void openInventory() {
+        playerInventoryPanel.gameObject.SetActive(true);
     }
 
     void CreateInventorySlots()
@@ -46,6 +80,7 @@ public class Inventory {
         for (int i = 0; i < totalSlots; i++)
         {
             GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerInventoryPanel);
+            newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
             slots.Add(newSlot);
         }
     }
@@ -113,16 +148,6 @@ public class Inventory {
         maxSize = 12;
         inventoryPage = 0;
         stashPage = 0;
-    }
-
-    private void initPlayerInventoryPanel() {
-        if(null == playerInventoryPanel) {
-            playerInventoryPanel = GameObject.FindGameObjectWithTag("PlayerInventoryPanel").GetComponent<Transform>();
-        }
-
-        foreach(Item item in items) {
-            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item));
-        }
     }
 
     public bool addItem(Item item) {

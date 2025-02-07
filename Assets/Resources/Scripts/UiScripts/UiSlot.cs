@@ -11,6 +11,10 @@ public class UiSlot : MonoBehaviour, IDropHandler
         return type == allowedType;  // Otherwise, only allow the same type
     }
 
+    public void setType(UiButton.ButtonType allowedType) {
+        this.allowedType = allowedType;
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         UiButton droppedButton = eventData.pointerDrag.GetComponent<UiButton>();

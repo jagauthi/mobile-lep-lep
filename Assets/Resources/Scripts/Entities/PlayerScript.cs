@@ -410,10 +410,7 @@ public class PlayerScript : MonoBehaviour
             characterMenuOpen = !characterMenuOpen;
         }
         else if(menu == "Inventory") {
-            inventoryMenuOpen = !inventoryMenuOpen;
-            if(!inventoryMenuOpen) {
-                stashOpen = false;
-            }
+            inventory.toggleInventory();
         }
         else if(menu == "Stash") {
             stashOpen = !stashOpen;
