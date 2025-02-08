@@ -30,7 +30,7 @@ public class PlayerScript : MonoBehaviour
     protected Inventory inventory;
     protected Equipment equipment;
     protected Weapon[] weapons;
-    Transform playerOptionsPanel;
+    Transform playerOptionsPanel, characterSheetPanel;
 
     public bool characterMenuOpen, inventoryMenuOpen, mainMenuOpen;
 
@@ -45,8 +45,16 @@ public class PlayerScript : MonoBehaviour
         Debug.Log("PlayerScript Start");
         basicInits();
         initStats();
-        
-        if(null == playerOptionsPanel) {
+
+        initPlayerOptionsPanel();
+        initCharacterSheetPanel();
+
+    }
+
+    private void initPlayerOptionsPanel()
+    {
+        if (null == playerOptionsPanel)
+        {
             GameObject playerOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerOptionsPanel");
             playerOptionsPanel = MonoBehaviour.Instantiate(playerOptionsPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
@@ -56,8 +64,20 @@ public class PlayerScript : MonoBehaviour
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"));
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"));
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"));
-        
     }
+
+    private void initCharacterSheetPanel()
+    {
+        if (null == characterSheetPanel)
+        {
+            GameObject characterSheetPanelGameObject = (GameObject)Resources.Load("Prefabs/CharacterSheetPanel");
+            characterSheetPanel = MonoBehaviour.Instantiate(characterSheetPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            characterSheetPanel.SetParent(canvas.transform, false);
+        }
+
+    }
+
 
     protected void basicInits()
     {
