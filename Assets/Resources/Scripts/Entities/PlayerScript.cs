@@ -46,7 +46,13 @@ public class PlayerScript : MonoBehaviour
         basicInits();
         initStats();
         
-        playerOptionsPanel = GameObject.FindGameObjectWithTag("PlayerOptionsPanel").GetComponent<Transform>();
+        if(null == playerOptionsPanel) {
+            GameObject playerOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerOptionsPanel");
+            playerOptionsPanel = MonoBehaviour.Instantiate(playerOptionsPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            playerOptionsPanel.SetParent(canvas.transform, false);
+        }
+
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"));
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"));
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"));

@@ -25,9 +25,16 @@ public class TownScript : MonoBehaviour
         npcs = new List<NpcScript>();
         npcs.Add(shopkeeper);
         npcs.Add(blacksmith);
+        
+        if(null == townOptionsButtonPanel) {
+            GameObject townOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/TownOptionsPanel");
+            townOptionsButtonPanel = MonoBehaviour.Instantiate(townOptionsPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            townOptionsButtonPanel.SetParent(canvas.transform, false);
+        }
 
-        townOptionsButtonPanel = GameObject.FindGameObjectWithTag("TownOptionsPanel").GetComponent<Transform>();
         UiManager.Instance.CreateButton(townOptionsButtonPanel, UiButton.ButtonType.TownMenuOption, "Stash", Item.Rarity.None, (Texture2D)Resources.Load("Images/StashMenuIcon"), () => playerScript.toggleMenu("Stash"));
+
     }
 
     private void getPlayerScript() {

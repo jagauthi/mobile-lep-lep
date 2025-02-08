@@ -59,10 +59,6 @@ public class Inventory {
             }
         }
         
-
-        foreach(Item item in items) {
-            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item));
-        }
     }
 
     public void toggleInventory() {
