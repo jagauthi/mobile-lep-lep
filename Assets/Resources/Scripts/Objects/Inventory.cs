@@ -8,7 +8,7 @@ public class Inventory {
     List<Item> items;
     List<Item> stashItems;
     int maxSize, inventoryPage, stashPage;
-    Transform playerInventoryPanel;
+    public Transform playerInventoryPanel;
     PlayerScript playerScript;
 
     private List<GameObject> slots = new List<GameObject>();

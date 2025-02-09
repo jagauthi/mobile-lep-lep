@@ -59,10 +59,19 @@ public class PlayerScript : MonoBehaviour
             playerOptionsPanel = MonoBehaviour.Instantiate(playerOptionsPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             playerOptionsPanel.SetParent(canvas.transform, false);
+            UiManager.Instance.playerOptionsPanel = playerOptionsPanel;
         }
 
+        GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
+        newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"));
+
+        GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
+        newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"));
+
+        GameObject newSlot3 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
+        newSlot3.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
         UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"));
     }
 
@@ -74,8 +83,10 @@ public class PlayerScript : MonoBehaviour
             characterSheetPanel = MonoBehaviour.Instantiate(characterSheetPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             characterSheetPanel.SetParent(canvas.transform, false);
+            UiManager.Instance.characterSheetPanel = characterSheetPanel;
+            UiManager.Instance.alwaysClosedPanels.Add(UiManager.Instance.characterSheetPanel);
         }
-
+        closeCharacterSheet();
     }
 
 
@@ -433,10 +444,12 @@ public class PlayerScript : MonoBehaviour
     public void toggleMenu(String menu) {
         Debug.Log("Toggle: " + menu);
         if(menu == "Character") {
-            toggleCharacterScreen();
+            //toggleCharacterScreen();
+            UiManager.Instance.togglePanel(characterSheetPanel);
         }
         else if(menu == "Inventory") {
-            inventory.toggleInventory();
+            //inventory.toggleInventory();
+            UiManager.Instance.togglePanel(inventory.playerInventoryPanel);
         }
         else if(menu == "Stash") {
             stashOpen = !stashOpen;
@@ -453,6 +466,12 @@ public class PlayerScript : MonoBehaviour
 
     public void toggleCharacterScreen() {
         characterSheetPanel.gameObject.SetActive(!characterSheetPanel.gameObject.activeSelf);
+    }
+    public void closeCharacterSheet() {
+        characterSheetPanel.gameObject.SetActive(false);
+    }
+    public void openCharacterSheet() {
+        characterSheetPanel.gameObject.SetActive(true);
     }
     
 

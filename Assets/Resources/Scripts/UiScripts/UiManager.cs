@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +10,13 @@ public class UiManager : MonoBehaviour
     public static UiManager Instance { get; private set; } // Singleton instance
 
     public GameObject buttonPrefab;
-    public Transform townOptionsPanel;
+    
+    public Transform playerOptionsPanel, characterSheetPanel;
+    public Transform playerInventoryPanel;
+    public Transform townOptionsButtonPanel, townProfessionsPanel;
+
+    public List<Transform> alwaysClosedPanels = new List<Transform>();
+    public List<Transform> openPanels = new List<Transform>();
 
     void Awake()
     {
@@ -29,7 +37,6 @@ public class UiManager : MonoBehaviour
     public GameObject CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick)
     {
         GameObject newButton = null;
-        Debug.Log("UiManager :: CreateButton");
 
         // Find the first empty slot in the container
         Transform emptySlot = panel
@@ -62,5 +69,47 @@ public class UiManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void togglePanel(Transform panel) {
+        if (panel.gameObject.activeSelf) {
+            panel.gameObject.SetActive(false);
+        }
+        else {
+            openPanel(panel);
+        }
+    }
+
+    public void openPanel(Transform panel)
+    {
+        // If this panel is in the "always closed" group, close others in that group
+        if (alwaysClosedPanels.Contains(panel))
+        {
+            foreach (Transform p in alwaysClosedPanels)
+            {
+                if (p != panel) p.gameObject.SetActive(false);
+            }
+        }
+
+        // Toggle the panel open/close
+        if (panel.gameObject.activeSelf)
+        {
+            panel.gameObject.SetActive(false);
+            openPanels.Remove(panel);
+        }
+        else
+        {
+            panel.gameObject.SetActive(true);
+            if (!openPanels.Contains(panel)) openPanels.Add(panel);
+        }
+    }
+
+    public void closeAllPanels()
+    {
+        foreach (Transform panel in openPanels)
+        {
+            panel.gameObject.SetActive(false);
+        }
+        openPanels.Clear();
     }
 }

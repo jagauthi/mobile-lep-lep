@@ -15,6 +15,7 @@ TagManager:
   - LeftPagination
   - RightPagination
   - Canvas
+  - TownProfessionsPanel
   layers:
   - Default
   - TransparentFX

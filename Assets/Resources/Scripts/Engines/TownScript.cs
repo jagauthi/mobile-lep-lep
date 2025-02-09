@@ -10,7 +10,7 @@ public class TownScript : MonoBehaviour
    protected List<NpcScript> npcs; 
    ShopKeeperScript shopkeeper;
    TownProfessionNpc selectedProfession;
-   Transform townOptionsButtonPanel;
+   Transform townOptionsButtonPanel, townProfessionsPanel;
 
 
     void Start()
@@ -26,6 +26,7 @@ public class TownScript : MonoBehaviour
         npcs.Add(shopkeeper);
         npcs.Add(blacksmith);
         
+        //Town Options
         if(null == townOptionsButtonPanel) {
             GameObject townOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/TownOptionsPanel");
             townOptionsButtonPanel = MonoBehaviour.Instantiate(townOptionsPanelGameObject).GetComponent<Transform>();
@@ -33,7 +34,25 @@ public class TownScript : MonoBehaviour
             townOptionsButtonPanel.SetParent(canvas.transform, false);
         }
 
+        GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townOptionsButtonPanel);
+        newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
         UiManager.Instance.CreateButton(townOptionsButtonPanel, UiButton.ButtonType.TownMenuOption, "Stash", Item.Rarity.None, (Texture2D)Resources.Load("Images/StashMenuIcon"), () => playerScript.toggleMenu("Stash"));
+        
+
+        //Town Professions
+        if(null == townProfessionsPanel) {
+            GameObject townProfessionsPanelGameObject = (GameObject)Resources.Load("Prefabs/TownProfessionsPanel");
+            townProfessionsPanel = MonoBehaviour.Instantiate(townProfessionsPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            townProfessionsPanel.SetParent(canvas.transform, false);
+        }
+
+        Debug.Log("Npcs: " + npcs + " : " + npcs.Count);
+        foreach(NpcScript npc in npcs) {
+            GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townProfessionsPanel);
+            newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+            UiManager.Instance.CreateButton(townProfessionsPanel, UiButton.ButtonType.TownMenuOption, npc.getName(), Item.Rarity.None, npc.getTexture(), () => npc.startInteraction(this));
+        }
 
     }
 
