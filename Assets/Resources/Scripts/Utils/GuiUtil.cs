@@ -359,67 +359,67 @@ public class GuiUtil : MonoBehaviour {
 
     public static void shopkeeperMenu(ShopKeeperScript shopkeeper, PlayerScript playerScript)
     {
-        int buttonLength = (int)(shopkeeperGroupRect.width / 4);
-        int buffer = (int)shopkeeperGroupRect.width/16;
-        GUI.BeginGroup(shopkeeperGroupRect);
-        GUI.Box(shopkeeperBackgroundRect, "");
-        GUI.Box(shopkeeperIntroRect, shopkeeper.getName() + "'s Shop");
-        //GUI.DrawTexture(backgroundRect, backgroundTexture);
-        for( int col = 0; col < 3; col++ ) {
-            for( int row = 0; row < 3; row++ ) {
-                int slotNum =  ( col * 3 ) + row;
-                slotNum += (9 * shopkeeper.shopkeeperPageNumber);
-                if(shopkeeper.inventory.Count > slotNum) {
-                    Item item = shopkeeper.inventory[slotNum];
-                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
-                        buffer*(col+1) + buttonLength*(col+1), 
-                        buttonLength, buttonLength);
+        // int buttonLength = (int)(shopkeeperGroupRect.width / 4);
+        // int buffer = (int)shopkeeperGroupRect.width/16;
+        // GUI.BeginGroup(shopkeeperGroupRect);
+        // GUI.Box(shopkeeperBackgroundRect, "");
+        // GUI.Box(shopkeeperIntroRect, shopkeeper.getName() + "'s Shop");
+        // //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        // for( int col = 0; col < 3; col++ ) {
+        //     for( int row = 0; row < 3; row++ ) {
+        //         int slotNum =  ( col * 3 ) + row;
+        //         slotNum += (9 * shopkeeper.shopkeeperPageNumber);
+        //         if(shopkeeper.inventory.Count > slotNum) {
+        //             Item item = shopkeeper.inventory[slotNum];
+        //             Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+        //                 buffer*(col+1) + buttonLength*(col+1), 
+        //                 buttonLength, buttonLength);
 
-                    GUI.DrawTexture( slot, item.getIcon() );
+        //             GUI.DrawTexture( slot, item.getIcon() );
 
-                    //Button to buy the item
-                    if (GUI.Button(slot, "")) {
-                        if( playerScript.buyItem(item, shopkeeper.getCost(item)) )
-                        {
-                            shopkeeper.inventory.Remove(item);
-                        }
-                    }
+        //             //Button to buy the item
+        //             if (GUI.Button(slot, "")) {
+        //                 if( playerScript.buyItem(item, shopkeeper.getCost(item)) )
+        //                 {
+        //                     shopkeeper.inventory.Remove(item);
+        //                 }
+        //             }
                     
-                    //cursor tooltip
-                    String tooltipMessage = item.getTooltip() + ". Cost: " + item.getCost();
-                    if (null != item && slot.Contains(Event.current.mousePosition))
-                    {
-                        Rect mouseTextRect = new Rect(
-                            Input.mousePosition.x - shopkeeperGroupRect.x + (buffer / 2),
-                            Screen.height - Input.mousePosition.y - shopkeeperGroupRect.y,
-                            tooltipMessage.Length*8, Screen.height / 16);
-                        GUI.Box(mouseTextRect, tooltipMessage);
-                    }
-                }
-                else {
-                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
-                        buffer*(col+1) + buttonLength*(col+1), 
-                        buttonLength, buttonLength);
+        //             //cursor tooltip
+        //             String tooltipMessage = item.getTooltip() + ". Cost: " + item.getCost();
+        //             if (null != item && slot.Contains(Event.current.mousePosition))
+        //             {
+        //                 Rect mouseTextRect = new Rect(
+        //                     Input.mousePosition.x - shopkeeperGroupRect.x + (buffer / 2),
+        //                     Screen.height - Input.mousePosition.y - shopkeeperGroupRect.y,
+        //                     tooltipMessage.Length*8, Screen.height / 16);
+        //                 GUI.Box(mouseTextRect, tooltipMessage);
+        //             }
+        //         }
+        //         else {
+        //             Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+        //                 buffer*(col+1) + buttonLength*(col+1), 
+        //                 buttonLength, buttonLength);
 
-                    if (GUI.Button(slot, ""+slotNum)) {
+        //             if (GUI.Button(slot, ""+slotNum)) {
                         
-                    }
-                }
-                if (GUI.Button(shopkeeperCloseButton, "X"))
-                {
-                    shopkeeper.closeInventory();
-                }
-                if (GUI.Button(shopkeeperLeftButtonRect, "<-"))
-                {
-                    shopkeeper.movePage(-1);
-                }
-                if (GUI.Button(shopkeeperRightButtonRect, "->"))
-                {
-                    shopkeeper.movePage(1);
-                }
-            }
-        }
-        GUI.EndGroup();
+        //             }
+        //         }
+        //         if (GUI.Button(shopkeeperCloseButton, "X"))
+        //         {
+        //             shopkeeper.closeInventory();
+        //         }
+        //         if (GUI.Button(shopkeeperLeftButtonRect, "<-"))
+        //         {
+        //             shopkeeper.movePage(-1);
+        //         }
+        //         if (GUI.Button(shopkeeperRightButtonRect, "->"))
+        //         {
+        //             shopkeeper.movePage(1);
+        //         }
+        //     }
+        // }
+        // GUI.EndGroup();
     }
 
     public static void professionDialog(TownProfessionNpc selectedProfession, PlayerScript playerScript, TownScript townScript)
@@ -643,7 +643,7 @@ public class GuiUtil : MonoBehaviour {
 
         if (GUI.Button(quitRect, "X"))
         {
-            playerScript.closeMenu("Character");
+            // playerScript.closeMenu("Character");
         }
         GUI.EndGroup();
     }

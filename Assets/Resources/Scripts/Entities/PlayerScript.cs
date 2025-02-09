@@ -32,8 +32,6 @@ public class PlayerScript : MonoBehaviour
     protected Weapon[] weapons;
     Transform playerOptionsPanel, characterSheetPanel;
 
-    public bool characterMenuOpen, inventoryMenuOpen, mainMenuOpen;
-
     void Awake()
     {
         DontDestroyOnLoad(transform.gameObject);
@@ -57,9 +55,10 @@ public class PlayerScript : MonoBehaviour
         {
             GameObject playerOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerOptionsPanel");
             playerOptionsPanel = MonoBehaviour.Instantiate(playerOptionsPanelGameObject).GetComponent<Transform>();
-            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas"); 
             playerOptionsPanel.SetParent(canvas.transform, false);
-            UiManager.Instance.playerOptionsPanel = playerOptionsPanel;
+            UiManager.playerOptionsPanel = playerOptionsPanel;
+            UiManager.closeTownProfessionsPanels.Add(playerOptionsPanel);
         }
 
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
@@ -83,8 +82,8 @@ public class PlayerScript : MonoBehaviour
             characterSheetPanel = MonoBehaviour.Instantiate(characterSheetPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             characterSheetPanel.SetParent(canvas.transform, false);
-            UiManager.Instance.characterSheetPanel = characterSheetPanel;
-            UiManager.Instance.alwaysClosedPanels.Add(UiManager.Instance.characterSheetPanel);
+            UiManager.characterSheetPanel = characterSheetPanel;
+            UiManager.closeTownProfessionsPanels.Add(characterSheetPanel);
         }
         closeCharacterSheet();
     }
@@ -398,11 +397,27 @@ public class PlayerScript : MonoBehaviour
     }
 
     public bool useItem(Item item) {
-        if(item.use()) {
-            inventory.loseItem(item);
-            return true;
+        //If the shopkeeper is open, we should try to sell to them
+        if(UiManager.isShopkeeperPanelOpen()) {
+            ShopKeeperScript shopkeeper = getShopkeeper();
+            return sellItem(item, shopkeeper);
         }
+        //Otherwise if it's just in our inventory, use the item
+        else {
+            if(item.use()) {
+                inventory.loseItem(item);
+                return true;
+            }
+        }
+        Debug.Log("Didn't use item?");
         return false;
+    }
+
+    public ShopKeeperScript getShopkeeper() {
+        if(null != GameObject.FindGameObjectWithTag("Town")) {
+            return GameObject.FindGameObjectWithTag("Town").GetComponent<TownScript>().getShopkeeper();
+        }
+        return null;
     }
 
     public bool sellItem(Item item, ShopKeeperScript shopkeeper) {
@@ -414,9 +429,10 @@ public class PlayerScript : MonoBehaviour
         return false;
     }
 
-    public bool buyItem(Item item, int cost) {
+    public bool buyItem(Item item, int cost, ShopKeeperScript shopkeeper) {
         if(gold >= cost && inventory.addItem(item)) {
             gold -= cost;
+            shopkeeper.loseItem(item);
             return true;
         }
         else {
@@ -442,25 +458,19 @@ public class PlayerScript : MonoBehaviour
     }
 
     public void toggleMenu(String menu) {
-        Debug.Log("Toggle: " + menu);
         if(menu == "Character") {
             //toggleCharacterScreen();
-            UiManager.Instance.togglePanel(characterSheetPanel);
+            UiManager.togglePanel(characterSheetPanel);
         }
         else if(menu == "Inventory") {
             //inventory.toggleInventory();
-            UiManager.Instance.togglePanel(inventory.playerInventoryPanel);
+            UiManager.togglePanel(inventory.playerInventoryPanel);
         }
         else if(menu == "Stash") {
-            stashOpen = !stashOpen;
-            if(stashOpen) {
-                inventoryMenuOpen = true;
-            }
+            // UiManager.Instance.togglePanel(inventory.playerStashPanel);
         }
         else if(menu == "Main") {
-            mainMenuOpen = !mainMenuOpen;
-            characterMenuOpen = false;
-            inventoryMenuOpen = false;
+            // UiManager.Instance.togglePanel(inventory.mainMenuPanel);
         }
     }
 
@@ -474,36 +484,6 @@ public class PlayerScript : MonoBehaviour
         characterSheetPanel.gameObject.SetActive(true);
     }
     
-
-    public void openMenu(String menu) {
-        if(menu == "Character") {
-            characterMenuOpen = true;
-        }
-        else if(menu == "Inventory") {
-            inventoryMenuOpen = true;
-        }
-        else if(menu == "Main") {
-            mainMenuOpen = true;
-            characterMenuOpen = false;
-            inventoryMenuOpen = false;
-        }
-    }
-
-    public void closeMenu(String menu) {
-        if(menu == "Character") {
-            characterMenuOpen = false;
-        }
-        else if(menu == "Inventory") {
-            inventoryMenuOpen = false;
-        }
-        else if(menu == "Main") {
-            mainMenuOpen = false;
-        }
-    }
-
-    public bool anyMenuOpen() {
-        return characterMenuOpen || inventoryMenuOpen || mainMenuOpen;
-    }
 
     public bool isStashOpen() {
         return stashOpen;

@@ -414,7 +414,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 0}
-  townOptionsPanel: {fileID: 0}
 --- !u!4 &621326720
 Transform:
   m_ObjectHideFlags: 0

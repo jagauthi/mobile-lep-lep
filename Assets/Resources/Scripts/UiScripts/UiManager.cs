@@ -11,12 +11,13 @@ public class UiManager : MonoBehaviour
 
     public GameObject buttonPrefab;
     
-    public Transform playerOptionsPanel, characterSheetPanel;
-    public Transform playerInventoryPanel;
-    public Transform townOptionsButtonPanel, townProfessionsPanel;
+    public static Transform playerOptionsPanel, characterSheetPanel;
+    public static Transform playerInventoryPanel, playerStashPanel;
+    public static Transform townOptionsButtonPanel, townProfessionsPanel;
+    public static Transform shopkeeperInventoryPanel;
 
-    public List<Transform> alwaysClosedPanels = new List<Transform>();
-    public List<Transform> openPanels = new List<Transform>();
+    public static List<Transform> closeTownProfessionsPanels = new List<Transform>();
+    public static List<Transform> openPanels = new List<Transform>();
 
     void Awake()
     {
@@ -59,48 +60,60 @@ public class UiManager : MonoBehaviour
         return newButton;
     }
 
-    public void RemoveButton(Transform panel, string buttonText) {
+    public void RemoveButton(Transform panel, string buttonText, List<GameObject> itemButtons) {
         UiSlot[] slots = panel.GetComponentsInChildren<UiSlot>();
         foreach(UiSlot slot in slots) {
             UiButton button = slot.GetComponentInChildren<UiButton>();
             if(null != button && null != button.buttonText && button.buttonText.text == buttonText) {
                 //Remove this button from the slot
-                GameObject.Destroy(button.gameObject);
+                itemButtons.Remove(button.gameObject);
                 return;
             }
         }
     }
 
-    public void togglePanel(Transform panel) {
-        if (panel.gameObject.activeSelf) {
-            panel.gameObject.SetActive(false);
-        }
-        else {
-            openPanel(panel);
-        }
-    }
-
-    public void openPanel(Transform panel)
+    public static void togglePanel(Transform panel)
     {
-        // If this panel is in the "always closed" group, close others in that group
-        if (alwaysClosedPanels.Contains(panel))
+        // If this panel is configured to close the town professions panel, do that
+        if (closeTownProfessionsPanels.Contains(panel))
         {
-            foreach (Transform p in alwaysClosedPanels)
-            {
-                if (p != panel) p.gameObject.SetActive(false);
-            }
+            townProfessionsPanel.gameObject.SetActive(false);
+            openPanels.Remove(townProfessionsPanel);
         }
 
         // Toggle the panel open/close
         if (panel.gameObject.activeSelf)
         {
-            panel.gameObject.SetActive(false);
-            openPanels.Remove(panel);
+            closePanel(panel);
         }
         else
         {
-            panel.gameObject.SetActive(true);
-            if (!openPanels.Contains(panel)) openPanels.Add(panel);
+            openPanel(panel);
+        }
+
+        //If the panel was the shopkeeper panel, toggle the player inventory to be the same
+        if(panel.Equals(shopkeeperInventoryPanel)) {
+            if(shopkeeperInventoryPanel.gameObject.activeSelf) {
+                openPanel(playerInventoryPanel);
+            }
+            else {
+                closePanel(playerInventoryPanel);
+            }
+        }
+    }
+
+    public static void openPanel(Transform panel) {
+        panel.gameObject.SetActive(true);
+        if (!openPanels.Contains(panel)) openPanels.Add(panel);
+    }
+
+    public static void closePanel(Transform panel) {
+        panel.gameObject.SetActive(false);
+        openPanels.Remove(panel);
+        //If none of the close town profession panels are open, then we can open the town professions back up
+        if( null != townProfessionsPanel && !openPanels.Any( panel => closeTownProfessionsPanels.Any( closePanel => closePanel == panel) ) ) {
+            townProfessionsPanel.gameObject.SetActive(true);
+            if (!openPanels.Contains(panel)) openPanels.Add(townProfessionsPanel);
         }
     }
 
@@ -111,5 +124,9 @@ public class UiManager : MonoBehaviour
             panel.gameObject.SetActive(false);
         }
         openPanels.Clear();
+    }
+
+    public static bool isShopkeeperPanelOpen() {
+        return shopkeeperInventoryPanel.gameObject.activeSelf;
     }
 }

@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 
 public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public enum ButtonType { Ability, Item, PlayerMenuOption, TownMenuOption }
+    public enum ButtonType { Ability, Item, ShopkeeperItem, PlayerMenuOption, TownMenuOption }
 
     public Button button;
     public Text buttonText;

@@ -29,10 +29,6 @@ public class Inventory {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         initPlayerInventoryPanel();
 
-        CreateInventorySlots();
-        LoadInventoryItems();
-        UpdatePage();
-
         closeInventory();
     }
 
@@ -44,6 +40,8 @@ public class Inventory {
             playerInventoryPanel = MonoBehaviour.Instantiate(playerInventoryPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             playerInventoryPanel.SetParent(canvas.transform, false);
+            UiManager.playerInventoryPanel = playerInventoryPanel;
+            UiManager.closeTownProfessionsPanels.Add(playerInventoryPanel);
         }
 
         
@@ -58,6 +56,10 @@ public class Inventory {
                 nextPageButton.onClick.AddListener(NextPage);
             }
         }
+
+        CreateInventorySlots();
+        LoadInventoryItems();
+        UpdatePage();
         
     }
 
@@ -164,7 +166,7 @@ public class Inventory {
 
     public void loseItem(Item item) {
         items.Remove(item);
-        UiManager.Instance.RemoveButton(playerInventoryPanel, item.getBaseName());
+        UiManager.Instance.RemoveButton(playerInventoryPanel, item.getBaseName(), itemButtons);
     }
 
     public int getSize() {

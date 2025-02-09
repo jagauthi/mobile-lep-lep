@@ -32,6 +32,7 @@ public class TownScript : MonoBehaviour
             townOptionsButtonPanel = MonoBehaviour.Instantiate(townOptionsPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             townOptionsButtonPanel.SetParent(canvas.transform, false);
+            UiManager.townOptionsButtonPanel = townOptionsButtonPanel;
         }
 
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townOptionsButtonPanel);
@@ -45,6 +46,7 @@ public class TownScript : MonoBehaviour
             townProfessionsPanel = MonoBehaviour.Instantiate(townProfessionsPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             townProfessionsPanel.SetParent(canvas.transform, false);
+            UiManager.townProfessionsPanel = townProfessionsPanel;
         }
 
         Debug.Log("Npcs: " + npcs + " : " + npcs.Count);
@@ -78,28 +80,28 @@ public class TownScript : MonoBehaviour
     protected void drawTownThings() { 
         
         //If player has any menus open, we dont want to show most town options
-        if(playerScript.anyMenuOpen()) {
-            return;
-        }
+        // if(playerScript.anyMenuOpen()) {
+        //     return;
+        // }
 
         GuiUtil.drawTownOptions(playerScript);
         
         //Otherwise if shopkeeper has inventory open, show that
-        if(shopkeeper.showingInventory) {
-            GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
+        // if(shopkeeper.showingInventory) {
+        //     GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
 
-            //Displaying the player inventory which allows to sell items
-            GuiUtil.playerInventoryMenu(playerScript, shopkeeper, false);
-        }
+        //     //Displaying the player inventory which allows to sell items
+        //     GuiUtil.playerInventoryMenu(playerScript, shopkeeper, false);
+        // }
         //Show the other NPCs if the shopkeeper isn't open
-        else {
-            if(null == selectedProfession) {
-                GuiUtil.drawNpcs(npcs, this);
-            }
-            else {
-                GuiUtil.professionDialog(selectedProfession, playerScript, this);
-            }
-        }
+        // else {
+        //     if(null == selectedProfession) {
+        //         GuiUtil.drawNpcs(npcs, this);
+        //     }
+        //     else {
+        //         GuiUtil.professionDialog(selectedProfession, playerScript, this);
+        //     }
+        // }
     }
 
     public void setSelectedProfession(TownProfessionNpc townProfessionNpc) {
@@ -122,6 +124,10 @@ public class TownScript : MonoBehaviour
         else {
             SceneManager.LoadScene("CraftingScene");
         }
+    }
+
+    public ShopKeeperScript getShopkeeper() {
+        return shopkeeper;
     }
     
 

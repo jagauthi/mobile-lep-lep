@@ -16,6 +16,7 @@ TagManager:
   - RightPagination
   - Canvas
   - TownProfessionsPanel
+  - CloseButton
   layers:
   - Default
   - TransparentFX
