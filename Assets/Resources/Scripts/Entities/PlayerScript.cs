@@ -433,7 +433,7 @@ public class PlayerScript : MonoBehaviour
     public void toggleMenu(String menu) {
         Debug.Log("Toggle: " + menu);
         if(menu == "Character") {
-            characterMenuOpen = !characterMenuOpen;
+            toggleCharacterScreen();
         }
         else if(menu == "Inventory") {
             inventory.toggleInventory();
@@ -450,6 +450,11 @@ public class PlayerScript : MonoBehaviour
             inventoryMenuOpen = false;
         }
     }
+
+    public void toggleCharacterScreen() {
+        characterSheetPanel.gameObject.SetActive(!characterSheetPanel.gameObject.activeSelf);
+    }
+    
 
     public void openMenu(String menu) {
         if(menu == "Character") {
