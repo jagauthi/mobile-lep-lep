@@ -13,7 +13,7 @@ public class UiManager : MonoBehaviour
     
     public static Transform playerOptionsPanel, characterSheetPanel;
     public static Transform playerInventoryPanel, playerStashPanel;
-    public static Transform townOptionsButtonPanel, townProfessionsPanel;
+    public static Transform townOptionsButtonPanel, townProfessionsPanel, npcDialogPanel;
     public static Transform shopkeeperInventoryPanel;
 
     public static List<Transform> closeTownProfessionsPanels = new List<Transform>();

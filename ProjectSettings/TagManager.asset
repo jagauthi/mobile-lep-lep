@@ -17,6 +17,10 @@ TagManager:
   - Canvas
   - TownProfessionsPanel
   - CloseButton
+  - NpcDialogPanel
+  - NpcIcon
+  - ButtonOptions
+  - DialogTextPanel
   layers:
   - Default
   - TransparentFX
