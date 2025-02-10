@@ -198,6 +198,7 @@ public class ShopKeeperScript : NpcScript {
                 UiButton button = existingItem.Value.GetComponent<UiButton>();
                 if(null != button && null != button.buttonText && button.buttonText.text == item.getBaseName()) {
                     itemButtons[existingItem.Key] = null;
+                    UiManager.Instance.RemoveButton(shopkeeperInventoryPanel, item.getBaseName());
                     break;
                 }
             }

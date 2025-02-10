@@ -166,7 +166,7 @@ public class Inventory {
 
     public void loseItem(Item item) {
         items.Remove(item);
-        UiManager.Instance.RemoveButton(playerInventoryPanel, item.getBaseName(), itemButtons);
+        UiManager.Instance.RemoveButton(playerInventoryPanel, item.getBaseName());
     }
 
     public int getSize() {

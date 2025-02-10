@@ -60,13 +60,13 @@ public class UiManager : MonoBehaviour
         return newButton;
     }
 
-    public void RemoveButton(Transform panel, string buttonText, List<GameObject> itemButtons) {
+    public void RemoveButton(Transform panel, string buttonText) {
         UiSlot[] slots = panel.GetComponentsInChildren<UiSlot>();
         foreach(UiSlot slot in slots) {
             UiButton button = slot.GetComponentInChildren<UiButton>();
             if(null != button && null != button.buttonText && button.buttonText.text == buttonText) {
                 //Remove this button from the slot
-                itemButtons.Remove(button.gameObject);
+                GameObject.Destroy(button.gameObject);
                 return;
             }
         }
