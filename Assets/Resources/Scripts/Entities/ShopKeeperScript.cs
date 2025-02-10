@@ -177,7 +177,7 @@ public class ShopKeeperScript : NpcScript {
             Debug.Log("Not enough room to buy");
             return false;
         }
-        GameObject newItem = UiManager.Instance.CreateButton(shopkeeperInventoryPanel, UiButton.ButtonType.ShopkeeperItem, item.getBaseName(), Item.Rarity.None, 
+        GameObject newItem = UiManager.Instance.CreateButton(shopkeeperInventoryPanel, UiButton.ButtonType.ShopkeeperItem, item.getBaseName(), item.getRarity(), 
                             item.getIcon(), () => playerScript.buyItem(item, item.getCost(), this));
 
         foreach (KeyValuePair<int, GameObject> existingItem in itemButtons) {
