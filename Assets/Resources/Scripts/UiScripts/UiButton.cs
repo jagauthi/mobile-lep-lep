@@ -40,10 +40,12 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         this.buttonType = buttonType;
         this.itemRarity = rarity;
 
-        buttonText.text = text;
-
         if (icon != null) {
             buttonIcon.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.95f, 0.95f));
+        }
+        else {
+            buttonIcon.gameObject.SetActive(false);
+            buttonText.text = text;
         }
 
         SetRarityColor();
@@ -59,7 +61,7 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         switch (itemRarity)
         {
             case Item.Rarity.None:
-                buttonBackground.color = Color.white;
+                buttonBackground.gameObject.SetActive(false);
                 break;
             case Item.Rarity.Common:
                 buttonBackground.color = Color.gray;

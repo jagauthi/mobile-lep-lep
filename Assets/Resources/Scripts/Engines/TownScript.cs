@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,7 +22,7 @@ public class TownScript : MonoBehaviour
 
         shopkeeper = new ShopKeeperScript("Shopkeeper Ben", (Texture2D)Resources.Load("Images/LeatherHelm"));
 
-        TownProfessionNpc blacksmith = new TownProfessionNpc("Sarah the Blacksmith", (Texture2D)Resources.Load("Images/SawahBlacksmith1"));
+        TownProfessionNpc blacksmith = new TownProfessionNpc("Sarah the Blacksmith", (Texture2D)Resources.Load("Images/SawahBlacksmith1"), (Texture2D)Resources.Load("Images/SawahBlacksmithHeadshot"));
 
         npcs = new List<NpcScript>();
         npcs.Add(shopkeeper);
@@ -75,19 +76,47 @@ public class TownScript : MonoBehaviour
         GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
         npcDialogPanel.SetParent(canvas.transform, false);
         UiManager.npcDialogPanel = npcDialogPanel;
+        UiManager.closeTownProfessionsPanels.Add(npcDialogPanel);
+        
+        UiManager.closePanel(npcDialogPanel);
     }
 
     public void setupNpcDialogPanel(TownProfessionNpc selectedProfession) {
+
+        UiManager.togglePanel(npcDialogPanel);
+
+        //NPC icon
         GameObject npcIconGameObject = npcDialogPanel.Find("NpcIcon").gameObject;
         Rect iconRect = npcIconGameObject.GetComponent<RectTransform>().rect;
-        npcIconGameObject.GetComponent<Image>().sprite = Sprite.Create(selectedProfession.getTexture(), new Rect(0, 0, iconRect.width, iconRect.height), new Vector2(0.95f, 0.95f));
+        npcIconGameObject.GetComponent<Image>().sprite = Sprite.Create(selectedProfession.getHeadShot(), new Rect(0, 0, selectedProfession.getTexture().width, selectedProfession.getTexture().height), new Vector2(0.5f, 0.5f));
 
-        GameObject textPanelGameObject = npcDialogPanel.Find("TextPanel").gameObject;
 
-        GameObject buttonOptionsGameObject = npcDialogPanel.Find("ButtonOptions").gameObject;
+        //Text panel
+        Transform textPanel = npcDialogPanel.Find("TextPanel");
+        Text text = textPanel.transform.Find("Text").gameObject.GetComponent<Text>();
+        text.text = selectedProfession.getTownDialog();
+
+        //Button options
+        Transform buttonOptionsPanel = npcDialogPanel.Find("ButtonOptions");
+        //Remove existing buttons
+        for(int i = 0; i < buttonOptionsPanel.childCount; i++) {
+            GameObject childGameObject = buttonOptionsPanel.GetChild(i).gameObject;
+            GameObject.Destroy(childGameObject);
+        }
+        //Dungeon button
+        GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
+        newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => startDungeon());
+        //Crafting button
+        GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
+        newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Crafting", Item.Rarity.None, null, () => startCrafting());
         
+        
+        //Close button
         GameObject closeButtonGameObject = npcDialogPanel.Find("CloseButton").gameObject;
-
+        Button button = closeButtonGameObject.GetComponent<Button>();
+        button.onClick.AddListener(() => UiManager.closePanel(npcDialogPanel));
     }
 
     private void getPlayerScript() {

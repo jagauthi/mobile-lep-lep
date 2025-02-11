@@ -459,7 +459,6 @@ public class PlayerScript : MonoBehaviour
 
     public void toggleMenu(String menu) {
         if(menu == "Character") {
-            //toggleCharacterScreen();
             UiManager.togglePanel(characterSheetPanel);
         }
         else if(menu == "Inventory") {
@@ -474,14 +473,9 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public void toggleCharacterScreen() {
-        characterSheetPanel.gameObject.SetActive(!characterSheetPanel.gameObject.activeSelf);
-    }
     public void closeCharacterSheet() {
-        characterSheetPanel.gameObject.SetActive(false);
-    }
-    public void openCharacterSheet() {
-        characterSheetPanel.gameObject.SetActive(true);
+        UiManager.closePanel(characterSheetPanel);
+        // characterSheetPanel.gameObject.SetActive(false);
     }
     
 
