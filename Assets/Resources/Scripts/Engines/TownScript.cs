@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TownScript : MonoBehaviour
 {
@@ -76,8 +77,17 @@ public class TownScript : MonoBehaviour
         UiManager.npcDialogPanel = npcDialogPanel;
     }
 
-    private void setupNpcDialogPanel(TownProfessionNpc selectedProfession) {
+    public void setupNpcDialogPanel(TownProfessionNpc selectedProfession) {
+        GameObject npcIconGameObject = npcDialogPanel.Find("NpcIcon").gameObject;
+        Rect iconRect = npcIconGameObject.GetComponent<RectTransform>().rect;
+        npcIconGameObject.GetComponent<Image>().sprite = Sprite.Create(selectedProfession.getTexture(), new Rect(0, 0, iconRect.width, iconRect.height), new Vector2(0.95f, 0.95f));
+
+        GameObject textPanelGameObject = npcDialogPanel.Find("TextPanel").gameObject;
+
+        GameObject buttonOptionsGameObject = npcDialogPanel.Find("ButtonOptions").gameObject;
         
+        GameObject closeButtonGameObject = npcDialogPanel.Find("CloseButton").gameObject;
+
     }
 
     private void getPlayerScript() {

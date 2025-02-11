@@ -768,6 +768,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NpcDialogPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 4653972491933476407, guid: 029c22fe389beb24daf97fcb0dc17fd6, type: 3}
+      propertyPath: m_Name
+      value: Text
+      objectReference: {fileID: 0}
     - target: {fileID: 5795649859786063637, guid: 029c22fe389beb24daf97fcb0dc17fd6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

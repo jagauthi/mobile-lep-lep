@@ -23,6 +23,7 @@ public class TownProfessionNpc : NpcScript {
     public override void startInteraction(TownScript townScript)
     {
         townScript.setSelectedProfession(this);
+        townScript.setupNpcDialogPanel(this);
     }
 
     public string getTownDialog() {
