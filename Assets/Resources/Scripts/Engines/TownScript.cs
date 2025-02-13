@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Xml;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,6 +14,9 @@ public class TownScript : MonoBehaviour
    ShopKeeperScript shopkeeper;
    TownProfessionNpc selectedProfession;
    Transform townOptionsButtonPanel, townProfessionsPanel, npcDialogPanel;
+   private int dungeonFloorsPage = 0;
+
+   private GameObject dungeonFloorsPanelGameObject
 
 
     void Start()
@@ -83,6 +87,12 @@ public class TownScript : MonoBehaviour
 
     public void setupNpcDialogPanel(TownProfessionNpc selectedProfession) {
 
+
+//////////////////////
+        //TODO: Put these things either in this class or in UI Manager so that they can be enabled/disabled at differnet parts of the NPC dialog
+        GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton
+//////////////////////
+
         UiManager.togglePanel(npcDialogPanel);
 
         //NPC icon
@@ -92,12 +102,15 @@ public class TownScript : MonoBehaviour
 
 
         //Text panel
-        Transform textPanel = npcDialogPanel.Find("TextPanel");
+        GameObject textPanelGameObject = npcDialogPanel.Find("TextPanel").gameObject;
+        Transform textPanel = textPanelGameObject.transform;
         Text text = textPanel.transform.Find("Text").gameObject.GetComponent<Text>();
         text.text = selectedProfession.getTownDialog();
 
+
         //Button options
-        Transform buttonOptionsPanel = npcDialogPanel.Find("ButtonOptions");
+        GameObject buttonOptionsPanelGameObject = npcDialogPanel.Find("ButtonOptions").gameObject;
+        Transform buttonOptionsPanel = buttonOptionsPanelGameObject.transform;
         //Remove existing buttons
         for(int i = 0; i < buttonOptionsPanel.childCount; i++) {
             GameObject childGameObject = buttonOptionsPanel.GetChild(i).gameObject;
@@ -117,6 +130,45 @@ public class TownScript : MonoBehaviour
         GameObject closeButtonGameObject = npcDialogPanel.Find("CloseButton").gameObject;
         Button button = closeButtonGameObject.GetComponent<Button>();
         button.onClick.AddListener(() => UiManager.closePanel(npcDialogPanel));
+
+
+        /**
+        These things below will be disabled at startup, and will be enabled later if dungeon dialog option is selected
+        **/
+
+        //Dungeon Floors Selection Buttons
+        GameObject dungeonFloorsPanelGameObject = npcDialogPanel.Find("DungeonFloorsPanel").gameObject;
+        Transform dungeonFloorsPanel = dungeonFloorsPanelGameObject.transform;
+        for(int i = 0; i < 5; i++) {
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonFloorsPanel);
+            newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+            UiManager.Instance.CreateButton(dungeonFloorsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => selectDungeonFloor(i));
+        }
+
+
+        //Dungeon Floors Text Panle
+        GameObject dungeonFloorsTextPanel = npcDialogPanel.Find("DungeonFloorsTextPanel").gameObject;
+        Text dungeonFloorsText = textPanel.transform.Find("Text").gameObject.GetComponent<Text>();
+        dungeonFloorsText.text = "Which floor?";
+
+
+        //Dungeon Floors Pagination Buttons
+        GameObject dungeonFloorsUpButton = npcDialogPanel.Find("DungeonFloorsUpButton").gameObject;
+        Button upButton = dungeonFloorsUpButton.GetComponent<Button>();
+        upButton.onClick.AddListener(() => moveDungeonFloorPage(1));
+
+        GameObject dungeonFloorsDownButton = npcDialogPanel.Find("DungeonFloorsDownButton").gameObject;
+        Button downButton = dungeonFloorsDownButton.GetComponent<Button>();
+        downButton.onClick.AddListener(() => moveDungeonFloorPage(-1));
+    }
+
+    private void selectDungeonFloor(int floorNum) {
+        int adjustedFloor = floorNum + (dungeonFloorsPage * 5);
+        Debug.Log("Selected floor: " + adjustedFloor);
+    }
+
+    private void moveDungeonFloorPage(int direction) {
+        dungeonFloorsPage += direction;
     }
 
     private void getPlayerScript() {

@@ -175,6 +175,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NpcDialogPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 21972537393354743, guid: 029c22fe389beb24daf97fcb0dc17fd6, type: 3}
+      propertyPath: m_Name
+      value: DungeonFloorsDownButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 2770657418568725845, guid: 029c22fe389beb24daf97fcb0dc17fd6, type: 3}
+      propertyPath: m_Name
+      value: DungeonFloorsUpButton
+      objectReference: {fileID: 0}
     - target: {fileID: 5795649859786063637, guid: 029c22fe389beb24daf97fcb0dc17fd6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
