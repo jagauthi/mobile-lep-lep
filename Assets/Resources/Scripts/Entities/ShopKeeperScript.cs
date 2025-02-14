@@ -178,7 +178,7 @@ public class ShopKeeperScript : NpcScript {
             return false;
         }
         GameObject newItem = UiManager.Instance.CreateButton(shopkeeperInventoryPanel, UiButton.ButtonType.ShopkeeperItem, item.getBaseName(), item.getRarity(), 
-                            item.getIcon(), () => playerScript.buyItem(item, item.getCost(), this));
+                            item.getIcon(), () => playerScript.buyItem(item, item.getCost(), this), false);
 
         foreach (KeyValuePair<int, GameObject> existingItem in itemButtons) {
             if(null == existingItem.Value) {

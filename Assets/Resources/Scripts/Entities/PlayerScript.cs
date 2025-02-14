@@ -63,15 +63,15 @@ public class PlayerScript : MonoBehaviour
 
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
         newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"), false);
 
         GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
         newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"), false);
 
         GameObject newSlot3 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
         newSlot3.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"));
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"), false);
     }
 
     private void initCharacterSheetPanel()
@@ -401,6 +401,9 @@ public class PlayerScript : MonoBehaviour
         if(UiManager.isShopkeeperPanelOpen()) {
             ShopKeeperScript shopkeeper = getShopkeeper();
             return sellItem(item, shopkeeper);
+        }
+        else if(UiManager.isStashOpen()) {
+            return inventory.transferFromInventoryToStash(item);
         }
         //Otherwise if it's just in our inventory, use the item
         else {

@@ -24,7 +24,8 @@ public class Equipment {
     public bool equipArmor(PlayerScript player, Armor item) {
         //if(player.meetsRequirements(item)) {
             if(equipment[item.getSlot()] != null) {
-                if(!player.getInventory().addItem(item)) { 
+                Armor existingArmor = equipment[item.getSlot()];
+                if(!player.getInventory().addItem(existingArmor)) { 
                     Debug.Log("Inventory full");
                     return false;
                 }

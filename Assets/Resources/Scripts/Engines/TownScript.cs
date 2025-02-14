@@ -16,8 +16,6 @@ public class TownScript : MonoBehaviour
    Transform townOptionsButtonPanel, townProfessionsPanel, npcDialogPanel;
    private int dungeonFloorsPage = 0;
 
-   private GameObject dungeonFloorsPanelGameObject
-
 
     void Start()
     {
@@ -53,7 +51,7 @@ public class TownScript : MonoBehaviour
         {
             GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townProfessionsPanel);
             newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-            UiManager.Instance.CreateButton(townProfessionsPanel, UiButton.ButtonType.TownMenuOption, npc.getName(), Item.Rarity.None, npc.getTexture(), () => npc.startInteraction(this));
+            UiManager.Instance.CreateButton(townProfessionsPanel, UiButton.ButtonType.TownMenuOption, npc.getName(), Item.Rarity.None, npc.getTexture(), () => npc.startInteraction(this), false);
         }
     }
 
@@ -70,7 +68,7 @@ public class TownScript : MonoBehaviour
 
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townOptionsButtonPanel);
         newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        UiManager.Instance.CreateButton(townOptionsButtonPanel, UiButton.ButtonType.TownMenuOption, "Stash", Item.Rarity.None, (Texture2D)Resources.Load("Images/StashMenuIcon"), () => playerScript.toggleMenu("Stash"));
+        UiManager.Instance.CreateButton(townOptionsButtonPanel, UiButton.ButtonType.TownMenuOption, "Stash", Item.Rarity.None, (Texture2D)Resources.Load("Images/StashMenuIcon"), () => UiManager.togglePanel(UiManager.playerStashPanel), false);
     }
 
     private void initNpcDialogPanel()
@@ -85,24 +83,21 @@ public class TownScript : MonoBehaviour
         UiManager.closePanel(npcDialogPanel);
     }
 
-    public void setupNpcDialogPanel(TownProfessionNpc selectedProfession) {
-
-
-//////////////////////
-        //TODO: Put these things either in this class or in UI Manager so that they can be enabled/disabled at differnet parts of the NPC dialog
-        GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton
-//////////////////////
+    public void setupNpcDialogPanel(TownProfessionNpc selectedProfession)
+    {
 
         UiManager.togglePanel(npcDialogPanel);
 
         //NPC icon
         GameObject npcIconGameObject = npcDialogPanel.Find("NpcIcon").gameObject;
+        UiManager.npcIconGameObject = npcIconGameObject;
         Rect iconRect = npcIconGameObject.GetComponent<RectTransform>().rect;
         npcIconGameObject.GetComponent<Image>().sprite = Sprite.Create(selectedProfession.getHeadShot(), new Rect(0, 0, selectedProfession.getTexture().width, selectedProfession.getTexture().height), new Vector2(0.5f, 0.5f));
 
 
         //Text panel
         GameObject textPanelGameObject = npcDialogPanel.Find("TextPanel").gameObject;
+        UiManager.textPanelGameObject = textPanelGameObject;
         Transform textPanel = textPanelGameObject.transform;
         Text text = textPanel.transform.Find("Text").gameObject.GetComponent<Text>();
         text.text = selectedProfession.getTownDialog();
@@ -110,24 +105,27 @@ public class TownScript : MonoBehaviour
 
         //Button options
         GameObject buttonOptionsPanelGameObject = npcDialogPanel.Find("ButtonOptions").gameObject;
+        UiManager.buttonOptionsPanelGameObject = buttonOptionsPanelGameObject;
         Transform buttonOptionsPanel = buttonOptionsPanelGameObject.transform;
         //Remove existing buttons
-        for(int i = 0; i < buttonOptionsPanel.childCount; i++) {
+        for (int i = 0; i < buttonOptionsPanel.childCount; i++)
+        {
             GameObject childGameObject = buttonOptionsPanel.GetChild(i).gameObject;
             GameObject.Destroy(childGameObject);
         }
         //Dungeon button
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
         newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => startDungeon());
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => enableDungeonFloorsSelection(), false);
         //Crafting button
         GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
         newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Crafting", Item.Rarity.None, null, () => startCrafting());
-        
-        
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Crafting", Item.Rarity.None, null, () => startCrafting(), false);
+
+
         //Close button
         GameObject closeButtonGameObject = npcDialogPanel.Find("CloseButton").gameObject;
+        UiManager.closeButtonGameObject = closeButtonGameObject;
         Button button = closeButtonGameObject.GetComponent<Button>();
         button.onClick.AddListener(() => UiManager.closePanel(npcDialogPanel));
 
@@ -138,37 +136,84 @@ public class TownScript : MonoBehaviour
 
         //Dungeon Floors Selection Buttons
         GameObject dungeonFloorsPanelGameObject = npcDialogPanel.Find("DungeonFloorsPanel").gameObject;
-        Transform dungeonFloorsPanel = dungeonFloorsPanelGameObject.transform;
-        for(int i = 0; i < 5; i++) {
-            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonFloorsPanel);
-            newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-            UiManager.Instance.CreateButton(dungeonFloorsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => selectDungeonFloor(i));
-        }
+        UiManager.dungeonFloorsPanelGameObject = dungeonFloorsPanelGameObject;
+        setupDungeonFloorButtons(dungeonFloorsPanelGameObject);
 
 
         //Dungeon Floors Text Panle
         GameObject dungeonFloorsTextPanel = npcDialogPanel.Find("DungeonFloorsTextPanel").gameObject;
-        Text dungeonFloorsText = textPanel.transform.Find("Text").gameObject.GetComponent<Text>();
+        UiManager.dungeonFloorsTextPanel = dungeonFloorsTextPanel;
+        Text dungeonFloorsText = dungeonFloorsTextPanel.transform.Find("Text").gameObject.GetComponent<Text>();
         dungeonFloorsText.text = "Which floor?";
 
 
         //Dungeon Floors Pagination Buttons
+        //Up Button
         GameObject dungeonFloorsUpButton = npcDialogPanel.Find("DungeonFloorsUpButton").gameObject;
+        UiManager.dungeonFloorsUpButton = dungeonFloorsUpButton;
         Button upButton = dungeonFloorsUpButton.GetComponent<Button>();
-        upButton.onClick.AddListener(() => moveDungeonFloorPage(1));
-
+        upButton.onClick.AddListener(() => moveDungeonFloorPage(-1));
+        //Down button
         GameObject dungeonFloorsDownButton = npcDialogPanel.Find("DungeonFloorsDownButton").gameObject;
+        UiManager.dungeonFloorsDownButton = dungeonFloorsDownButton;
         Button downButton = dungeonFloorsDownButton.GetComponent<Button>();
-        downButton.onClick.AddListener(() => moveDungeonFloorPage(-1));
+        downButton.onClick.AddListener(() => moveDungeonFloorPage(1));
+
+
+        //Disable the ones that should be disabled at the start
+        UiManager.disablePanel(dungeonFloorsPanelGameObject);
+        UiManager.disablePanel(dungeonFloorsTextPanel);
+        UiManager.disablePanel(dungeonFloorsUpButton);
+        UiManager.disablePanel(dungeonFloorsDownButton);
     }
 
+    private void setupDungeonFloorButtons(GameObject dungeonFloorsPanelGameObject)
+    {
+        Transform dungeonFloorsPanel = dungeonFloorsPanelGameObject.transform;
+        
+        //First clear existing buttons
+        for(int i = 0; i < dungeonFloorsPanel.childCount; i++) {
+            GameObject.Destroy(dungeonFloorsPanel.GetChild(i).gameObject);
+        }
+
+        //Then set up the new buttons
+        int maxDungeonFloorNumCompleted = playerScript.getMaxDungeonFloorNumCompleted();
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonFloorsPanel);
+            newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+            int floorNum = i + 1 + (dungeonFloorsPage * 5);
+            bool disabled = maxDungeonFloorNumCompleted+1 < floorNum;
+            UiManager.Instance.CreateButton(dungeonFloorsPanel, UiButton.ButtonType.TownMenuOption, "" + floorNum, Item.Rarity.None, null, () => selectDungeonFloor(floorNum), disabled);
+        }
+    }
+
+    private void enableDungeonFloorsSelection() {
+        //Disable the ones that were enabled at the beginning
+        UiManager.disablePanel(UiManager.textPanelGameObject);
+        UiManager.disablePanel(UiManager.buttonOptionsPanelGameObject);
+        
+        //Enable the ones needed for dungeon floor selection
+        UiManager.enablePanel(UiManager.dungeonFloorsPanelGameObject);
+        UiManager.enablePanel(UiManager.dungeonFloorsTextPanel);
+        UiManager.enablePanel(UiManager.dungeonFloorsUpButton);
+        UiManager.enablePanel(UiManager.dungeonFloorsDownButton);
+    }
+
+
     private void selectDungeonFloor(int floorNum) {
-        int adjustedFloor = floorNum + (dungeonFloorsPage * 5);
-        Debug.Log("Selected floor: " + adjustedFloor);
+        Debug.Log("Selected floor: " + floorNum);
+        startDungeon(floorNum); 
     }
 
     private void moveDungeonFloorPage(int direction) {
         dungeonFloorsPage += direction;
+        if(dungeonFloorsPage < 0) {
+            dungeonFloorsPage = 0;
+        }
+        else {
+            setupDungeonFloorButtons(UiManager.dungeonFloorsPanelGameObject);
+        }
     }
 
     private void getPlayerScript() {
@@ -221,11 +266,12 @@ public class TownScript : MonoBehaviour
         this.selectedProfession = townProfessionNpc;
     }
 
-    public void startDungeon() {
+    public void startDungeon(int floorNum) {
         if(playerScript.isDead()) {
             Debug.Log("Can't load dungeon when you're dead!");
         }
         else {
+            playerScript.setDungeonFloor(floorNum);
             SceneManager.LoadScene("DungeonScene");
         }
     }

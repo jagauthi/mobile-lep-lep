@@ -32,7 +32,7 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>(); // Ensure it exists
     }
 
-    public void Setup(string text, UnityAction onClickAction, ButtonType buttonType, Item.Rarity rarity, Texture2D icon)
+    public void Setup(string text, UnityAction onClickAction, ButtonType buttonType, Item.Rarity rarity, Texture2D icon, bool disabled)
     {
         if(null == buttonText) {
             Awake();
@@ -40,18 +40,24 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         this.buttonType = buttonType;
         this.itemRarity = rarity;
 
+        buttonText.text = text;
         if (icon != null) {
-            buttonIcon.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.95f, 0.95f));
+            buttonIcon.sprite = Sprite.Create(icon, new Rect(0, 0, icon.width, icon.height), new Vector2(0.5f, 0.5f));
+            buttonText.enabled = false;
         }
         else {
             buttonIcon.gameObject.SetActive(false);
-            buttonText.text = text;
         }
+        
 
         SetRarityColor();
 
         button.onClick.RemoveAllListeners(); // Clear old listeners
         button.onClick.AddListener(onClickAction); // Assign new action
+
+        if(disabled) {
+            button.interactable = false;
+        }
     }
 
      private void SetRarityColor()

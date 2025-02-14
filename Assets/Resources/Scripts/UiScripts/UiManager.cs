@@ -16,6 +16,10 @@ public class UiManager : MonoBehaviour
     public static Transform townOptionsButtonPanel, townProfessionsPanel, npcDialogPanel;
     public static Transform shopkeeperInventoryPanel;
 
+    //GameObjects used to enable/disable in the NPC dialog
+    public static GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton;
+
+
     public static List<Transform> closeTownProfessionsPanels = new List<Transform>();
     public static List<Transform> openPanels = new List<Transform>();
 
@@ -35,7 +39,7 @@ public class UiManager : MonoBehaviour
 
     }
 
-    public GameObject CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick)
+    public GameObject CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick, bool disabled)
     {
         GameObject newButton = null;
 
@@ -50,7 +54,7 @@ public class UiManager : MonoBehaviour
             newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
             UiButton uiButton = newButton.GetComponent<UiButton>();
             if (uiButton != null) {
-                uiButton.Setup(text, onClick, buttonType, rarity, icon);
+                uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled);
             }
         }
         else
@@ -70,6 +74,9 @@ public class UiManager : MonoBehaviour
                 return;
             }
         }
+        //If we couldn't remove the button, then there might be some issue with how we implemented 
+        // finding the button by text..... (likely to happen at some point)
+        throw new System.Exception("Failed to remove button: " + buttonText);
     }
 
     public static void togglePanel(Transform panel)
@@ -128,5 +135,17 @@ public class UiManager : MonoBehaviour
 
     public static bool isShopkeeperPanelOpen() {
         return shopkeeperInventoryPanel.gameObject.activeSelf;
+    }
+
+    public static bool isStashOpen() {
+        return playerStashPanel.gameObject.activeSelf;
+    }
+
+    public static void disablePanel(GameObject panel) {
+        panel.SetActive(false);
+    }
+
+    public static void enablePanel(GameObject panel) {
+        panel.SetActive(true);
     }
 }

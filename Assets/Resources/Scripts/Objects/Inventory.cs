@@ -1,39 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Inventory {
 
     List<Item> items;
     List<Item> stashItems;
-    int maxSize, inventoryPage, stashPage;
-    public Transform playerInventoryPanel;
+    public Transform playerInventoryPanel, playerStashPanel;
     PlayerScript playerScript;
 
-    private List<GameObject> slots = new List<GameObject>();
-    private List<GameObject> itemButtons = new List<GameObject>(); 
-    private int totalSlots = 30;
-    private int slotsPerPage = 9;
-    private int currentPage = 0;
+    private List<GameObject> inventorySlots = new List<GameObject>();
+    private List<GameObject> stashSlots = new List<GameObject>();
+    private List<GameObject> inventoryButtons = new List<GameObject>(); 
+    private List<GameObject> stashButtons = new List<GameObject>(); 
+    private int inventoryTotalSlots = 27;
+    private int stashTotalSlots = 90;
+    private int inventorySlotsPerPage = 9;
+    private int stashSlotsPerPage = 15;
+    private int inventoryCurrentPage = 0;
+    private int stashCurrentPage = 0;
 
-    public Button nextPageButton, prevPageButton;
+    public Button inventoryNextPageButton, inventoryPrevPageButton, stashNextPageButton, stashPrevPageButton;
 
     public Inventory() {
         items = new List<Item>();
         stashItems = new List<Item>();
-        maxSize = 12;
-        inventoryPage = 0;
-        stashPage = 0;
         
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         initPlayerInventoryPanel();
+        initPlayerStashPanel();
 
-        closeInventory();
+        UiManager.togglePanel(playerInventoryPanel);
+        UiManager.togglePanel(playerStashPanel);
     }
 
     private void initPlayerInventoryPanel() {
-
 
         if(null == playerInventoryPanel) {
             GameObject playerInventoryPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerInventoryPanel");
@@ -48,42 +51,70 @@ public class Inventory {
         Button[] paginationButtons = playerInventoryPanel.GetComponentsInChildren<Button>();
         foreach (Button button in paginationButtons){
             if (button.gameObject.tag == "LeftPagination"){
-                prevPageButton = button;
-                prevPageButton.onClick.AddListener(PreviousPage);
+                inventoryPrevPageButton = button;
+                /**
+                Transform panel, int totalSlots, List<GameObject> slots, List<GameObject> itemButtons, int currentPage, int slotsPerPage, 
+        Button prevPageButton, Button nextPageButton
+                **/
+                inventoryPrevPageButton.onClick.AddListener(() => PreviousPage(playerInventoryPanel, inventoryTotalSlots, inventorySlots, inventoryButtons,
+                    ref inventoryCurrentPage, inventorySlotsPerPage, ref inventoryPrevPageButton, ref inventoryNextPageButton));
             }
             else if(button.gameObject.tag == "RightPagination"){
-                nextPageButton = button;
-                nextPageButton.onClick.AddListener(NextPage);
+                inventoryNextPageButton = button;
+                inventoryNextPageButton.onClick.AddListener(() => NextPage(playerInventoryPanel, inventoryTotalSlots, inventorySlots, inventoryButtons,
+                    ref inventoryCurrentPage, inventorySlotsPerPage, ref inventoryPrevPageButton, ref inventoryNextPageButton));
             }
         }
 
-        CreateInventorySlots();
-        LoadInventoryItems();
-        UpdatePage();
+        CreateInventorySlots(playerInventoryPanel, inventoryTotalSlots, inventorySlots);
+        LoadInventoryItems(playerInventoryPanel, inventoryTotalSlots, inventoryButtons, true);
+        UpdatePage(playerInventoryPanel, inventoryTotalSlots, inventorySlots, inventoryButtons,
+                    ref inventoryCurrentPage, inventorySlotsPerPage, ref inventoryPrevPageButton, ref inventoryNextPageButton);
+    }
+
+    private void initPlayerStashPanel() {
+
+        if(null == playerStashPanel) {
+            GameObject playerStashPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerStashPanel");
+            playerStashPanel = MonoBehaviour.Instantiate(playerStashPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            playerStashPanel.SetParent(canvas.transform, false);
+            UiManager.playerStashPanel = playerStashPanel;
+            UiManager.closeTownProfessionsPanels.Add(playerStashPanel);
+        }
+
         
+        Button[] paginationButtons = playerStashPanel.GetComponentsInChildren<Button>();
+        foreach (Button button in paginationButtons){
+            if (button.gameObject.tag == "LeftPagination"){
+                stashPrevPageButton = button;
+                stashPrevPageButton.onClick.AddListener(() => PreviousPage(playerStashPanel, stashTotalSlots, stashSlots, stashButtons,
+                    ref stashCurrentPage, stashSlotsPerPage, ref stashPrevPageButton, ref stashNextPageButton));
+            }
+            else if(button.gameObject.tag == "RightPagination"){
+                stashNextPageButton = button;
+                stashNextPageButton.onClick.AddListener(() => NextPage(playerStashPanel, stashTotalSlots, stashSlots, stashButtons,
+                    ref stashCurrentPage, stashSlotsPerPage, ref stashPrevPageButton, ref stashNextPageButton));
+            }
+        }
+
+        CreateInventorySlots(playerStashPanel, stashTotalSlots, stashSlots);
+        LoadInventoryItems(playerStashPanel, stashTotalSlots, stashButtons, false);
+        UpdatePage(playerStashPanel, stashTotalSlots, stashSlots, stashButtons,
+                    ref stashCurrentPage, stashSlotsPerPage, ref stashPrevPageButton, ref stashNextPageButton);
     }
 
-    public void toggleInventory() {
-        playerInventoryPanel.gameObject.SetActive(!playerInventoryPanel.gameObject.activeSelf);
-    }
-    public void closeInventory() {
-        playerInventoryPanel.gameObject.SetActive(false);
-    }
-    public void openInventory() {
-        playerInventoryPanel.gameObject.SetActive(true);
-    }
-
-    void CreateInventorySlots()
+    void CreateInventorySlots(Transform panel, int totalSlots, List<GameObject> slots)
     {
         for (int i = 0; i < totalSlots; i++)
         {
-            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerInventoryPanel);
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), panel);
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
             slots.Add(newSlot);
         }
     }
 
-    void LoadInventoryItems()
+    void LoadInventoryItems(Transform panel, int totalSlots, List<GameObject> itemButtons, bool playerInventory)
     {
         for (int i = 0; i < items.Count; i++)
         {
@@ -92,16 +123,55 @@ public class Inventory {
                 return;
             }
             Item item = items[i];
-            GameObject newItem = UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, 
-                                (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => playerScript.useItem(item));
+
+            UnityAction itemUseFunction = null;
+            //If this is used from the inventory, use the item
+            if(playerInventory) {
+                playerScript.useItem(item);
+            }
+            //Otherwise, it's from stash, so transfer item from stash to inventory
+            else {
+                transferFromStashToInventory(item);
+            }
+
+
+            GameObject newItem = UiManager.Instance.CreateButton(panel, UiButton.ButtonType.PlayerMenuOption, "", Item.Rarity.None, 
+                                item.getIcon(), itemUseFunction, false);
 
             newItem.SetActive(false); // Initially hidden
             itemButtons.Add(newItem);
         }
     }
 
-    void UpdatePage()
+    private bool transferFromStashToInventory(Item item) {
+        //First add the item to the player's inventory, if successful then remove it from stash
+        if(addItem(item)) {
+            loseStashItem(item);
+            return true;
+        }
+        else {
+            Debug.Log("No room in player inventory");
+            return false;
+        }
+    }
+
+    public bool transferFromInventoryToStash(Item item) {
+        //First add the item to the stash, if successful then remove it from inventory
+        if(addStashItem(item)) {
+            loseItem(item);
+            return true;
+        }
+        else {
+            Debug.Log("No room in stash");
+            return false;
+        }
+    }
+
+    void UpdatePage(Transform panel, int totalSlots, List<GameObject> slots, List<GameObject> itemButtons, ref int currentPage, int slotsPerPage, 
+        ref Button prevPageButton, ref Button nextPageButton)
     {
+        Debug.Log("Update: " + panel + " : " + totalSlots + " : " + slots + " : " + itemButtons + " : " + currentPage + " : " + slotsPerPage + " : " 
+            + prevPageButton + " : " + nextPageButton);
         // Hide all slots and buttons
         foreach (GameObject slot in slots) slot.SetActive(false);
         foreach (GameObject item in itemButtons) item.SetActive(false);
@@ -123,39 +193,50 @@ public class Inventory {
         nextPageButton.interactable = end < totalSlots;
     }
 
-    public void NextPage()
+    public void NextPage(Transform panel, int totalSlots, List<GameObject> slots, List<GameObject> itemButtons, ref int currentPage, int slotsPerPage, 
+        ref Button prevPageButton, ref Button nextPageButton)
     {
         if ((currentPage + 1) * slotsPerPage < totalSlots)
         {
             currentPage++;
-            UpdatePage();
+            UpdatePage(panel, totalSlots, slots, itemButtons, ref currentPage, slotsPerPage, ref prevPageButton, ref nextPageButton);
         }
     }
 
-    public void PreviousPage()
+    public void PreviousPage(Transform panel, int totalSlots, List<GameObject> slots, List<GameObject> itemButtons, ref int currentPage, int slotsPerPage, 
+        ref Button prevPageButton, ref Button nextPageButton)
     {
         if (currentPage > 0)
         {
             currentPage--;
-            UpdatePage();
+            UpdatePage(panel, totalSlots, slots, itemButtons, ref currentPage, slotsPerPage, ref prevPageButton, ref nextPageButton);
         }
     }
 
     public Inventory(List<Item> items) {
         this.items = items;
-        maxSize = 12;
-        inventoryPage = 0;
-        stashPage = 0;
     }
 
     public bool addItem(Item item) {
-        if(items.Count < maxSize) {
+        if(items.Count < inventoryTotalSlots) {
             items.Add(item);
-            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item));
+            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item), false);
             return true;
         }
         else {
             Debug.Log("Inventory at max size");
+            return false;
+        }
+    }
+
+    public bool addStashItem(Item item) {
+        if(stashItems.Count < stashTotalSlots) {
+            stashItems.Add(item);
+            UiManager.Instance.CreateButton(playerStashPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => transferFromStashToInventory(item), false);
+            return true;
+        }
+        else {
+            Debug.Log("Stash at max size");
             return false;
         }
     }
@@ -169,6 +250,11 @@ public class Inventory {
         UiManager.Instance.RemoveButton(playerInventoryPanel, item.getBaseName());
     }
 
+    public void loseStashItem(Item item) {
+        stashItems.Remove(item);
+        UiManager.Instance.RemoveButton(playerStashPanel, item.getBaseName());
+    }
+
     public int getSize() {
         return items.Count;
     }
@@ -177,25 +263,4 @@ public class Inventory {
         return stashItems;
     }
 
-    public int getInventoryPageNumber() {
-        return inventoryPage;
-    }
-
-    public void moveInventoryPage(int direction) {
-        inventoryPage += direction;
-        if(inventoryPage < 0) {
-            inventoryPage = 0;
-        }
-    }
-
-    public int getStashPageNumber() {
-        return stashPage;
-    }
-
-    public void moveStashPage(int direction) {
-        stashPage += direction;
-        if(stashPage < 0) {
-            stashPage = 0;
-        }
-    }
 }

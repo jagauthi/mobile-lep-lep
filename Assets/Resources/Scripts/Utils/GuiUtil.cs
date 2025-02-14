@@ -424,86 +424,86 @@ public class GuiUtil : MonoBehaviour {
 
     public static void professionDialog(TownProfessionNpc selectedProfession, PlayerScript playerScript, TownScript townScript)
     {
-        int buttonLength = (int)(professionDialogGroupRect.width / 4);
-        int buffer = (int)professionDialogGroupRect.width/16;
-        GUI.BeginGroup(professionDialogGroupRect);
-        GUI.Box(professionDialogBackgroundRect, "");
-        GUI.Box(professionDialogIntroRect, selectedProfession.getName());
-        //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        // int buttonLength = (int)(professionDialogGroupRect.width / 4);
+        // int buffer = (int)professionDialogGroupRect.width/16;
+        // GUI.BeginGroup(professionDialogGroupRect);
+        // GUI.Box(professionDialogBackgroundRect, "");
+        // GUI.Box(professionDialogIntroRect, selectedProfession.getName());
+        // //GUI.DrawTexture(backgroundRect, backgroundTexture);
 
-        GUI.DrawTexture( professionDialogImageRect, selectedProfession.getTexture() );
+        // GUI.DrawTexture( professionDialogImageRect, selectedProfession.getTexture() );
         
-        //First dialog option to let player choose between dungeon and crafting
-        if(selectedProfession.getDialogPhase() == "TownDialog") {
+        // //First dialog option to let player choose between dungeon and crafting
+        // if(selectedProfession.getDialogPhase() == "TownDialog") {
 
-            GUI.Label(professionDialogTextRect, selectedProfession.getTownDialog());
+        //     GUI.Label(professionDialogTextRect, selectedProfession.getTownDialog());
 
-            //Button to select start dungeon
-            if (GUI.Button(professionDialogStartDungeonButton, "Yes")) {
-                selectedProfession.setDialogPhase("DungeonSelection");
-            }
-            //Button to select start dungeon
-            if (GUI.Button(professionDialogStartCraftingButton, "Crafting")) {
-                selectedProfession.setDialogPhase("CraftingSelection");
-            }
-        }
-        //Second dialog option lets the player choose which floor of the dungeon to go to
-        else if(selectedProfession.getDialogPhase() == "DungeonSelection") {
-            string dungeonSelectionText = "Which floor do you want to start on?";
-            GUI.Label(professionDialogTextRect, dungeonSelectionText);
+        //     //Button to select start dungeon
+        //     if (GUI.Button(professionDialogStartDungeonButton, "Yes")) {
+        //         selectedProfession.setDialogPhase("DungeonSelection");
+        //     }
+        //     //Button to select start dungeon
+        //     if (GUI.Button(professionDialogStartCraftingButton, "Crafting")) {
+        //         selectedProfession.setDialogPhase("CraftingSelection");
+        //     }
+        // }
+        // //Second dialog option lets the player choose which floor of the dungeon to go to
+        // else if(selectedProfession.getDialogPhase() == "DungeonSelection") {
+        //     string dungeonSelectionText = "Which floor do you want to start on?";
+        //     GUI.Label(professionDialogTextRect, dungeonSelectionText);
 
-            int maxDungeonFloorNumCompleted = playerScript.getMaxDungeonFloorNumCompleted();
-            for(int i = 0; i < 5; i++) {
-                Rect floorButtonRect = new Rect( 
-                    professionDialogDungeonFloorButton.x, 
-                    professionDialogDungeonFloorButton.y + (professionDialogDungeonFloorButton.height * i + buffer), 
-                    professionDialogDungeonFloorButton.width, 
-                    professionDialogDungeonFloorButton.height
-                );
+        //     int maxDungeonFloorNumCompleted = playerScript.getMaxDungeonFloorNumCompleted();
+        //     for(int i = 0; i < 5; i++) {
+        //         Rect floorButtonRect = new Rect( 
+        //             professionDialogDungeonFloorButton.x, 
+        //             professionDialogDungeonFloorButton.y + (professionDialogDungeonFloorButton.height * i + buffer), 
+        //             professionDialogDungeonFloorButton.width, 
+        //             professionDialogDungeonFloorButton.height
+        //         );
 
-                int floorNum = i + 1 + (dungeonFloorOffset * 5);
-                if(maxDungeonFloorNumCompleted+1 < floorNum) {
-                    GUI.Button(floorButtonRect, "" + floorNum, disabledButtonStyle);
-                }
-                else {
-                    if(GUI.Button(floorButtonRect, "" + floorNum)) {
-                        playerScript.setDungeonFloor(floorNum);
-                        townScript.startDungeon();
-                    }
-                }
-            }
+        //         int floorNum = i + 1 + (dungeonFloorOffset * 5);
+        //         if(maxDungeonFloorNumCompleted+1 < floorNum) {
+        //             GUI.Button(floorButtonRect, "" + floorNum, disabledButtonStyle);
+        //         }
+        //         else {
+        //             if(GUI.Button(floorButtonRect, "" + floorNum)) {
+        //                 playerScript.setDungeonFloor(floorNum);
+        //                 townScript.startDungeon();
+        //             }
+        //         }
+        //     }
 
-            if(GUI.Button(professionDialogDungeonUpButton, "^")) {
-                if(dungeonFloorOffset > 0) {
-                    dungeonFloorOffset -= 1;
-                }
-            }
-            if(GUI.Button(professionDialogDungeonDownButton, "V")) {
-                dungeonFloorOffset += 1;
-            }
-        }
-        //Third dialog option lets the player choose which crafting
-        else if(selectedProfession.getDialogPhase() == "CraftingSelection") {
-            GUI.Label(professionDialogTextRect, selectedProfession.getCraftingDialog());
+        //     if(GUI.Button(professionDialogDungeonUpButton, "^")) {
+        //         if(dungeonFloorOffset > 0) {
+        //             dungeonFloorOffset -= 1;
+        //         }
+        //     }
+        //     if(GUI.Button(professionDialogDungeonDownButton, "V")) {
+        //         dungeonFloorOffset += 1;
+        //     }
+        // }
+        // //Third dialog option lets the player choose which crafting
+        // else if(selectedProfession.getDialogPhase() == "CraftingSelection") {
+        //     GUI.Label(professionDialogTextRect, selectedProfession.getCraftingDialog());
 
-            //Button to select start dungeon
-            if (GUI.Button(professionDialogStartDungeonButton, "Mining")) {
-                playerScript.setCurrentCrafting("Mining");
-                townScript.startCrafting();
-            }
-            //Button to select start dungeon
-            if (GUI.Button(professionDialogStartCraftingButton, "Smithing")) {
-                playerScript.setCurrentCrafting("Smithing");
-                townScript.startCrafting();
-            }
-        }
+        //     //Button to select start dungeon
+        //     if (GUI.Button(professionDialogStartDungeonButton, "Mining")) {
+        //         playerScript.setCurrentCrafting("Mining");
+        //         townScript.startCrafting();
+        //     }
+        //     //Button to select start dungeon
+        //     if (GUI.Button(professionDialogStartCraftingButton, "Smithing")) {
+        //         playerScript.setCurrentCrafting("Smithing");
+        //         townScript.startCrafting();
+        //     }
+        // }
         
-        if (GUI.Button(professionDialogCloseButton, "X"))
-        {
-            townScript.setSelectedProfession(null);
-        }
+        // if (GUI.Button(professionDialogCloseButton, "X"))
+        // {
+        //     townScript.setSelectedProfession(null);
+        // }
 
-        GUI.EndGroup();
+        // GUI.EndGroup();
     }
 
     public static void drawTownOptions(PlayerScript playerScript)
@@ -729,146 +729,146 @@ public class GuiUtil : MonoBehaviour {
 
     public static void playerInventoryMenu(PlayerScript playerScript, ShopKeeperScript shopkeeper, bool stashOpen)
     {
-        int buttonLength = (int)(inventoryGroupRect.width / 4);
-        int buffer = (int)inventoryGroupRect.width/16;
-        GUI.BeginGroup(inventoryGroupRect);
-        GUI.Box(backgroundRect, "");
-        GUI.Box(goldRect, playerScript.getGold() + " gp");
+        // int buttonLength = (int)(inventoryGroupRect.width / 4);
+        // int buffer = (int)inventoryGroupRect.width/16;
+        // GUI.BeginGroup(inventoryGroupRect);
+        // GUI.Box(backgroundRect, "");
+        // GUI.Box(goldRect, playerScript.getGold() + " gp");
 
-        String introText = "Inventory";
-        // if(null != shopkeeper) {
-        //     introText += ", selling to " + shopkeeper.getName();
-        // }
-        // else if(stashOpen) {
-        //     introText += ", transfering to/from stash";
-        // }
-        GUI.Box(inventoryIntroRect, introText);
+        // String introText = "Inventory";
+        // // if(null != shopkeeper) {
+        // //     introText += ", selling to " + shopkeeper.getName();
+        // // }
+        // // else if(stashOpen) {
+        // //     introText += ", transfering to/from stash";
+        // // }
+        // GUI.Box(inventoryIntroRect, introText);
 
-        //GUI.DrawTexture(backgroundRect, backgroundTexture);
-        for( int col = 0; col < 3; col++ ) {
-            for( int row = 0; row < 3; row++ ) {
-                int slotNum =  ( col * 3 ) + row;
-                slotNum += (9 * playerScript.getInventory().getInventoryPageNumber());
-                if(playerScript.getInventory().getSize() > slotNum) {
-                    Item item = playerScript.getInventory().getItems()[slotNum];
-                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
-                        buffer*(col+1) + buttonLength*(col+1), 
-                        buttonLength, buttonLength);
+        // //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        // for( int col = 0; col < 3; col++ ) {
+        //     for( int row = 0; row < 3; row++ ) {
+        //         int slotNum =  ( col * 3 ) + row;
+        //         slotNum += (9 * playerScript.getInventory().getInventoryPageNumber());
+        //         if(playerScript.getInventory().getSize() > slotNum) {
+        //             Item item = playerScript.getInventory().getItems()[slotNum];
+        //             Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+        //                 buffer*(col+1) + buttonLength*(col+1), 
+        //                 buttonLength, buttonLength);
 
-                    GUI.DrawTexture( slot, item.getIcon() );
+        //             GUI.DrawTexture( slot, item.getIcon() );
 
-                    if (GUI.Button(slot, "")) {
-                        if(null != shopkeeper) {
-                            playerScript.sellItem(item, shopkeeper);
-                        }
-                        else if(stashOpen) {
-                            playerScript.getInventory().getStashItems().Add(item);
-                            playerScript.getInventory().getItems().Remove(item);
-                        }
-                        else {
-                            playerScript.useItem(item);
-                        }
-                    }
+        //             if (GUI.Button(slot, "")) {
+        //                 if(null != shopkeeper) {
+        //                     playerScript.sellItem(item, shopkeeper);
+        //                 }
+        //                 else if(stashOpen) {
+        //                     playerScript.getInventory().getStashItems().Add(item);
+        //                     playerScript.getInventory().getItems().Remove(item);
+        //                 }
+        //                 else {
+        //                     playerScript.useItem(item);
+        //                 }
+        //             }
 
-                    //cursor tooltip
-                    String tooltipMessage = item.getTooltip();
-                    if(null != shopkeeper) {
-                        tooltipMessage += ". Sellprice: " + (item.getCost() / 2);
-                    }
+        //             //cursor tooltip
+        //             String tooltipMessage = item.getTooltip();
+        //             if(null != shopkeeper) {
+        //                 tooltipMessage += ". Sellprice: " + (item.getCost() / 2);
+        //             }
 
-                    if (null != item && slot.Contains(Event.current.mousePosition))
-                    {
-                        Rect mouseTextRect = new Rect(
-                            Input.mousePosition.x - inventoryGroupRect.x + (buffer / 2),
-                            Screen.height - Input.mousePosition.y - inventoryGroupRect.y,
-                            tooltipMessage.Length * 8, Screen.height / 16);
-                        GUI.Box(mouseTextRect, tooltipMessage);
-                    }
+        //             if (null != item && slot.Contains(Event.current.mousePosition))
+        //             {
+        //                 Rect mouseTextRect = new Rect(
+        //                     Input.mousePosition.x - inventoryGroupRect.x + (buffer / 2),
+        //                     Screen.height - Input.mousePosition.y - inventoryGroupRect.y,
+        //                     tooltipMessage.Length * 8, Screen.height / 16);
+        //                 GUI.Box(mouseTextRect, tooltipMessage);
+        //             }
 
-                }
-                else {
-                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
-                        buffer*(col+1) + buttonLength*(col+1), 
-                        buttonLength, buttonLength);
+        //         }
+        //         else {
+        //             Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+        //                 buffer*(col+1) + buttonLength*(col+1), 
+        //                 buttonLength, buttonLength);
 
-                    if (GUI.Button(slot, ""+slotNum)) {
+        //             if (GUI.Button(slot, ""+slotNum)) {
                         
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
 
-        if(GUI.Button(inventoryLeftButton, "<")) {
-            playerScript.getInventory().moveInventoryPage(-1);
-        }
+        // if(GUI.Button(inventoryLeftButton, "<")) {
+        //     playerScript.getInventory().moveInventoryPage(-1);
+        // }
 
-        if(GUI.Button(inventoryRightButton, ">")) {
-            playerScript.getInventory().moveInventoryPage(1);
-        }
+        // if(GUI.Button(inventoryRightButton, ">")) {
+        //     playerScript.getInventory().moveInventoryPage(1);
+        // }
 
-        GUI.EndGroup();
+        // GUI.EndGroup();
     }
 
     public static void playerStashMenu(PlayerScript playerScript)
     {
-        int buttonLength = (int)(stashGroupRect.width / 4);
-        int buffer = (int)stashGroupRect.width/16;
-        GUI.BeginGroup(stashGroupRect);
-        GUI.Box(backgroundRect, "");
-        GUI.Box(stashIntroRect, "Player stash");
+        // int buttonLength = (int)(stashGroupRect.width / 4);
+        // int buffer = (int)stashGroupRect.width/16;
+        // GUI.BeginGroup(stashGroupRect);
+        // GUI.Box(backgroundRect, "");
+        // GUI.Box(stashIntroRect, "Player stash");
 
-        //GUI.DrawTexture(backgroundRect, backgroundTexture);
-        for( int col = 0; col < 3; col++ ) {
-            for( int row = 0; row < 3; row++ ) {
-                int slotNum =  ( col * 3 ) + row;
-                slotNum += (9 * playerScript.getInventory().getStashPageNumber());
-                if(playerScript.getInventory().getStashItems().Count > slotNum) {
-                    Item item = playerScript.getInventory().getStashItems()[slotNum];
-                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
-                        buffer*(col+1) + buttonLength*(col+1), 
-                        buttonLength, buttonLength);
+        // //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        // for( int col = 0; col < 3; col++ ) {
+        //     for( int row = 0; row < 3; row++ ) {
+        //         int slotNum =  ( col * 3 ) + row;
+        //         slotNum += (9 * playerScript.getInventory().getStashPageNumber());
+        //         if(playerScript.getInventory().getStashItems().Count > slotNum) {
+        //             Item item = playerScript.getInventory().getStashItems()[slotNum];
+        //             Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+        //                 buffer*(col+1) + buttonLength*(col+1), 
+        //                 buttonLength, buttonLength);
 
-                    GUI.DrawTexture( slot, item.getIcon() );
+        //             GUI.DrawTexture( slot, item.getIcon() );
 
-                    if (GUI.Button(slot, "")) {
-                        if(playerScript.getInventory().addItem(item)) {
-                            playerScript.getInventory().getStashItems().Remove(item);
-                        }
-                    }
+        //             if (GUI.Button(slot, "")) {
+        //                 if(playerScript.getInventory().addItem(item)) {
+        //                     playerScript.getInventory().getStashItems().Remove(item);
+        //                 }
+        //             }
 
-                    //cursor tooltip
-                    String tooltipMessage = item.getTooltip();
+        //             //cursor tooltip
+        //             String tooltipMessage = item.getTooltip();
 
-                    if (null != item && slot.Contains(Event.current.mousePosition))
-                    {
-                        Rect mouseTextRect = new Rect(
-                            Input.mousePosition.x - stashGroupRect.x + (buffer / 2),
-                            Screen.height - Input.mousePosition.y - stashGroupRect.y,
-                            tooltipMessage.Length * 8, Screen.height / 16);
-                        GUI.Box(mouseTextRect, tooltipMessage);
-                    }
+        //             if (null != item && slot.Contains(Event.current.mousePosition))
+        //             {
+        //                 Rect mouseTextRect = new Rect(
+        //                     Input.mousePosition.x - stashGroupRect.x + (buffer / 2),
+        //                     Screen.height - Input.mousePosition.y - stashGroupRect.y,
+        //                     tooltipMessage.Length * 8, Screen.height / 16);
+        //                 GUI.Box(mouseTextRect, tooltipMessage);
+        //             }
 
-                }
-                else {
-                    Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
-                        buffer*(col+1) + buttonLength*(col+1), 
-                        buttonLength, buttonLength);
+        //         }
+        //         else {
+        //             Rect slot = new Rect(buffer*(row+1) + buttonLength*row, 
+        //                 buffer*(col+1) + buttonLength*(col+1), 
+        //                 buttonLength, buttonLength);
 
-                    if (GUI.Button(slot, ""+slotNum)) {
+        //             if (GUI.Button(slot, ""+slotNum)) {
                         
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
 
-        if(GUI.Button(stashLeftButton, "<")) {
-            playerScript.getInventory().moveStashPage(-1);
-        }
+        // if(GUI.Button(stashLeftButton, "<")) {
+        //     playerScript.getInventory().moveStashPage(-1);
+        // }
 
-        if(GUI.Button(stashRightButton, ">")) {
-            playerScript.getInventory().moveStashPage(1);
-        }
-        GUI.EndGroup();
+        // if(GUI.Button(stashRightButton, ">")) {
+        //     playerScript.getInventory().moveStashPage(1);
+        // }
+        // GUI.EndGroup();
     }
     
     public static void drawPlayerAbilities(PlayerScript playerScript, DungeonScript dungeonScript)
