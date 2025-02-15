@@ -170,8 +170,6 @@ public class Inventory {
     void UpdatePage(Transform panel, int totalSlots, List<GameObject> slots, List<GameObject> itemButtons, ref int currentPage, int slotsPerPage, 
         ref Button prevPageButton, ref Button nextPageButton)
     {
-        Debug.Log("Update: " + panel + " : " + totalSlots + " : " + slots + " : " + itemButtons + " : " + currentPage + " : " + slotsPerPage + " : " 
-            + prevPageButton + " : " + nextPageButton);
         // Hide all slots and buttons
         foreach (GameObject slot in slots) slot.SetActive(false);
         foreach (GameObject item in itemButtons) item.SetActive(false);

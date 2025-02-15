@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -17,8 +18,11 @@ public class UiManager : MonoBehaviour
     public static Transform shopkeeperInventoryPanel;
 
     //GameObjects used to enable/disable in the NPC dialog
-    public static GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton;
+    public static GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
+        dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton;
 
+    public static TextMeshProUGUI playerSkillPointsText, playerStrText, playerIntelText, playerAgilText;
+    public static List<GameObject> playerSkillButtons;
 
     public static List<Transform> closeTownProfessionsPanels = new List<Transform>();
     public static List<Transform> openPanels = new List<Transform>();

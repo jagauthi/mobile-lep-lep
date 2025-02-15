@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Unity.VisualScripting;
+using TMPro;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -85,9 +87,79 @@ public class PlayerScript : MonoBehaviour
             UiManager.characterSheetPanel = characterSheetPanel;
             UiManager.closeTownProfessionsPanels.Add(characterSheetPanel);
         }
+
+        Transform statsPanel = characterSheetPanel.Find("StatsSection");
+
+        GameObject pointsTextGameObject = statsPanel.Find("PointsText").gameObject;
+        TextMeshProUGUI pointsText = pointsTextGameObject.GetComponent<TextMeshProUGUI>();
+        UiManager.playerSkillPointsText = pointsText;
+
+        List<GameObject> playerSkillButtons = new List<GameObject>();
+
+        Transform strengthSection = statsPanel.Find("StrStat");
+        TextMeshProUGUI strText = strengthSection.Find("StatText").gameObject.GetComponent<TextMeshProUGUI>();
+        UiManager.playerStrText = strText;
+        GameObject strButtonGO = strengthSection.Find("Button").gameObject;
+        playerSkillButtons.Add(strButtonGO);
+        Button strButton = strButtonGO.GetComponent<Button>();
+        strButton.onClick.RemoveAllListeners();
+        strButton.onClick.AddListener(() => {
+            setStrength(getStrength() + 1);
+            setSkillPoints(getSkillPoints() - 1);
+            updatePlayerSkillsSection();
+        }); 
+
+        Transform intelSection = statsPanel.Find("IntelStat");
+        TextMeshProUGUI intelText = intelSection.Find("StatText").gameObject.GetComponent<TextMeshProUGUI>();
+        UiManager.playerIntelText = intelText;
+        GameObject intelButtonGO = intelSection.Find("Button").gameObject;
+        playerSkillButtons.Add(intelButtonGO);
+        Button intelButton = intelButtonGO.GetComponent<Button>();
+        intelButton.onClick.RemoveAllListeners();
+        intelButton.onClick.AddListener(() => {
+            setIntelligence(getIntelligence() + 1);
+            setSkillPoints(getSkillPoints() - 1);
+            updatePlayerSkillsSection();
+        }); 
+
+        Transform agilSection = statsPanel.Find("AgilStat");
+        TextMeshProUGUI agilText = agilSection.Find("StatText").gameObject.GetComponent<TextMeshProUGUI>();
+        UiManager.playerAgilText = agilText;
+        GameObject agilButtonGO = agilSection.Find("Button").gameObject;
+        playerSkillButtons.Add(agilButtonGO);
+        Button agilButton = agilButtonGO.GetComponent<Button>();
+        agilButton.onClick.RemoveAllListeners();
+        agilButton.onClick.AddListener(() => {
+            setAgility(getAgility() + 1);
+            setSkillPoints(getSkillPoints() - 1);
+            updatePlayerSkillsSection();
+        }); 
+
+        UiManager.playerSkillButtons = playerSkillButtons;
+
+        updatePlayerSkillsSection();
+
         closeCharacterSheet();
     }
 
+    private void updatePlayerSkillsSection() {
+
+        //Skill points
+        UiManager.playerSkillPointsText.text = "Points: " + skillPoints;
+        foreach(GameObject skillButton in UiManager.playerSkillButtons) {
+            if(skillPoints > 0) {
+                skillButton.SetActive(true);
+            }
+            else {
+                skillButton.SetActive(false);
+            }
+        }
+
+        //Skill texts
+        UiManager.playerStrText.text = "Strength: " + getStrength();
+        UiManager.playerIntelText.text = "Intelligence: " + getIntelligence();
+        UiManager.playerAgilText.text = "Agility: " + getAgility();
+    }
 
     protected void basicInits()
     {
