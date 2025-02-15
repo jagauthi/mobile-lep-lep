@@ -207,6 +207,7 @@ public class TownScript : MonoBehaviour
 
     private void selectDungeonFloor(int floorNum) {
         Debug.Log("Selected floor: " + floorNum);
+        playerScript.setSelectedProfession(selectedProfession);
         startDungeon(floorNum); 
     }
 

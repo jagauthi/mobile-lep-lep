@@ -32,7 +32,9 @@ public class PlayerScript : MonoBehaviour
     protected Inventory inventory;
     protected Equipment equipment;
     protected Weapon[] weapons;
-    Transform playerOptionsPanel, characterSheetPanel;
+    Transform playerOptionsPanel, characterSheetPanel, playerHealthPanel;
+    Image playerIconImage, healthBar, manaBar, expBar;
+    TownProfessionNpc selectedProfession;
 
     void Awake()
     {
@@ -48,6 +50,7 @@ public class PlayerScript : MonoBehaviour
 
         initPlayerOptionsPanel();
         initCharacterSheetPanel();
+        initPlayerHealthPanel();
 
     }
 
@@ -142,6 +145,27 @@ public class PlayerScript : MonoBehaviour
         updatePlayerSkillsSection();
 
         closeCharacterSheet();
+    }
+
+    private void initPlayerHealthPanel()
+    {
+        if (null == playerHealthPanel)
+        {
+            GameObject playerHealthPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerHealthPanel");
+            playerHealthPanel = MonoBehaviour.Instantiate(playerHealthPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas"); 
+            playerHealthPanel.SetParent(canvas.transform, false);
+            UiManager.playerHealthPanel = playerHealthPanel;
+            UiManager.addPanelToList(UiManager.playerHealthPanel, UiManager.dungeonInitOnPanels);
+        }
+
+        playerIconImage = playerHealthPanel.Find("PlayerIcon").GetComponent<Image>();
+
+        healthBar = playerHealthPanel.Find("Healthbar").Find("BarAmount").gameObject.GetComponent<Image>();
+        manaBar = playerHealthPanel.Find("Manabar").Find("BarAmount").gameObject.GetComponent<Image>();
+        expBar = playerHealthPanel.Find("ExpBar").Find("BarAmount").gameObject.GetComponent<Image>();
+
+        UiManager.closePanel(playerHealthPanel);
     }
 
     private void updatePlayerSkillsSection() {
@@ -302,6 +326,27 @@ public class PlayerScript : MonoBehaviour
         // Debug.Log("Armor block: " + armorBlock);
         // Debug.Log("Old damage: " + x + ", New Damage: " + newDamage);
         currentHealth -= (int)newDamage;
+        updateHealthBar();
+    }
+
+    public bool gainHealth(int health) { 
+        if(currentHealth >= getMaxHealth()) {
+            return false;
+        }
+        else {
+            currentHealth += health;
+            if(currentHealth >= getMaxHealth()) {
+                fullHeal();
+            }
+            updateHealthBar();
+            return true;
+        }
+    }
+
+    private void updateHealthBar() {
+        float fillAmount = currentHealth / (float)getMaxHealth();
+        Debug.Log("Fill amount: " + fillAmount);
+        healthBar.fillAmount = fillAmount;
     }
 
     public bool isDead() {
@@ -317,19 +362,6 @@ public class PlayerScript : MonoBehaviour
         return 100 + (intelligence*20);
     }
 
-    public bool gainHealth(int health) { 
-        if(currentHealth >= getMaxHealth()) {
-            return false;
-        }
-        else {
-            currentHealth += health;
-            if(currentHealth >= getMaxHealth()) {
-                fullHeal();
-            }
-            return true;
-        }
-    }
-
     public void gainExp(int x)
     {
         exp += x;
@@ -339,6 +371,11 @@ public class PlayerScript : MonoBehaviour
             LevelUp();
             exp += leftoverXP;
         }
+        updateExpBar();
+    }
+
+    private void updateExpBar() {
+        expBar.fillAmount = exp / (float)GetExpToNextLevel();
     }
 
     public bool gainResource(int x) { 
@@ -350,6 +387,7 @@ public class PlayerScript : MonoBehaviour
             if(currentResource > getMaxResource()) {
                 currentResource = getMaxResource();
             }
+            updateResourceBar();
             return true;
         }
     }
@@ -357,11 +395,16 @@ public class PlayerScript : MonoBehaviour
     public bool loseResource(int x) {
         if(currentResource >= x) {
             currentResource -= x;
+            updateResourceBar();
             return true;
         }
         else {
             return false;
         }
+    }
+
+    private void updateResourceBar() {
+        manaBar.fillAmount = currentResource / (float)getMaxResource();
     }
 
     public void setStrength(int newStrength) {
@@ -582,5 +625,14 @@ public class PlayerScript : MonoBehaviour
 
     public void setCurrentCrafting(string crafting) {
         this.currentCrafting = crafting;
+    }
+
+    public void setSelectedProfession(TownProfessionNpc selectedProfession) {
+        this.selectedProfession = selectedProfession;
+        playerIconImage.GetComponent<Image>().sprite = Sprite.Create(selectedProfession.getHeadShot(), new Rect(0, 0, selectedProfession.getTexture().width, selectedProfession.getTexture().height), new Vector2(0.5f, 0.5f));
+    }
+
+    public TownProfessionNpc getSelectedProfession() {
+        return selectedProfession;
     }
 }

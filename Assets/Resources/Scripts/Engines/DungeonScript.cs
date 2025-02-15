@@ -21,9 +21,10 @@ public class DungeonScript : MonoBehaviour
     int goldFromThisRoom, totalGold, expFromThisRoom, totalExp;
     int roomNumber, maxRooms;
 
-    Transform dungeonOptionsButtonPanel;
+    Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel;
     int dungeonOptionsSlotsMaxCount = 6;
     private List<GameObject> dungeonOptionSlots = new List<GameObject>();
+    List<GameObject> enemySlots = new List<GameObject>();
 
 
     void Start()
@@ -54,6 +55,8 @@ public class DungeonScript : MonoBehaviour
         maxRooms = UnityEngine.Random.Range(3, 6);
 
         initDungeonOptionsPanel();
+        initDungeonEnemiesPanel();
+        initDungeonPlayerPlaceholderPanel();
 
         initDungeonRoom();
     }
@@ -79,6 +82,39 @@ public class DungeonScript : MonoBehaviour
 
         updateDungeonButtons();
     }
+
+    private void initDungeonEnemiesPanel()
+    {
+        if (null == dungeonEnemiesPanel)
+        {
+            GameObject dungeonEnemiesPanelGameObject = (GameObject)Resources.Load("Prefabs/DungeonEnemiesPanel");
+            dungeonEnemiesPanel = MonoBehaviour.Instantiate(dungeonEnemiesPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            dungeonEnemiesPanel.SetParent(canvas.transform, false);
+            UiManager.dungeonEnemiesPanel = dungeonEnemiesPanel;
+            UiManager.openPanel(UiManager.dungeonEnemiesPanel);
+            UiManager.addPanelToList(UiManager.dungeonEnemiesPanel, UiManager.dungeonInitOnPanels);
+        }
+    }
+
+    private void initDungeonPlayerPlaceholderPanel()
+    {
+        if (null == dungeonPlayerPlaceholderPanel)
+        {
+            GameObject dungeonPlayerPlaceholderPanelGameObject = (GameObject)Resources.Load("Prefabs/DungeonPlayerPlaceholderPanel");
+            dungeonPlayerPlaceholderPanel = MonoBehaviour.Instantiate(dungeonPlayerPlaceholderPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            dungeonPlayerPlaceholderPanel.SetParent(canvas.transform, false);
+            UiManager.dungeonPlayerPlaceholderPanel = dungeonPlayerPlaceholderPanel;
+            UiManager.openPanel(UiManager.dungeonPlayerPlaceholderPanel);
+            UiManager.addPanelToList(UiManager.dungeonPlayerPlaceholderPanel, UiManager.dungeonInitOnPanels);
+        }
+        Texture2D playerTexture = playerScript.getSelectedProfession().getTexture();
+        GameObject playerImageGameObject = dungeonPlayerPlaceholderPanel.Find("PlayerImage").gameObject;
+        playerImageGameObject.GetComponent<Image>().sprite = Sprite.Create(playerTexture, new Rect(0, 0, playerTexture.width, playerTexture.height), new Vector2(0.5f, 0.5f));
+
+    }
+
 
     public void updateDungeonButtons() {
          List<Ability> playerAbilities = playerScript.getAbilities();
@@ -140,6 +176,21 @@ public class DungeonScript : MonoBehaviour
         else {
             Debug.Log("No more rooms");
         }
+        updateEnemyButtons();
+    }
+
+    private void updateEnemyButtons() {
+        //First clear existing enemy buttons
+
+        //Next create the slots and buttons for each enemy
+        for(int i = 0; i < enemies.Count; i++) {
+            EnemyScript enemy = enemies[i];
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonEnemiesPanel);
+            newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Enemy);
+            enemySlots.Add(newSlot);
+            GameObject newEnemy = UiManager.Instance.CreateButton(dungeonEnemiesPanel, UiButton.ButtonType.Enemy, "", Item.Rarity.None, 
+                                enemy.getTexture(), () => attackEnemy(enemy), false);
+        }
     }
 
     public void selectPlayerAbility(Ability ability) {
@@ -184,7 +235,6 @@ public class DungeonScript : MonoBehaviour
     }
 
     private IEnumerator attackCoRoutine(EnemyScript enemy) {
-        Debug.Log("Attack Coroutine");
         //Check if this action can even happen
         if(!playerTurn) {
             Debug.Log("Not player's turn");

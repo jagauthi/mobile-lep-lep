@@ -16,6 +16,7 @@ public class UiManager : MonoBehaviour
     //Player panels
     public static Transform playerOptionsPanel, characterSheetPanel;
     public static Transform playerInventoryPanel, playerStashPanel;
+    public static Transform playerHealthPanel;
 
 
     //Player skill fields
@@ -29,7 +30,7 @@ public class UiManager : MonoBehaviour
 
 
     //Dungeon panels
-    public static Transform dungeonOptionsButtonPanel;
+    public static Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel;
 
     //GameObjects used to enable/disable in the NPC dialog
     public static GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
