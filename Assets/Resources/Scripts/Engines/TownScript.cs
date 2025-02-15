@@ -45,6 +45,8 @@ public class TownScript : MonoBehaviour
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             townProfessionsPanel.SetParent(canvas.transform, false);
             UiManager.townProfessionsPanel = townProfessionsPanel;
+            UiManager.openPanel(UiManager.townProfessionsPanel);
+            UiManager.addPanelToList(UiManager.townProfessionsPanel, UiManager.townInitOnPanels);
         }
 
         foreach (NpcScript npc in npcs)
@@ -64,6 +66,8 @@ public class TownScript : MonoBehaviour
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             townOptionsButtonPanel.SetParent(canvas.transform, false);
             UiManager.townOptionsButtonPanel = townOptionsButtonPanel;
+            UiManager.openPanel(UiManager.townOptionsButtonPanel);
+            UiManager.addPanelToList(UiManager.townOptionsButtonPanel, UiManager.townInitOnPanels);
         }
 
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townOptionsButtonPanel);

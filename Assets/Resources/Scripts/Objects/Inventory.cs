@@ -30,14 +30,8 @@ public class Inventory {
         
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
 
-        doInits();
-    }
-
-    public void doInits() {
-        if(null == playerInventoryPanel) {
-            initPlayerInventoryPanel();
-            initPlayerStashPanel();
-        }
+        initPlayerInventoryPanel();
+        initPlayerStashPanel();
     }
 
     private void initPlayerInventoryPanel() {

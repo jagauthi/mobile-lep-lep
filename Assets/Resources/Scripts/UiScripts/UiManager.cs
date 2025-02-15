@@ -39,6 +39,10 @@ public class UiManager : MonoBehaviour
     //Utils
     public static List<Transform> closeTownProfessionsPanels = new List<Transform>();
     public static List<Transform> openPanels = new List<Transform>();
+    public static List<Transform> playerInitOnPanels = new List<Transform>();
+    public static List<Transform> townInitOnPanels = new List<Transform>();
+    public static List<Transform> dungeonInitOnPanels = new List<Transform>();
+    public static List<Transform> craftingInitOnPanels = new List<Transform>();
 
 
     void Awake()
@@ -133,16 +137,19 @@ public class UiManager : MonoBehaviour
     }
 
     public static void closePanel(Transform panel) {
+        if(null == panel) {
+            return;
+        }
         panel.gameObject.SetActive(false);
         openPanels.Remove(panel);
         //If none of the close town profession panels are open, then we can open the town professions back up
-        if( null != townProfessionsPanel && !openPanels.Any( panel => closeTownProfessionsPanels.Any( closePanel => closePanel == panel) ) ) {
+        if( CanvasScript.currentScene == "TownScene" && null != townProfessionsPanel && !openPanels.Any( panel => closeTownProfessionsPanels.Any( closePanel => closePanel == panel) ) ) {
             townProfessionsPanel.gameObject.SetActive(true);
             if (!openPanels.Contains(panel)) openPanels.Add(townProfessionsPanel);
         }
     }
 
-    public void closeAllPanels()
+    public static void closeAllPanels()
     {
         foreach (Transform panel in openPanels)
         {
@@ -165,6 +172,12 @@ public class UiManager : MonoBehaviour
 
     public static void enablePanel(GameObject panel) {
         panel.SetActive(true);
+    }
+
+    public static void addPanelToList(Transform panel, List<Transform> panelList) {
+        if(!panelList.Contains(panel)) {
+            panelList.Add(panel);
+        }
     }
 
     

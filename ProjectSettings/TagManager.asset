@@ -21,6 +21,7 @@ TagManager:
   - NpcIcon
   - ButtonOptions
   - DialogTextPanel
+  - BackgroundImage
   layers:
   - Default
   - TransparentFX

@@ -60,7 +60,8 @@ public class PlayerScript : MonoBehaviour
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas"); 
             playerOptionsPanel.SetParent(canvas.transform, false);
             UiManager.playerOptionsPanel = playerOptionsPanel;
-            UiManager.closeTownProfessionsPanels.Add(playerOptionsPanel);
+            UiManager.openPanel(UiManager.playerOptionsPanel);
+            UiManager.addPanelToList(UiManager.playerOptionsPanel, UiManager.playerInitOnPanels);
         }
 
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
@@ -86,6 +87,7 @@ public class PlayerScript : MonoBehaviour
             characterSheetPanel.SetParent(canvas.transform, false);
             UiManager.characterSheetPanel = characterSheetPanel;
             UiManager.closeTownProfessionsPanels.Add(characterSheetPanel);
+            UiManager.openPanel(UiManager.characterSheetPanel);
         }
 
         Transform statsPanel = characterSheetPanel.Find("StatsSection");

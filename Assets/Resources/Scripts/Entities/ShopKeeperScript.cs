@@ -46,6 +46,7 @@ public class ShopKeeperScript : NpcScript {
             shopkeeperInventoryPanel.SetParent(canvas.transform, false);
             UiManager.shopkeeperInventoryPanel = shopkeeperInventoryPanel;
             UiManager.closeTownProfessionsPanels.Add(shopkeeperInventoryPanel);
+            UiManager.openPanel(UiManager.shopkeeperInventoryPanel);
         }
 
         

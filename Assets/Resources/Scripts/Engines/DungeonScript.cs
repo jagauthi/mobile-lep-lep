@@ -35,8 +35,6 @@ public class DungeonScript : MonoBehaviour
             playerScript = playerGameObject.GetComponent<PlayerScript>();
         }
 
-        playerScript.getInventory().doInits();
-
         int floorNum = playerScript.getDungeonFloorNum();
         enemies = new List<EnemyScript>();
         
@@ -68,6 +66,9 @@ public class DungeonScript : MonoBehaviour
             dungeonOptionsButtonPanel = MonoBehaviour.Instantiate(dungeonOptionsPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             dungeonOptionsButtonPanel.SetParent(canvas.transform, false);
+            UiManager.dungeonOptionsButtonPanel = dungeonOptionsButtonPanel;
+            UiManager.openPanel(UiManager.dungeonOptionsButtonPanel);
+            UiManager.addPanelToList(UiManager.dungeonOptionsButtonPanel, UiManager.dungeonInitOnPanels);
         }
 
         for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
@@ -83,6 +84,7 @@ public class DungeonScript : MonoBehaviour
          List<Ability> playerAbilities = playerScript.getAbilities();
          List<Item> playerItems = playerScript.getInventory().getItems();
          for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
+            int slotNum = i;
             if(i < playerAbilities.Count) {
                 Ability ability = playerAbilities[i];
                 GameObject abilityButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", Item.Rarity.None, 
@@ -90,10 +92,19 @@ public class DungeonScript : MonoBehaviour
             }
             else if(i - playerAbilities.Count < playerItems.Count) {
                 Item item = playerItems[i - playerAbilities.Count];
-                GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", item.getRarity(), 
-                                item.getIcon(), () => playerScript.useItem(item), false);
+                GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", item.getRarity(), item.getIcon(), 
+                                () => {
+                                    if(playerScript.useItem(item)) {
+                                        destroyButton(slotNum);
+                                    }
+                                }, false);
             }
          }
+    }
+
+    private void destroyButton(int i) {
+        GameObject buttonToDestroy = dungeonOptionSlots[i].transform.GetChild(0).gameObject;
+        GameObject.Destroy(buttonToDestroy);
     }
 
     public void initDungeonRoom() {
