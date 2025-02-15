@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 784815689}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -626,7 +626,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerGameObject: {fileID: 0}
-  dungeonOptionsGameObject: {fileID: 0}
 --- !u!4 &1794453634
 Transform:
   m_ObjectHideFlags: 0

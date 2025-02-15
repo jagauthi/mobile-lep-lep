@@ -12,20 +12,34 @@ public class UiManager : MonoBehaviour
 
     public GameObject buttonPrefab;
     
+
+    //Player panels
     public static Transform playerOptionsPanel, characterSheetPanel;
     public static Transform playerInventoryPanel, playerStashPanel;
+
+
+    //Player skill fields
+    public static TextMeshProUGUI playerSkillPointsText, playerStrText, playerIntelText, playerAgilText;
+    public static List<GameObject> playerSkillButtons;
+
+
+    //Town Panels
     public static Transform townOptionsButtonPanel, townProfessionsPanel, npcDialogPanel;
     public static Transform shopkeeperInventoryPanel;
+
+
+    //Dungeon panels
+    public static Transform dungeonOptionsButtonPanel;
 
     //GameObjects used to enable/disable in the NPC dialog
     public static GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
         dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton;
 
-    public static TextMeshProUGUI playerSkillPointsText, playerStrText, playerIntelText, playerAgilText;
-    public static List<GameObject> playerSkillButtons;
 
+    //Utils
     public static List<Transform> closeTownProfessionsPanels = new List<Transform>();
     public static List<Transform> openPanels = new List<Transform>();
+
 
     void Awake()
     {
@@ -138,11 +152,11 @@ public class UiManager : MonoBehaviour
     }
 
     public static bool isShopkeeperPanelOpen() {
-        return shopkeeperInventoryPanel.gameObject.activeSelf;
+        return null != shopkeeperInventoryPanel && shopkeeperInventoryPanel.gameObject.activeSelf;
     }
 
     public static bool isStashOpen() {
-        return playerStashPanel.gameObject.activeSelf;
+        return null != playerStashPanel && playerStashPanel.gameObject.activeSelf;
     }
 
     public static void disablePanel(GameObject panel) {
@@ -152,4 +166,6 @@ public class UiManager : MonoBehaviour
     public static void enablePanel(GameObject panel) {
         panel.SetActive(true);
     }
+
+    
 }

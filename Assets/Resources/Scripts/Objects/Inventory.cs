@@ -29,11 +29,15 @@ public class Inventory {
         stashItems = new List<Item>();
         
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        initPlayerInventoryPanel();
-        initPlayerStashPanel();
 
-        UiManager.togglePanel(playerInventoryPanel);
-        UiManager.togglePanel(playerStashPanel);
+        doInits();
+    }
+
+    public void doInits() {
+        if(null == playerInventoryPanel) {
+            initPlayerInventoryPanel();
+            initPlayerStashPanel();
+        }
     }
 
     private void initPlayerInventoryPanel() {
@@ -70,6 +74,9 @@ public class Inventory {
         LoadInventoryItems(playerInventoryPanel, inventoryTotalSlots, inventoryButtons, true);
         UpdatePage(playerInventoryPanel, inventoryTotalSlots, inventorySlots, inventoryButtons,
                     ref inventoryCurrentPage, inventorySlotsPerPage, ref inventoryPrevPageButton, ref inventoryNextPageButton);
+
+        //Turn it off after initializing it
+        UiManager.togglePanel(playerInventoryPanel);
     }
 
     private void initPlayerStashPanel() {
@@ -102,6 +109,9 @@ public class Inventory {
         LoadInventoryItems(playerStashPanel, stashTotalSlots, stashButtons, false);
         UpdatePage(playerStashPanel, stashTotalSlots, stashSlots, stashButtons,
                     ref stashCurrentPage, stashSlotsPerPage, ref stashPrevPageButton, ref stashNextPageButton);
+                    
+        //Turn it off after initializing it
+        UiManager.togglePanel(playerStashPanel);
     }
 
     void CreateInventorySlots(Transform panel, int totalSlots, List<GameObject> slots)

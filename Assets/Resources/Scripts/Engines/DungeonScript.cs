@@ -21,6 +21,10 @@ public class DungeonScript : MonoBehaviour
     int goldFromThisRoom, totalGold, expFromThisRoom, totalExp;
     int roomNumber, maxRooms;
 
+    Transform dungeonOptionsButtonPanel;
+    int dungeonOptionsSlotsMaxCount = 6;
+    private List<GameObject> dungeonOptionSlots = new List<GameObject>();
+
 
     void Start()
     {
@@ -30,6 +34,8 @@ public class DungeonScript : MonoBehaviour
         if(null == playerScript) {
             playerScript = playerGameObject.GetComponent<PlayerScript>();
         }
+
+        playerScript.getInventory().doInits();
 
         int floorNum = playerScript.getDungeonFloorNum();
         enemies = new List<EnemyScript>();
@@ -49,7 +55,45 @@ public class DungeonScript : MonoBehaviour
         //There will be max of 3-5 rooms
         maxRooms = UnityEngine.Random.Range(3, 6);
 
+        initDungeonOptionsPanel();
+
         initDungeonRoom();
+    }
+
+    private void initDungeonOptionsPanel()
+    {
+        if (null == dungeonOptionsButtonPanel)
+        {
+            GameObject dungeonOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/DungeonOptionsPanel");
+            dungeonOptionsButtonPanel = MonoBehaviour.Instantiate(dungeonOptionsPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            dungeonOptionsButtonPanel.SetParent(canvas.transform, false);
+        }
+
+        for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonOptionsButtonPanel);
+            newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonOption);
+            dungeonOptionSlots.Add(newSlot);
+        }
+
+        updateDungeonButtons();
+    }
+
+    public void updateDungeonButtons() {
+         List<Ability> playerAbilities = playerScript.getAbilities();
+         List<Item> playerItems = playerScript.getInventory().getItems();
+         for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
+            if(i < playerAbilities.Count) {
+                Ability ability = playerAbilities[i];
+                GameObject abilityButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", Item.Rarity.None, 
+                                ability.getIcon(), () => selectPlayerAbility(ability), false);
+            }
+            else if(i - playerAbilities.Count < playerItems.Count) {
+                Item item = playerItems[i - playerAbilities.Count];
+                GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", item.getRarity(), 
+                                item.getIcon(), () => playerScript.useItem(item), false);
+            }
+         }
     }
 
     public void initDungeonRoom() {
@@ -101,7 +145,7 @@ public class DungeonScript : MonoBehaviour
     }
     
     protected void OnGUI(){
-        drawDungeonThings();        
+        // drawDungeonThings();        
     }
 
     protected void drawDungeonThings() { 
