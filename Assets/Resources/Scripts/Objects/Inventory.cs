@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -23,6 +24,7 @@ public class Inventory {
     private int stashCurrentPage = 0;
 
     public Button inventoryNextPageButton, inventoryPrevPageButton, stashNextPageButton, stashPrevPageButton;
+    TextMeshProUGUI inventoryGoldText;
 
     public Inventory() {
         items = new List<Item>();
@@ -36,7 +38,7 @@ public class Inventory {
 
     private void initPlayerInventoryPanel() {
 
-        if(null == playerInventoryPanel) {
+        if(null == UiManager.playerInventoryPanel) {
             GameObject playerInventoryPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerInventoryPanel");
             playerInventoryPanel = MonoBehaviour.Instantiate(playerInventoryPanelGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
@@ -44,21 +46,23 @@ public class Inventory {
             UiManager.playerInventoryPanel = playerInventoryPanel;
             UiManager.closeTownProfessionsPanels.Add(playerInventoryPanel);
         }
+        else {
+            playerInventoryPanel = UiManager.playerInventoryPanel;
+        }
 
+        inventoryGoldText = playerInventoryPanel.Find("InventoryTextPanel").Find("Gold").gameObject.GetComponent<TextMeshProUGUI>();
         
         Button[] paginationButtons = playerInventoryPanel.GetComponentsInChildren<Button>();
         foreach (Button button in paginationButtons){
             if (button.gameObject.tag == "LeftPagination"){
                 inventoryPrevPageButton = button;
-                /**
-                Transform panel, int totalSlots, List<GameObject> slots, List<GameObject> itemButtons, int currentPage, int slotsPerPage, 
-        Button prevPageButton, Button nextPageButton
-                **/
+                inventoryPrevPageButton.onClick.RemoveAllListeners();
                 inventoryPrevPageButton.onClick.AddListener(() => PreviousPage(playerInventoryPanel, inventoryTotalSlots, inventorySlots, inventoryButtons,
                     ref inventoryCurrentPage, inventorySlotsPerPage, ref inventoryPrevPageButton, ref inventoryNextPageButton));
             }
             else if(button.gameObject.tag == "RightPagination"){
                 inventoryNextPageButton = button;
+                inventoryNextPageButton.onClick.RemoveAllListeners();
                 inventoryNextPageButton.onClick.AddListener(() => NextPage(playerInventoryPanel, inventoryTotalSlots, inventorySlots, inventoryButtons,
                     ref inventoryCurrentPage, inventorySlotsPerPage, ref inventoryPrevPageButton, ref inventoryNextPageButton));
             }
@@ -89,11 +93,13 @@ public class Inventory {
         foreach (Button button in paginationButtons){
             if (button.gameObject.tag == "LeftPagination"){
                 stashPrevPageButton = button;
+                stashPrevPageButton.onClick.RemoveAllListeners();
                 stashPrevPageButton.onClick.AddListener(() => PreviousPage(playerStashPanel, stashTotalSlots, stashSlots, stashButtons,
                     ref stashCurrentPage, stashSlotsPerPage, ref stashPrevPageButton, ref stashNextPageButton));
             }
             else if(button.gameObject.tag == "RightPagination"){
                 stashNextPageButton = button;
+                stashNextPageButton.onClick.RemoveAllListeners();
                 stashNextPageButton.onClick.AddListener(() => NextPage(playerStashPanel, stashTotalSlots, stashSlots, stashButtons,
                     ref stashCurrentPage, stashSlotsPerPage, ref stashPrevPageButton, ref stashNextPageButton));
             }
@@ -263,6 +269,10 @@ public class Inventory {
 
     public List<Item> getStashItems() {
         return stashItems;
+    }
+
+    public void updateGoldText(PlayerScript playerScript) {
+        inventoryGoldText.text = "Gold: " + playerScript.getGold();
     }
 
 }

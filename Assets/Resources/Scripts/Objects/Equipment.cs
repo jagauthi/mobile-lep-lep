@@ -1,53 +1,62 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Equipment {
 
-    bool open;
-    Dictionary<string, Armor> equipment;
+    Dictionary<string, EquipmentItem> equipment;
+    PlayerScript playerScript;
 
     public Equipment() {
-        equipment = new Dictionary<string, Armor>();
+        equipment = new Dictionary<string, EquipmentItem>();
         equipment.Add("Head", null);
         equipment.Add("Chest", null);
         equipment.Add("Legs", null);
         equipment.Add("Feet", null);
-        open = false;
+        equipment.Add("Weapon", null);
     }
 
-    public Equipment(Dictionary<string, Armor> equipment) {
+    public Equipment(Dictionary<string, EquipmentItem> equipment) {
         this.equipment = equipment;
-        open = false;
     }
 
-    public bool equipArmor(PlayerScript player, Armor item) {
+    public bool equipItem(PlayerScript player, EquipmentItem item) {
+        if(null == player) {
+            player = getPlayer();
+        }
         //if(player.meetsRequirements(item)) {
             if(equipment[item.getSlot()] != null) {
-                Armor existingArmor = equipment[item.getSlot()];
-                if(!player.getInventory().addItem(existingArmor)) { 
+                EquipmentItem existingItem = equipment[item.getSlot()];
+                if(!player.getInventory().addItem(existingItem)) { 
                     Debug.Log("Inventory full");
                     return false;
                 }
             }
             equipment[item.getSlot()] = item;
+            updateCharacterSheetEquipment(player);
             return true;
         //}
         //else { return false; }
     }
 
-    public bool unequipArmor(PlayerScript player, Armor armor)
+    public bool unequipItem(PlayerScript player, EquipmentItem item)
     {
-        if (null != armor && equipment[armor.getSlot()] != null && equipment[armor.getSlot()].Equals(armor))
+        if(null == player) {
+            player = getPlayer();
+        }
+        if (null != item && equipment[item.getSlot()] != null && equipment[item.getSlot()].Equals(item))
         {
-            if (!player.getInventory().addItem(armor))
+            if (!player.getInventory().addItem(item))
             {
                 Debug.LogError("Cannot unequip, inventory full");
                 return false;
             }
             else
             {
-                equipment[armor.getSlot()] = null;
+                equipment[item.getSlot()] = null;
+                updateCharacterSheetEquipment(player);
                 return true;
             }
         }
@@ -58,6 +67,28 @@ public class Equipment {
         return false;
     }
 
+    public void updateCharacterSheetEquipment(PlayerScript player) {
+        Dictionary<string, Transform> characterSheetEquipmentMap = UiManager.characterSheetEquipmentMap;
+
+        foreach (KeyValuePair<string, EquipmentItem> entry in equipment) {
+            EquipmentItem equippedItem = entry.Value;
+            Transform equipmentSlot = characterSheetEquipmentMap[entry.Key];
+            UiManager.clearExistingSlotsAndButtons(equipmentSlot);
+            if(null == equippedItem) {
+                String resourceName = "Images/" + entry.Key + "Slot";
+                Texture2D emptySlotTexture = (Texture2D)Resources.Load(resourceName);
+
+                UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", Item.Rarity.None, 
+                                emptySlotTexture, () => Debug.Log("Nothing equipped"), false);
+            }
+            else {
+                UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", equippedItem.getRarity(), 
+                                equippedItem.getIcon(), () => unequipItem(null, equippedItem), false);
+            }
+        }
+        player.updatePlayerSkillsSection();
+    }
+
     public List<Item> getItems() {
         List<Item> items = new List<Item>();
         foreach (Item item in equipment.Values) {
@@ -66,19 +97,26 @@ public class Equipment {
         return items;
     }
 
-    public Dictionary<string, Armor> getItemMap() {
+    public Dictionary<string, EquipmentItem> getItemMap() {
         return equipment;
     }
 
-    public bool isOpen() {
-        return open;
+    protected PlayerScript getPlayer() {
+        if(playerScript == null && null != GameObject.FindGameObjectWithTag("Player")) {
+            playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        }
+        return playerScript;
     }
 
-    public void toggle() {
-        open = !open;
-    }
-
-    public void close() {
-        open = false;
+    public int getTotalArmor() {
+        int totalArmor = 0;
+        foreach(EquipmentItem equipment in equipment.Values)
+        {
+            if (null != equipment && equipment is Armor)
+            {
+                totalArmor += ((Armor)equipment).getArmorPower();
+            }
+        }
+        return totalArmor;
     }
 }

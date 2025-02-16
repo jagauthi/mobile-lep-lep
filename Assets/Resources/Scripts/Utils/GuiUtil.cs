@@ -656,7 +656,7 @@ public class GuiUtil : MonoBehaviour {
         int armorSlotBuffer = levelGroupBuffer / 2;
         float armorSlotYBuffer = levelGroupRect.height / 8;
 
-        Dictionary<string, Armor> playerEquipment = playerScript.getEquipment().getItemMap();
+        Dictionary<string, EquipmentItem> playerEquipment = playerScript.getEquipment().getItemMap();
 
         //Head slot
         Armor playerHead = (Armor)playerEquipment["Head"];
@@ -713,7 +713,7 @@ public class GuiUtil : MonoBehaviour {
 
         if (GUI.Button(armorSlot, ""))
         {
-            playerScript.getEquipment().unequipArmor(playerScript, armor);
+            playerScript.getEquipment().unequipItem(playerScript, armor);
         }
 
         //cursor tooltip

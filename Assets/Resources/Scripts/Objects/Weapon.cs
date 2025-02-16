@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : Item {
+public class Weapon : EquipmentItem {
 
     protected GameObject weaponGameObject;
 
     int baseDamage, addedDamage;
 
-    public Weapon(string baseName, string type, Texture2D icon, int cost, Rarity rarity) 
-    : base(baseName, type, icon, cost, rarity) {
+    public Weapon(string baseName, string type, string slot, Texture2D icon, int cost, Rarity rarity) 
+    : base(baseName, type, slot, icon, cost, rarity) {
         basicInits();
     }
 

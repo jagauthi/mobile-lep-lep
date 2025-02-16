@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,12 @@ public class UiManager : MonoBehaviour
     public static Transform playerInventoryPanel, playerStashPanel;
     public static Transform playerHealthPanel;
 
-
     //Player skill fields
-    public static TextMeshProUGUI playerSkillPointsText, playerStrText, playerIntelText, playerAgilText;
+    public static TextMeshProUGUI playerSkillPointsText, playerStrText, playerIntelText, playerAgilText, playerArmorText;
     public static List<GameObject> playerSkillButtons;
+
+    //Player character sheet equipment map
+    public static Dictionary<string, Transform> characterSheetEquipmentMap;
 
 
     //Town Panels
@@ -31,6 +34,7 @@ public class UiManager : MonoBehaviour
 
     //Dungeon panels
     public static Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel, dungeonRewardsPanel;
+
 
     //GameObjects used to enable/disable in the NPC dialog
     public static GameObject textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
@@ -83,6 +87,25 @@ public class UiManager : MonoBehaviour
         else
         {
             Debug.Log("No empty slots available!");
+        }
+        return newButton;
+    }
+
+    public GameObject CreateButtonInSlot(Transform slot, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick, bool disabled)
+    {
+        GameObject newButton = null;
+
+        if (slot != null || slot.childCount > 0) 
+        {
+            newButton = Instantiate(buttonPrefab, slot); // Spawn inside the slot
+            UiButton uiButton = newButton.GetComponent<UiButton>();
+            if (uiButton != null) {
+                uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled);
+            }
+        }
+        else
+        {
+            Debug.Log("Provided slot is not available!");
         }
         return newButton;
     }

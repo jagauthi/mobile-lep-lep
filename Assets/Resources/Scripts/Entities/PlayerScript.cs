@@ -31,7 +31,6 @@ public class PlayerScript : MonoBehaviour
     protected List<Quest> activeQuests;
     protected Inventory inventory;
     protected Equipment equipment;
-    protected Weapon[] weapons;
     Transform playerOptionsPanel, characterSheetPanel, playerHealthPanel;
     Image playerIconImage, healthBar, manaBar, expBar;
     TownProfessionNpc selectedProfession;
@@ -82,7 +81,7 @@ public class PlayerScript : MonoBehaviour
 
     private void initCharacterSheetPanel()
     {
-        if (null == characterSheetPanel)
+        if (null == UiManager.characterSheetPanel)
         {
             GameObject characterSheetPanelGameObject = (GameObject)Resources.Load("Prefabs/CharacterSheetPanel");
             characterSheetPanel = MonoBehaviour.Instantiate(characterSheetPanelGameObject).GetComponent<Transform>();
@@ -92,7 +91,19 @@ public class PlayerScript : MonoBehaviour
             UiManager.closeTownProfessionsPanels.Add(characterSheetPanel);
             UiManager.openPanel(UiManager.characterSheetPanel);
         }
+        else
+        {
+            characterSheetPanel = UiManager.characterSheetPanel;
+        }
 
+        initStatsPanel();
+        initEquipmentPanel();
+
+        closeCharacterSheet();
+    }
+
+    private void initStatsPanel()
+    {
         Transform statsPanel = characterSheetPanel.Find("StatsSection");
 
         GameObject pointsTextGameObject = statsPanel.Find("PointsText").gameObject;
@@ -108,11 +119,12 @@ public class PlayerScript : MonoBehaviour
         playerSkillButtons.Add(strButtonGO);
         Button strButton = strButtonGO.GetComponent<Button>();
         strButton.onClick.RemoveAllListeners();
-        strButton.onClick.AddListener(() => {
+        strButton.onClick.AddListener(() =>
+        {
             setStrength(getStrength() + 1);
             setSkillPoints(getSkillPoints() - 1);
             updatePlayerSkillsSection();
-        }); 
+        });
 
         Transform intelSection = statsPanel.Find("IntelStat");
         TextMeshProUGUI intelText = intelSection.Find("StatText").gameObject.GetComponent<TextMeshProUGUI>();
@@ -121,11 +133,12 @@ public class PlayerScript : MonoBehaviour
         playerSkillButtons.Add(intelButtonGO);
         Button intelButton = intelButtonGO.GetComponent<Button>();
         intelButton.onClick.RemoveAllListeners();
-        intelButton.onClick.AddListener(() => {
+        intelButton.onClick.AddListener(() =>
+        {
             setIntelligence(getIntelligence() + 1);
             setSkillPoints(getSkillPoints() - 1);
             updatePlayerSkillsSection();
-        }); 
+        });
 
         Transform agilSection = statsPanel.Find("AgilStat");
         TextMeshProUGUI agilText = agilSection.Find("StatText").gameObject.GetComponent<TextMeshProUGUI>();
@@ -134,17 +147,44 @@ public class PlayerScript : MonoBehaviour
         playerSkillButtons.Add(agilButtonGO);
         Button agilButton = agilButtonGO.GetComponent<Button>();
         agilButton.onClick.RemoveAllListeners();
-        agilButton.onClick.AddListener(() => {
+        agilButton.onClick.AddListener(() =>
+        {
             setAgility(getAgility() + 1);
             setSkillPoints(getSkillPoints() - 1);
             updatePlayerSkillsSection();
-        }); 
+        });
 
         UiManager.playerSkillButtons = playerSkillButtons;
-
+        
+        Transform armorSection = statsPanel.Find("ArmorStat");
+        TextMeshProUGUI armorText = armorSection.Find("StatText").gameObject.GetComponent<TextMeshProUGUI>();
+        UiManager.playerArmorText = armorText;
+        
         updatePlayerSkillsSection();
+    }
 
-        closeCharacterSheet();
+    private void initEquipmentPanel()
+    {
+        if(null == UiManager.characterSheetEquipmentMap) {
+
+            Transform equipmentPanel = characterSheetPanel.Find("EquipmentSection");
+
+            Transform headSlot = equipmentPanel.Find("HeadSlot");
+            Transform chestSlot = equipmentPanel.Find("ChestSlot");
+            Transform legSlot = equipmentPanel.Find("LegSlot");
+            Transform feetSlot = equipmentPanel.Find("FeetSlot");
+            Transform weaponSlot = equipmentPanel.Find("WeaponSlot");
+
+            Dictionary<string, Transform> characterSheetEquipmentMap = new Dictionary<string, Transform>();
+            characterSheetEquipmentMap.Add("Head", headSlot);
+            characterSheetEquipmentMap.Add("Chest", chestSlot);
+            characterSheetEquipmentMap.Add("Legs", legSlot);
+            characterSheetEquipmentMap.Add("Feet", feetSlot);
+            characterSheetEquipmentMap.Add("Weapon", weaponSlot);
+
+            UiManager.characterSheetEquipmentMap = characterSheetEquipmentMap;
+        }
+        equipment.updateCharacterSheetEquipment(this);
     }
 
     private void initPlayerHealthPanel()
@@ -171,7 +211,7 @@ public class PlayerScript : MonoBehaviour
         UiManager.closePanel(playerHealthPanel);
     }
 
-    private void updatePlayerSkillsSection() {
+    public void updatePlayerSkillsSection() {
 
         //Skill points
         UiManager.playerSkillPointsText.text = "Points: " + skillPoints;
@@ -188,6 +228,7 @@ public class PlayerScript : MonoBehaviour
         UiManager.playerStrText.text = "Strength: " + getStrength();
         UiManager.playerIntelText.text = "Intelligence: " + getIntelligence();
         UiManager.playerAgilText.text = "Agility: " + getAgility();
+        UiManager.playerArmorText.text = "Armor: " + equipment.getTotalArmor();
     }
 
     protected void basicInits()
@@ -207,7 +248,7 @@ public class PlayerScript : MonoBehaviour
         inventory.addItem(ItemHandler.getItemMap()["Mana Potion"]);
         inventory.addItem(ItemHandler.getItemMap()["Iron Chest"]);
 
-        gold = 10;
+        gainGold(10);
 
         dungeonFloorNum = 1;
         maxDungeonFloorNumCompleted = 0;
@@ -467,12 +508,9 @@ public class PlayerScript : MonoBehaviour
         return (level * 50);
     }
 
-    public void setGold(int gold) {
-        this.gold = gold;
-    }
-
     public void gainGold(int x) {
         this.gold += x;
+        inventory.updateGoldText(this);
     }
 
     public void loseGold(int x) {
@@ -482,6 +520,7 @@ public class PlayerScript : MonoBehaviour
         else {
             this.gold -= x;
         }
+        inventory.updateGoldText(this);
     }
 
     public bool getLevelupToggle() {
@@ -545,7 +584,7 @@ public class PlayerScript : MonoBehaviour
     public bool sellItem(Item item, ShopKeeperScript shopkeeper) {
         if(shopkeeper.buyItem(item)) {
             inventory.loseItem(item);
-            gold += (item.getCost() / 2);
+            gainGold(item.getCost() / 2);
             return true;
         }
         return false;
@@ -553,7 +592,7 @@ public class PlayerScript : MonoBehaviour
 
     public bool buyItem(Item item, int cost, ShopKeeperScript shopkeeper) {
         if(gold >= cost && inventory.addItem(item)) {
-            gold -= cost;
+            loseGold(cost);
             shopkeeper.loseItem(item);
             return true;
         }
