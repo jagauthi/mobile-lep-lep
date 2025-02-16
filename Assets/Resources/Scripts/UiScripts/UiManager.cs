@@ -75,6 +75,8 @@ public class UiManager : MonoBehaviour
         if (emptySlot != null) 
         {
             newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
+            Debug.Log("New button: " + newButton);
+            Debug.Log("New button Button: " + newButton.GetComponent<Button>());
             UiButton uiButton = newButton.GetComponent<UiButton>();
             if (uiButton != null) {
                 uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Xml;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ public class TownScript : MonoBehaviour
    TownProfessionNpc selectedProfession;
    Transform townOptionsButtonPanel, townProfessionsPanel, npcDialogPanel;
    private int dungeonFloorsPage = 0;
+   Button byooton;
 
     void Awake()
     {
@@ -45,6 +47,17 @@ public class TownScript : MonoBehaviour
         initTownProfessionsPanel();
         initNpcDialogPanel();
 
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(1)) 
+        {
+            Debug.Log("Clickkkkkkkkk");
+            Debug.Log("byooton: " + byooton);
+            Debug.Log("onClick: " + byooton.onClick);
+            byooton.onClick.Invoke();
+        }
     }
 
     private void initTownProfessionsPanel()
@@ -139,9 +152,12 @@ public class TownScript : MonoBehaviour
         //Dungeon button
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
         newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => {
+        GameObject disButton = UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => {
             enableDungeonFloorsSelection();
             }, false);
+        byooton = disButton.GetComponent<Button>();
+        Debug.Log("Set byooton to " + disButton);
+        Debug.Log("Set byooton.Button to " + disButton.GetComponent<Button>());
         //Crafting button
         GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
         newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
