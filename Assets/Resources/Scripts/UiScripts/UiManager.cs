@@ -33,7 +33,7 @@ public class UiManager : MonoBehaviour
     public static Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel, dungeonRewardsPanel;
 
     //GameObjects used to enable/disable in the NPC dialog
-    public static GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
+    public static GameObject textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
         dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton;
 
 
@@ -75,8 +75,6 @@ public class UiManager : MonoBehaviour
         if (emptySlot != null) 
         {
             newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
-            Debug.Log("New button: " + newButton);
-            Debug.Log("New button Button: " + newButton.GetComponent<Button>());
             UiButton uiButton = newButton.GetComponent<UiButton>();
             if (uiButton != null) {
                 uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled);

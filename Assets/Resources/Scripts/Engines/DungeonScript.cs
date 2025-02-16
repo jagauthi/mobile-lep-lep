@@ -56,7 +56,7 @@ public class DungeonScript : MonoBehaviour
         roomNumber = 0;
 
         //There will be max of 3-5 rooms
-        maxRooms = UnityEngine.Random.Range(3, 6);
+        maxRooms = UnityEngine.Random.Range(2, 2);
 
         initDungeonOptionsPanel();
         initDungeonEnemiesPanel();
@@ -68,7 +68,7 @@ public class DungeonScript : MonoBehaviour
 
     private void initDungeonOptionsPanel()
     {
-        if (null == dungeonOptionsButtonPanel)
+        if (null == UiManager.dungeonOptionsButtonPanel)
         {
             GameObject dungeonOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/DungeonOptionsPanel");
             dungeonOptionsButtonPanel = MonoBehaviour.Instantiate(dungeonOptionsPanelGameObject).GetComponent<Transform>();
@@ -78,7 +78,11 @@ public class DungeonScript : MonoBehaviour
             UiManager.openPanel(UiManager.dungeonOptionsButtonPanel);
             UiManager.addPanelToList(UiManager.dungeonOptionsButtonPanel, UiManager.dungeonInitOnPanels);
         }
+        else {
+            dungeonOptionsButtonPanel = UiManager.dungeonOptionsButtonPanel;
+        }
 
+        UiManager.clearExistingSlotsAndButtons(dungeonOptionsButtonPanel);
         for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
             GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonOptionsButtonPanel);
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonOption);
@@ -90,7 +94,7 @@ public class DungeonScript : MonoBehaviour
 
     private void initDungeonEnemiesPanel()
     {
-        if (null == dungeonEnemiesPanel)
+        if (null == UiManager.dungeonEnemiesPanel)
         {
             GameObject dungeonEnemiesPanelGameObject = (GameObject)Resources.Load("Prefabs/DungeonEnemiesPanel");
             dungeonEnemiesPanel = MonoBehaviour.Instantiate(dungeonEnemiesPanelGameObject).GetComponent<Transform>();
@@ -100,11 +104,14 @@ public class DungeonScript : MonoBehaviour
             UiManager.openPanel(UiManager.dungeonEnemiesPanel);
             UiManager.addPanelToList(UiManager.dungeonEnemiesPanel, UiManager.dungeonInitOnPanels);
         }
+        else {
+            dungeonEnemiesPanel = UiManager.dungeonEnemiesPanel;
+        }
     }
 
     private void initDungeonPlayerPlaceholderPanel()
     {
-        if (null == dungeonPlayerPlaceholderPanel)
+        if (null == UiManager.dungeonPlayerPlaceholderPanel)
         {
             GameObject dungeonPlayerPlaceholderPanelGameObject = (GameObject)Resources.Load("Prefabs/DungeonPlayerPlaceholderPanel");
             dungeonPlayerPlaceholderPanel = MonoBehaviour.Instantiate(dungeonPlayerPlaceholderPanelGameObject).GetComponent<Transform>();
@@ -114,6 +121,10 @@ public class DungeonScript : MonoBehaviour
             UiManager.openPanel(UiManager.dungeonPlayerPlaceholderPanel);
             UiManager.addPanelToList(UiManager.dungeonPlayerPlaceholderPanel, UiManager.dungeonInitOnPanels);
         }
+        else {
+            dungeonPlayerPlaceholderPanel = UiManager.dungeonPlayerPlaceholderPanel;
+        }
+
         Texture2D playerTexture = playerScript.getSelectedProfession().getTexture();
         GameObject playerImageGameObject = dungeonPlayerPlaceholderPanel.Find("PlayerImage").gameObject;
         playerImageGameObject.GetComponent<Image>().sprite = Sprite.Create(playerTexture, new Rect(0, 0, playerTexture.width, playerTexture.height), new Vector2(0.5f, 0.5f));
@@ -122,13 +133,16 @@ public class DungeonScript : MonoBehaviour
 
     private void initDungeonRewardsPanel()
     {
-        if (null == dungeonRewardsPanel)
+        if (null == UiManager.dungeonRewardsPanel)
         {
             GameObject dungeonRewardsPanellGameObject = (GameObject)Resources.Load("Prefabs/DungeonRewardsPanel");
             dungeonRewardsPanel = MonoBehaviour.Instantiate(dungeonRewardsPanellGameObject).GetComponent<Transform>();
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             dungeonRewardsPanel.SetParent(canvas.transform, false);
             UiManager.dungeonRewardsPanel = dungeonRewardsPanel;
+        }
+        else {
+            dungeonRewardsPanel = UiManager.dungeonRewardsPanel;
         }
 
         rewardsText = dungeonRewardsPanel.Find("RewardsTextPanel").Find("Text").gameObject.GetComponent<TextMeshProUGUI>();
@@ -162,12 +176,12 @@ public class DungeonScript : MonoBehaviour
     }
 
     private void destroyButton(int i, List<GameObject> slots) {
-        if(null != slots[i].transform.GetChild(0)) {
+        if(null != slots[i] && slots[i].transform.childCount > 0 && null != slots[i].transform.GetChild(0)) {
             GameObject buttonToDestroy = slots[i].transform.GetChild(0).gameObject;
             GameObject.Destroy(buttonToDestroy);
         }
         else {
-            Debug.Log("No button to destroy! Check this");
+            //No button to destroy
         }
     }
 
@@ -205,7 +219,7 @@ public class DungeonScript : MonoBehaviour
         sendToSlashSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonMenuOption);
         UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Send to stash", Item.Rarity.None, null, 
                     () => {
-                        Debug.Log("Send items to stash");
+                        Debug.Log("Send " + lootFromThisRoom.Count + " items to stash");
                         foreach(Item item in lootFromThisRoom) {
                             playerScript.getInventory().addStashItem(item);
                         }

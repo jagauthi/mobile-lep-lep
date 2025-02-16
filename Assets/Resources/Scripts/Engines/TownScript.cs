@@ -60,30 +60,6 @@ public class TownScript : MonoBehaviour
         }
     }
 
-    private void initTownProfessionsPanel()
-    {
-        if (null == UiManager.townProfessionsPanel)
-        {
-            GameObject townProfessionsPanelGameObject = (GameObject)Resources.Load("Prefabs/TownProfessionsPanel");
-            townProfessionsPanel = MonoBehaviour.Instantiate(townProfessionsPanelGameObject).GetComponent<Transform>();
-            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
-            townProfessionsPanel.SetParent(canvas.transform, false);
-            UiManager.townProfessionsPanel = townProfessionsPanel;
-            UiManager.openPanel(UiManager.townProfessionsPanel);
-            UiManager.addPanelToList(UiManager.townProfessionsPanel, UiManager.townInitOnPanels);
-
-            foreach (NpcScript npc in npcs)
-            {
-                GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townProfessionsPanel);
-                newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-                UiManager.Instance.CreateButton(townProfessionsPanel, UiButton.ButtonType.TownMenuOption, npc.getName(), Item.Rarity.None, npc.getTexture(), () => npc.startInteraction(this), false);
-            }
-        }
-        else {
-            townProfessionsPanel = UiManager.townProfessionsPanel;
-        }
-    }
-
     private void initTownOptionsPanel()
     {
         if (null == UiManager.townOptionsButtonPanel)
@@ -102,6 +78,36 @@ public class TownScript : MonoBehaviour
         }
         else {
             townOptionsButtonPanel = UiManager.townOptionsButtonPanel;
+        }
+    }
+
+    private void initTownProfessionsPanel()
+    {
+        if (null == UiManager.townProfessionsPanel)
+        {
+            GameObject townProfessionsPanelGameObject = (GameObject)Resources.Load("Prefabs/TownProfessionsPanel");
+            townProfessionsPanel = MonoBehaviour.Instantiate(townProfessionsPanelGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            townProfessionsPanel.SetParent(canvas.transform, false);
+            UiManager.townProfessionsPanel = townProfessionsPanel;
+            UiManager.openPanel(UiManager.townProfessionsPanel);
+            UiManager.addPanelToList(UiManager.townProfessionsPanel, UiManager.townInitOnPanels);
+        }
+        else {
+            townProfessionsPanel = UiManager.townProfessionsPanel;
+        }
+
+        //Clear any existing town profession buttons and recreate them
+            /**
+            I had a bug where the NPC dialog buttons weren't working when I reloaded into town, because when I reloaded into town, 
+            the NPCs referenced in the existing UiManager.townProfessionsPanel were ones that had been overwritten when TownScript.start() got called
+            **/
+        UiManager.clearExistingSlotsAndButtons(townProfessionsPanel);
+        foreach (NpcScript npc in npcs)
+        {
+            GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townProfessionsPanel);
+            newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+            UiManager.Instance.CreateButton(townProfessionsPanel, UiButton.ButtonType.TownMenuOption, npc.getName(), Item.Rarity.None, npc.getTexture(), () => npc.startInteraction(this), false);
         }
     }
 
@@ -130,7 +136,6 @@ public class TownScript : MonoBehaviour
 
         //NPC icon
         GameObject npcIconGameObject = npcDialogPanel.Find("NpcIcon").gameObject;
-        UiManager.npcIconGameObject = npcIconGameObject;
         Rect iconRect = npcIconGameObject.GetComponent<RectTransform>().rect;
         npcIconGameObject.GetComponent<Image>().sprite = Sprite.Create(selectedProfession.getHeadShot(), new Rect(0, 0, selectedProfession.getTexture().width, selectedProfession.getTexture().height), new Vector2(0.5f, 0.5f));
 
@@ -152,12 +157,9 @@ public class TownScript : MonoBehaviour
         //Dungeon button
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
         newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        GameObject disButton = UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => {
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => {
             enableDungeonFloorsSelection();
             }, false);
-        byooton = disButton.GetComponent<Button>();
-        Debug.Log("Set byooton to " + disButton);
-        Debug.Log("Set byooton.Button to " + disButton.GetComponent<Button>());
         //Crafting button
         GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
         newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
