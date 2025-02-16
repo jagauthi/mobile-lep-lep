@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,10 +22,13 @@ public class DungeonScript : MonoBehaviour
     int goldFromThisRoom, totalGold, expFromThisRoom, totalExp;
     int roomNumber, maxRooms;
 
-    Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel;
+    Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel, dungeonRewardsPanel;
     int dungeonOptionsSlotsMaxCount = 6;
     private List<GameObject> dungeonOptionSlots = new List<GameObject>();
+    private List<GameObject> rewardsLootSlots = new List<GameObject>();
     List<GameObject> enemySlots = new List<GameObject>();
+    TextMeshProUGUI rewardsText;
+    Transform rewardsLootPanel, rewardsActionsPanel;
 
 
     void Start()
@@ -57,6 +61,7 @@ public class DungeonScript : MonoBehaviour
         initDungeonOptionsPanel();
         initDungeonEnemiesPanel();
         initDungeonPlayerPlaceholderPanel();
+        initDungeonRewardsPanel();
 
         initDungeonRoom();
     }
@@ -115,6 +120,24 @@ public class DungeonScript : MonoBehaviour
 
     }
 
+    private void initDungeonRewardsPanel()
+    {
+        if (null == dungeonRewardsPanel)
+        {
+            GameObject dungeonRewardsPanellGameObject = (GameObject)Resources.Load("Prefabs/DungeonRewardsPanel");
+            dungeonRewardsPanel = MonoBehaviour.Instantiate(dungeonRewardsPanellGameObject).GetComponent<Transform>();
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            dungeonRewardsPanel.SetParent(canvas.transform, false);
+            UiManager.dungeonRewardsPanel = dungeonRewardsPanel;
+        }
+
+        rewardsText = dungeonRewardsPanel.Find("RewardsTextPanel").Find("Text").gameObject.GetComponent<TextMeshProUGUI>();
+        rewardsLootPanel = dungeonRewardsPanel.Find("LootPanel");
+        rewardsActionsPanel = dungeonRewardsPanel.Find("ActionsPanel");
+
+        UiManager.closePanel(UiManager.dungeonRewardsPanel);
+    }
+
 
     public void updateDungeonButtons() {
          List<Ability> playerAbilities = playerScript.getAbilities();
@@ -131,16 +154,78 @@ public class DungeonScript : MonoBehaviour
                 GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", item.getRarity(), item.getIcon(), 
                                 () => {
                                     if(playerScript.useItem(item)) {
-                                        destroyButton(slotNum);
+                                        destroyButton(slotNum, dungeonOptionSlots);
                                     }
                                 }, false);
             }
          }
     }
 
-    private void destroyButton(int i) {
-        GameObject buttonToDestroy = dungeonOptionSlots[i].transform.GetChild(0).gameObject;
-        GameObject.Destroy(buttonToDestroy);
+    private void destroyButton(int i, List<GameObject> slots) {
+        if(null != slots[i].transform.GetChild(0)) {
+            GameObject buttonToDestroy = slots[i].transform.GetChild(0).gameObject;
+            GameObject.Destroy(buttonToDestroy);
+        }
+        else {
+            Debug.Log("No button to destroy! Check this");
+        }
+    }
+
+    private void updateDungeonRewardsPanel() {
+
+        //Update rewards text
+        rewardsText.text = "Room " + getRoomNum() + "/" + getMaxRoomNum() + " completed, earned " + getExpFromThisRoom() + " exp and " + getGoldFromThisRoom() 
+                    + " gold, as well as these items:";
+        
+        //Update rewards loot
+        UiManager.clearExistingSlotsAndButtons(rewardsLootPanel);
+        
+        List<Item> lootFromThisRoom = getLootFromThisRoom();
+        //For each item loot, create a slot and a button to obtain the loot
+        for(int i = 0; i < lootFromThisRoom.Count; i++) {
+            int slotNum = i;
+            Item item = lootFromThisRoom[i];
+            
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), rewardsLootPanel);
+            newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
+            rewardsLootSlots.Add(newSlot);
+            GameObject newItem = UiManager.Instance.CreateButton(rewardsLootPanel, UiButton.ButtonType.Item, "", item.getRarity(), 
+                                item.getIcon(), () => {
+                                    if(playerScript.getInventory().addItem(item)) {
+                                        lootFromThisRoom.Remove(item);
+                                        destroyButton(slotNum, rewardsLootSlots);
+                                    }
+                                }, false);
+        }
+
+        //Update rewards actions
+        UiManager.clearExistingSlotsAndButtons(rewardsActionsPanel);
+        //1ash button
+        GameObject sendToSlashSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), rewardsActionsPanel);
+        sendToSlashSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonMenuOption);
+        UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Send to stash", Item.Rarity.None, null, 
+                    () => {
+                        Debug.Log("Send items to stash");
+                        foreach(Item item in lootFromThisRoom) {
+                            playerScript.getInventory().addStashItem(item);
+                        }
+                        lootFromThisRoom.Clear();
+                        for(int i = 0; i < rewardsLootSlots.Count; i++) {
+                            destroyButton(i, rewardsLootSlots);
+                        }
+                    }, false);
+
+        //Back to town button
+        GameObject backToTownSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), rewardsActionsPanel);
+        backToTownSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonMenuOption);
+        UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Go to town", Item.Rarity.None, null, goBackToTown, false);
+        
+        //Next room button, missing if we completed the last room already
+        if(roomNumber != maxRooms) {
+            GameObject nextRoomSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), rewardsActionsPanel);
+            nextRoomSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonMenuOption);
+            UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Next room", Item.Rarity.None, null, nextRoom, false);
+        }
     }
 
     public void initDungeonRoom() {
@@ -170,17 +255,20 @@ public class DungeonScript : MonoBehaviour
                 enemies.AddRange(EnemyHandler.generateEnemies(numberOfEnemies, false));
             }
             else if(typesOfRooms[roomType] == "Treasure") {
-                
+                Debug.Log("Unimplemented treasure room :P");
             }
         }
         else {
             Debug.Log("No more rooms");
         }
         updateEnemyButtons();
+        UiManager.openPanel(dungeonEnemiesPanel);
+        UiManager.closePanel(dungeonRewardsPanel);
     }
 
     private void updateEnemyButtons() {
         //First clear existing enemy buttons
+        UiManager.clearExistingSlotsAndButtons(dungeonEnemiesPanel);
 
         //Next create the slots and buttons for each enemy
         for(int i = 0; i < enemies.Count; i++) {
@@ -270,10 +358,10 @@ public class DungeonScript : MonoBehaviour
             enemy.resetDamageTaken();
 
             //Reshuffle the dead enemy to the end of the list
-            if(enemy.isDead()) {
-                enemies.Remove(enemy);
-                enemies.Add(enemy);
-            }
+            // if(enemy.isDead()) {
+            //     enemies.Remove(enemy);
+            //     enemies.Add(enemy);
+            // }
 
             takeEnemyTurns();
             
@@ -342,6 +430,10 @@ public class DungeonScript : MonoBehaviour
 
         enemies = new List<EnemyScript>();
         inProgress = false;
+        
+        UiManager.closePanel(dungeonEnemiesPanel);
+        UiManager.openPanel(dungeonRewardsPanel);
+        updateDungeonRewardsPanel();
     }
 
     public string getLootFromThisRoomString() {

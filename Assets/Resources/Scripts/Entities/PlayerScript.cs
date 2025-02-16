@@ -162,8 +162,11 @@ public class PlayerScript : MonoBehaviour
         playerIconImage = playerHealthPanel.Find("PlayerIcon").GetComponent<Image>();
 
         healthBar = playerHealthPanel.Find("Healthbar").Find("BarAmount").gameObject.GetComponent<Image>();
+        updateHealthBar();
         manaBar = playerHealthPanel.Find("Manabar").Find("BarAmount").gameObject.GetComponent<Image>();
+        updateResourceBar();
         expBar = playerHealthPanel.Find("ExpBar").Find("BarAmount").gameObject.GetComponent<Image>();
+        updateExpBar();
 
         UiManager.closePanel(playerHealthPanel);
     }
@@ -212,6 +215,15 @@ public class PlayerScript : MonoBehaviour
         retrieveGameScript();
     }
 
+    protected void initStats()
+    {
+        strength = 1;
+        intelligence = 1;
+        agility = 1;
+        currentHealth = getMaxHealth();
+        currentResource = getMaxResource();
+    }
+
     public GameScript retrieveGameScript() {
         if(gameScript == null) {
             findGameScript();
@@ -224,17 +236,6 @@ public class PlayerScript : MonoBehaviour
         if(gameEngine != null) {
             gameScript = gameEngine.GetComponent<GameScript>();
         }
-    }
-
-    protected void initStats()
-    {
-        strength = 1;
-        intelligence = 1;
-        agility = 1;
-        currentHealth = getMaxHealth();
-        currentResource = getMaxResource();
-
-        currentHealth -= 50;
     }
 
     protected virtual void loadAbilities()
@@ -345,7 +346,6 @@ public class PlayerScript : MonoBehaviour
 
     private void updateHealthBar() {
         float fillAmount = currentHealth / (float)getMaxHealth();
-        Debug.Log("Fill amount: " + fillAmount);
         healthBar.fillAmount = fillAmount;
     }
 
@@ -503,6 +503,8 @@ public class PlayerScript : MonoBehaviour
         currentHealth = getMaxHealth();
         currentResource = getMaxResource();
         exp = 0;
+        updateHealthBar();
+        updateResourceBar();
     }
 
     public void addQuest(Quest quest) {

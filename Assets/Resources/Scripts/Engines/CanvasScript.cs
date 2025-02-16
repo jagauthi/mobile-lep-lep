@@ -28,7 +28,7 @@ public class CanvasScript : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("Loaded scene: " + scene.name);
+        Debug.Log("Loaded scene: " + scene.name + " with mode " + mode);
         currentScene = scene.name;
 
         UiManager.closeAllPanels();
@@ -50,7 +50,6 @@ public class CanvasScript : MonoBehaviour
         {
             loadBackgroundImage(dungeonBackground);
             foreach(Transform panel in UiManager.dungeonInitOnPanels) {
-                Debug.Log("Opening " + panel);
                 UiManager.openPanel(panel);
             }
         }

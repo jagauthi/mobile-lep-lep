@@ -30,7 +30,7 @@ public class UiManager : MonoBehaviour
 
 
     //Dungeon panels
-    public static Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel;
+    public static Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel, dungeonRewardsPanel;
 
     //GameObjects used to enable/disable in the NPC dialog
     public static GameObject npcIconGameObject, textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
@@ -104,12 +104,6 @@ public class UiManager : MonoBehaviour
 
     public static void togglePanel(Transform panel)
     {
-        // If this panel is configured to close the town professions panel, do that
-        if (closeTownProfessionsPanels.Contains(panel))
-        {
-            townProfessionsPanel.gameObject.SetActive(false);
-            openPanels.Remove(townProfessionsPanel);
-        }
 
         // Toggle the panel open/close
         if (panel.gameObject.activeSelf)
@@ -134,7 +128,16 @@ public class UiManager : MonoBehaviour
 
     public static void openPanel(Transform panel) {
         panel.gameObject.SetActive(true);
-        if (!openPanels.Contains(panel)) openPanels.Add(panel);
+        if (!openPanels.Contains(panel)) {
+            openPanels.Add(panel);
+        } 
+        
+        // If this panel is configured to close the town professions panel, do that
+        if (closeTownProfessionsPanels.Contains(panel) && null != townProfessionsPanel)
+        {
+            townProfessionsPanel.gameObject.SetActive(false);
+            openPanels.Remove(townProfessionsPanel);
+        }
     }
 
     public static void closePanel(Transform panel) {
@@ -181,5 +184,10 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    public static void clearExistingSlotsAndButtons(Transform panel) {
+        for(int i = 0; i < panel.childCount; i++) {
+            GameObject.Destroy(panel.GetChild(i).gameObject);
+        }
+    }
     
 }
