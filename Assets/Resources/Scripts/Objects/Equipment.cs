@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -74,19 +75,27 @@ public class Equipment {
             EquipmentItem equippedItem = entry.Value;
             Transform equipmentSlot = characterSheetEquipmentMap[entry.Key];
             UiManager.clearExistingSlotsAndButtons(equipmentSlot);
-            if(null == equippedItem) {
-                String resourceName = "Images/" + entry.Key + "Slot";
-                Texture2D emptySlotTexture = (Texture2D)Resources.Load(resourceName);
-
-                UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", Item.Rarity.None, 
-                                emptySlotTexture, () => Debug.Log("Nothing equipped"), false);
-            }
-            else {
-                UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", equippedItem.getRarity(), 
-                                equippedItem.getIcon(), () => unequipItem(null, equippedItem), false);
-            }
+            loadEquipmentSlot(equippedItem, entry, equipmentSlot);
         }
         player.updatePlayerSkillsSection();
+    }
+
+    async void loadEquipmentSlot(EquipmentItem equippedItem, KeyValuePair<string, EquipmentItem> entry, Transform equipmentSlot)
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
+        if(null == equippedItem) {
+            String resourceName = "Images/" + entry.Key + "Slot";
+            Texture2D emptySlotTexture = (Texture2D)Resources.Load(resourceName);
+
+            UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", Item.Rarity.None, 
+                            emptySlotTexture, () => Debug.Log("Nothing equipped"), false);
+        }
+        else {
+            UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", equippedItem.getRarity(), 
+                            equippedItem.getIcon(), () => unequipItem(null, equippedItem), false);
+        }
     }
 
     public List<Item> getItems() {

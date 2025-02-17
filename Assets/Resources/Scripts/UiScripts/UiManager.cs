@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,6 +14,7 @@ public class UiManager : MonoBehaviour
 
     public GameObject buttonPrefab;
     
+    public static int buttonClearDelayMillis = 20;
 
     //Player panels
     public static Transform playerOptionsPanel, characterSheetPanel;
@@ -75,6 +77,8 @@ public class UiManager : MonoBehaviour
     public GameObject CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick, bool disabled)
     {
         GameObject newButton = null;
+
+        UiSlot[] slots = panel.GetComponentsInChildren<UiSlot>();
 
         // Find the first empty slot in the container
         Transform emptySlot = panel
@@ -213,13 +217,16 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public static void clearExistingSlotsAndButtons(Transform panel) {
-        for(int i = 0; i < panel.childCount; i++) {
+    public static async void clearExistingSlotsAndButtons(Transform panel) {
+        for(int i = 0; i < panel.childCount; i++) 
+        {
             if(null != panel.GetChild(i).gameObject 
                     && (panel.GetChild(i).gameObject.tag == null || panel.GetChild(i).gameObject.tag == "Untagged" ) ) {
                 GameObject.Destroy(panel.GetChild(i).gameObject);
             }
         }
+
+        await Task.Delay(1000);
     }
     
 }

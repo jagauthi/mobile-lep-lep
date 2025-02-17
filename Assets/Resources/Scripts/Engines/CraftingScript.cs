@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -152,38 +153,54 @@ public class CraftingScript : MonoBehaviour
             npcCraftingText.text = selectedProfession.getCraftingDialog();
             List<CraftingTypes> craftingTypes = selectedProfession.getCraftingTypes();
             UiManager.clearExistingSlotsAndButtons(craftingButtonOptionsPanel);
-            foreach(CraftingTypes craftingType in craftingTypes) {
-                GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), craftingButtonOptionsPanel);
-                newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
-                CraftingTypes thisCraftingType = craftingType;
-                GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, craftingType.HumanName(), Item.Rarity.None, 
-                                null, () => {
-                                    selectedCraftingType = thisCraftingType;
-                                    setupCraftingDialog();
-                                }, false);
-            }
+            loadCraftingTypes(craftingTypes);
         }
         //Otherwise if we haven't selected which product to craft yet, display the options for which products can be crafted
         else if(null == productCurrentlyCrafting) {
             npcCraftingText.text = "And which product do you want to make?";
             List<string> productsToCraft = craftingOptionsMap[selectedCraftingType];
             UiManager.clearExistingSlotsAndButtons(craftingButtonOptionsPanel);
-            foreach(string product in productsToCraft) {
-                GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), craftingButtonOptionsPanel);
-                newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
-                string thisProduct = product;
-                GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, product, Item.Rarity.None, 
-                                null, () => {
-                                    setProductCurrentlyCrafting(thisProduct);
-                                    setupCraftingDialog();
-                                }, false);
-            }
+            loadProducts(productsToCraft);
         }
         //Otherwise, we know what we are crafting, so display the crafting display for that product
         else {
             productCraftingText.text = "";
             UiManager.Instance.CreateButtonInSlot(manualCraftButtonSlot, UiButton.ButtonType.PlayerMenuOption, "Click!", Item.Rarity.None, 
                             null, () => clickIncrementCrafting(), false);
+        }
+    }
+
+    async void loadCraftingTypes(List<CraftingTypes> craftingTypes)
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
+        foreach(CraftingTypes craftingType in craftingTypes) {
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), craftingButtonOptionsPanel);
+            newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
+            CraftingTypes thisCraftingType = craftingType;
+            GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, craftingType.HumanName(), Item.Rarity.None, 
+                            null, () => {
+                                selectedCraftingType = thisCraftingType;
+                                setupCraftingDialog();
+                            }, false);
+        }
+    }
+
+    async void loadProducts(List<string> productsToCraft)
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
+        foreach(string product in productsToCraft) {
+            GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), craftingButtonOptionsPanel);
+            newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
+            string thisProduct = product;
+            GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, product, Item.Rarity.None, 
+                            null, () => {
+                                setProductCurrentlyCrafting(thisProduct);
+                                setupCraftingDialog();
+                            }, false);
         }
     }
 

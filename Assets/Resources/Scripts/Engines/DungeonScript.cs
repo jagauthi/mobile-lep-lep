@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -83,13 +84,21 @@ public class DungeonScript : MonoBehaviour
         }
 
         UiManager.clearExistingSlotsAndButtons(dungeonOptionsButtonPanel);
+        loadButtons();
+    }
+
+    async void loadButtons()
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
         dungeonOptionSlots.Clear();
         for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
             GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonOptionsButtonPanel);
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonOption);
             dungeonOptionSlots.Add(newSlot);
         }
-
+ 
         updateDungeonButtons();
     }
 
@@ -157,16 +166,17 @@ public class DungeonScript : MonoBehaviour
     public void updateDungeonButtons() {
          List<Ability> playerAbilities = playerScript.getAbilities();
          List<Item> playerItems = playerScript.getInventory().getItems();
+         Debug.Log("dungeonOptionsButtonPanel slots: " + dungeonOptionsButtonPanel.childCount);
          for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
             int slotNum = i;
             if(i < playerAbilities.Count) {
                 Ability ability = playerAbilities[i];
-                GameObject abilityButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, ability.getName(), Item.Rarity.None, 
+                GameObject abilityButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "" + slotNum, Item.Rarity.None, 
                                 ability.getIcon(), () => selectPlayerAbility(ability), false);
             }
             else if(i - playerAbilities.Count < playerItems.Count) {
                 Item item = playerItems[i - playerAbilities.Count];
-                GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, item.getBaseName(), item.getRarity(), item.getIcon(), 
+                GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "" + slotNum, item.getRarity(), item.getIcon(), 
                                 () => {
                                     if(playerScript.useItem(item)) {
                                         destroyButton(slotNum, dungeonOptionSlots);
@@ -183,6 +193,7 @@ public class DungeonScript : MonoBehaviour
         }
         else {
             //No button to destroy
+            Debug.Log("No button to destroy for slot " + i);
         }
     }
 
@@ -194,8 +205,21 @@ public class DungeonScript : MonoBehaviour
         
         //Update rewards loot
         UiManager.clearExistingSlotsAndButtons(rewardsLootPanel);
+        updateRewardsLoot();
         
+
+        //Update rewards actions
+        UiManager.clearExistingSlotsAndButtons(rewardsActionsPanel);
+        updateStashActionButtions();
+    }
+
+    async void updateRewardsLoot()
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
         List<Item> lootFromThisRoom = getLootFromThisRoom();
+        rewardsLootSlots.Clear();
         //For each item loot, create a slot and a button to obtain the loot
         for(int i = 0; i < lootFromThisRoom.Count; i++) {
             int slotNum = i;
@@ -207,15 +231,20 @@ public class DungeonScript : MonoBehaviour
             GameObject newItem = UiManager.Instance.CreateButton(rewardsLootPanel, UiButton.ButtonType.Item, "", item.getRarity(), 
                                 item.getIcon(), () => {
                                     if(playerScript.getInventory().addItem(item)) {
+                                        Debug.Log("Looted item");
                                         lootFromThisRoom.Remove(item);
                                         destroyButton(slotNum, rewardsLootSlots);
                                     }
                                 }, false);
         }
+    }
 
-        //Update rewards actions
-        UiManager.clearExistingSlotsAndButtons(rewardsActionsPanel);
-        //1ash button
+    async void updateStashActionButtions()
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
+        //Stash button
         GameObject sendToSlashSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), rewardsActionsPanel);
         sendToSlashSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonMenuOption);
         UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Send to stash", Item.Rarity.None, null, 
@@ -284,6 +313,13 @@ public class DungeonScript : MonoBehaviour
     private void updateEnemyButtons() {
         //First clear existing enemy buttons
         UiManager.clearExistingSlotsAndButtons(dungeonEnemiesPanel);
+        loadEnemyButtons();
+    }
+
+    async void loadEnemyButtons()
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
 
         //Next create the slots and buttons for each enemy
         for(int i = 0; i < enemies.Count; i++) {
@@ -306,28 +342,6 @@ public class DungeonScript : MonoBehaviour
         }
         else {
             Debug.Log("Could not use " + item.getType());
-        }
-    }
-    
-    protected void OnGUI(){
-        // drawDungeonThings();        
-    }
-
-    protected void drawDungeonThings() { 
-        if(inProgress) {
-            GuiUtil.drawPlayerAbilities(playerScript, this);
-            GuiUtil.drawPlayerItems(playerScript, this);
-            GuiUtil.drawEnemies(enemies, attackEnemy);
-        }
-        else {
-            //Draw final rewards room if flag is true
-            if(roomNumber == maxRooms) {
-                // GuiUtil.drawFinalRewardScreen(playerScript, this);
-                GuiUtil.drawRewardScreen(playerScript, this, true);
-            }
-            else {
-                GuiUtil.drawRewardScreen(playerScript, this, false);
-            }
         }
     }
 

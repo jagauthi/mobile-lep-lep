@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,6 +55,14 @@ public class ShopKeeperScript : NpcScript {
         //First clear existing slots/buttons
         UiManager.clearExistingSlotsAndButtons(shopkeeperInventoryPanel);
 
+        loadRestOfPanel();
+    }
+
+    async void loadRestOfPanel()
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
         Button[] paginationButtons = shopkeeperInventoryPanel.GetComponentsInChildren<Button>();
         foreach (Button button in paginationButtons){
             if (button.gameObject.tag == "LeftPagination"){
@@ -73,7 +82,6 @@ public class ShopKeeperScript : NpcScript {
         CreateInventorySlots();
         LoadInventoryItems();
         UpdatePage();
-        
     }
 
     void CreateInventorySlots()

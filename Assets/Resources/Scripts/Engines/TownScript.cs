@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Xml;
 using TMPro;
 using UnityEngine;
@@ -91,6 +92,14 @@ public class TownScript : MonoBehaviour
             the NPCs referenced in the existing UiManager.townProfessionsPanel were ones that had been overwritten when TownScript.start() got called
             **/
         UiManager.clearExistingSlotsAndButtons(townProfessionsPanel);
+        loadNpcs();
+    }
+
+    async void loadNpcs()
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
         foreach (NpcScript npc in npcs)
         {
             GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townProfessionsPanel);
@@ -142,16 +151,7 @@ public class TownScript : MonoBehaviour
         Transform buttonOptionsPanel = buttonOptionsPanelGameObject.transform;
         //Remove existing buttons
         UiManager.clearExistingSlotsAndButtons(buttonOptionsPanel);
-        //Dungeon button
-        GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
-        newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => {
-            enableDungeonFloorsSelection();
-            }, false);
-        //Crafting button
-        GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
-        newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Crafting", Item.Rarity.None, null, () => startCrafting(), false);
+        loadButtonOptions(buttonOptionsPanel);
 
 
         //Close button
@@ -200,12 +200,37 @@ public class TownScript : MonoBehaviour
         UiManager.disablePanel(UiManager.dungeonFloorsDownButton);
     }
 
+    async void loadButtonOptions(Transform buttonOptionsPanel)
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
+
+        //Dungeon button
+        GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
+        newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => {
+            enableDungeonFloorsSelection();
+            }, false);
+        //Crafting button
+        GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
+        newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Crafting", Item.Rarity.None, null, () => startCrafting(), false);
+    }
+
     private void setupDungeonFloorButtons(GameObject dungeonFloorsPanelGameObject)
     {
         Transform dungeonFloorsPanel = dungeonFloorsPanelGameObject.transform;
         
         //First clear existing buttons
         UiManager.clearExistingSlotsAndButtons(dungeonFloorsPanel);
+
+        loadFloorButtons(dungeonFloorsPanel);
+    }
+
+    async void loadFloorButtons(Transform dungeonFloorsPanel)
+    {
+        //Waiting while existing buttons get cleared
+        await Task.Delay(UiManager.buttonClearDelayMillis); 
 
         //Then set up the new buttons
         int maxDungeonFloorNumCompleted = playerScript.getMaxDungeonFloorNumCompleted();
