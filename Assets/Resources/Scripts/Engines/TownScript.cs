@@ -325,6 +325,7 @@ public class TownScript : MonoBehaviour
             Debug.Log("Can't craft when you're dead!");
         }
         else {
+            playerScript.setCurrentCrafting("Mining");
             SceneManager.LoadScene("CraftingScene");
         }
     }
