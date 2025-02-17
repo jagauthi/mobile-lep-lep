@@ -83,6 +83,7 @@ public class DungeonScript : MonoBehaviour
         }
 
         UiManager.clearExistingSlotsAndButtons(dungeonOptionsButtonPanel);
+        dungeonOptionSlots.Clear();
         for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
             GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), dungeonOptionsButtonPanel);
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonOption);
@@ -160,12 +161,12 @@ public class DungeonScript : MonoBehaviour
             int slotNum = i;
             if(i < playerAbilities.Count) {
                 Ability ability = playerAbilities[i];
-                GameObject abilityButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", Item.Rarity.None, 
+                GameObject abilityButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, ability.getName(), Item.Rarity.None, 
                                 ability.getIcon(), () => selectPlayerAbility(ability), false);
             }
             else if(i - playerAbilities.Count < playerItems.Count) {
                 Item item = playerItems[i - playerAbilities.Count];
-                GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "", item.getRarity(), item.getIcon(), 
+                GameObject itemButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, item.getBaseName(), item.getRarity(), item.getIcon(), 
                                 () => {
                                     if(playerScript.useItem(item)) {
                                         destroyButton(slotNum, dungeonOptionSlots);

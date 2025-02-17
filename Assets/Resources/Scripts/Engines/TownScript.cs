@@ -256,6 +256,7 @@ public class TownScript : MonoBehaviour
                 // Debug.Log("Still didn't find it");
                 playerGameObject = (GameObject)Resources.Load("Prefabs/PlayerGameObject");
                 playerScript = Instantiate(playerGameObject).GetComponent<PlayerScript>();
+                Debug.Log("Created new player");
             }
             else {
                 playerScript = playerGameObject.GetComponent<PlayerScript>();

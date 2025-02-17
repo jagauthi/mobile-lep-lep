@@ -282,6 +282,7 @@ public class PlayerScript : MonoBehaviour
     protected virtual void loadAbilities()
     {
         initAbilities();
+        abilities.Clear();
         abilities.Add((Ability)abilityMap["Double Hammer Strike"]);
         abilities.Add((Ability)abilityMap["Melee Attack"]);
     }
