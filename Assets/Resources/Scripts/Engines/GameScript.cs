@@ -44,11 +44,6 @@ public class GameScript : MonoBehaviour {
         }
     }
 
-    void OnGUI()
-    {
-       
-    }
-
     public GameRestClient getRestClient() {
         return restClient;
     }

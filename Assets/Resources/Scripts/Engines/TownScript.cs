@@ -47,6 +47,8 @@ public class TownScript : MonoBehaviour
         initTownProfessionsPanel();
         initNpcDialogPanel();
 
+        //Player should full heal when they get to the town
+        playerScript.fullHeal();
     }
 
     private void initTownOptionsPanel()
@@ -287,37 +289,6 @@ public class TownScript : MonoBehaviour
                 playerScript = playerGameObject.GetComponent<PlayerScript>();
             }
         }
-    }
-    
-    protected void OnGUI(){
-        // drawTownThings();   
-    }
-
-    protected void drawTownThings() { 
-        
-        //If player has any menus open, we dont want to show most town options
-        // if(playerScript.anyMenuOpen()) {
-        //     return;
-        // }
-
-        GuiUtil.drawTownOptions(playerScript);
-        
-        //Otherwise if shopkeeper has inventory open, show that
-        // if(shopkeeper.showingInventory) {
-        //     GuiUtil.shopkeeperMenu(shopkeeper, playerScript);
-
-        //     //Displaying the player inventory which allows to sell items
-        //     GuiUtil.playerInventoryMenu(playerScript, shopkeeper, false);
-        // }
-        //Show the other NPCs if the shopkeeper isn't open
-        // else {
-        //     if(null == selectedProfession) {
-        //         GuiUtil.drawNpcs(npcs, this);
-        //     }
-        //     else {
-        //         GuiUtil.professionDialog(selectedProfession, playerScript, this);
-        //     }
-        // }
     }
 
     public void setSelectedProfession(TownProfessionNpc townProfessionNpc) {

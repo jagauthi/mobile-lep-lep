@@ -208,15 +208,7 @@ public class CraftingScript : MonoBehaviour
     {
         updateProgressBar();
     }
-
-    protected void OnGUI(){
-        // drawCraftingThings();        
-    }
-
-    protected void drawCraftingThings() { 
-        GuiUtil.craftingDialog(playerScript, this);
-    }
-
+    
     public void goBackToTown() {
         SceneManager.LoadScene("TownScene");
     }

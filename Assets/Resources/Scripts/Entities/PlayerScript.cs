@@ -318,43 +318,6 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    protected void OnGUI(){
-        // drawBasics();
-
-        // GuiUtil.drawPlayerMenuOptions(this);  
-
-        // if(characterMenuOpen) {
-        //     GuiUtil.characterMenu(this);
-        // }    
-        // if(inventoryMenuOpen) {
-        //     GuiUtil.playerInventoryMenu(this, null, isStashOpen());
-        // }  
-        // if(stashOpen) {
-        //     GuiUtil.playerStashMenu(this);
-        // }
-        // if(mainMenuOpen) {
-        //     GuiUtil.mainMenu();
-        // }  
-    }
-
-    protected void drawBasics() {
-        GuiUtil.drawHealthBar(currentHealth, getMaxHealth(), level);
-        GuiUtil.drawExpBar(exp, GetExpToNextLevel(), skillPoints);
-        GuiUtil.drawResourceBar(currentResource, getMaxResource());
-        //drawAbilities();
-    }
-
-    protected void drawAbilities()
-    {
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            GUI.DrawTexture(
-                new Rect((i * Screen.width / 16) + 20, 7 * Screen.height / 8- 20, Screen.height / 8, Screen.height / 8),
-                abilities[i].getIcon()
-            );
-        }
-    }
-
     public void loseHealth(int x)
     {
         float armorBlock = 0;
@@ -387,8 +350,10 @@ public class PlayerScript : MonoBehaviour
     }
 
     private void updateHealthBar() {
-        float fillAmount = currentHealth / (float)getMaxHealth();
-        healthBar.fillAmount = fillAmount;
+        if(null != healthBar) {
+            float fillAmount = currentHealth / (float)getMaxHealth();
+            healthBar.fillAmount = fillAmount;
+        }
     }
 
     public bool isDead() {
@@ -446,15 +411,33 @@ public class PlayerScript : MonoBehaviour
     }
 
     private void updateResourceBar() {
-        manaBar.fillAmount = currentResource / (float)getMaxResource();
+        if(null != manaBar) {
+            manaBar.fillAmount = currentResource / (float)getMaxResource();
+        }
     }
 
     public void setStrength(int newStrength) {
+        int oldMaxHealth = getMaxHealth();
         this.strength = newStrength;
+        int healthDifference = getMaxHealth() - oldMaxHealth;
+        if(healthDifference > 0) {
+            gainHealth(healthDifference);
+        }
+        else {
+            loseHealth(healthDifference);
+        }
     }
 
     public void setIntelligence(int intelligence) {
+        int oldMaxResource = getMaxResource();
         this.intelligence = intelligence;
+        int resourceDifference = getMaxResource() - oldMaxResource;
+        if(resourceDifference > 0) {
+            gainResource(resourceDifference);
+        }
+        else {
+            loseResource(resourceDifference);
+        }
     }
 
     public void setAgility(int agility) {
@@ -502,6 +485,7 @@ public class PlayerScript : MonoBehaviour
 
     public void fullHeal() {
         this.currentHealth = this.getMaxHealth();
+        updateHealthBar();
     }
 
     protected int GetExpToNextLevel()
@@ -545,6 +529,7 @@ public class PlayerScript : MonoBehaviour
         exp = 0;
         updateHealthBar();
         updateResourceBar();
+        updatePlayerSkillsSection();
     }
 
     public void addQuest(Quest quest) {
