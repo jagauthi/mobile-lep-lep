@@ -1,10 +1,13 @@
 
+using System.Collections.Generic;
 using UnityEngine;
+using static CraftingScript;
 
 public class TownProfessionNpc : NpcScript {
 
     string townDialog, craftingDialog, dialogPhase;
     protected Texture2D headShot;
+    List<CraftingTypes> craftingTypes;
 
     public TownProfessionNpc(string npcName, Texture2D texture, Texture2D headShot) : base(npcName, texture) {
         this.npcName = npcName;
@@ -16,6 +19,9 @@ public class TownProfessionNpc : NpcScript {
         if(this.npcName == "Sarah the Blacksmith") {
             townDialog = "Heya! Whatcha wanna do, go into the dungeon?";
             craftingDialog = "Cool lets make something :) Which crafting do you wanna do?";
+            craftingTypes = new List<CraftingTypes>();
+            craftingTypes.Add(CraftingTypes.Mining);
+            craftingTypes.Add(CraftingTypes.Smithing);
         }
         else {
             townDialog = "Unimplemented dialog lol rip";
@@ -46,6 +52,10 @@ public class TownProfessionNpc : NpcScript {
 
     public Texture2D getHeadShot() {
         return headShot;
+    }
+
+    public List<CraftingTypes> getCraftingTypes() {
+        return craftingTypes;
     }
 
 }

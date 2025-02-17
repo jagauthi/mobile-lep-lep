@@ -39,17 +39,21 @@ public class ShopKeeperScript : NpcScript {
 
     private void initShopkeeperInventoryPanel() {
 
-        if(null == shopkeeperInventoryPanel) {
-            GameObject shopkeeperInventoryPanelGameObject = (GameObject)Resources.Load("Prefabs/ShopkeeperInventoryPanel");
-            shopkeeperInventoryPanel = MonoBehaviour.Instantiate(shopkeeperInventoryPanelGameObject).GetComponent<Transform>();
-            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
-            shopkeeperInventoryPanel.SetParent(canvas.transform, false);
-            UiManager.shopkeeperInventoryPanel = shopkeeperInventoryPanel;
-            UiManager.closeTownProfessionsPanels.Add(shopkeeperInventoryPanel);
-            UiManager.openPanel(UiManager.shopkeeperInventoryPanel);
+        if(null != UiManager.shopkeeperInventoryPanel) {
+            GameObject.Destroy(UiManager.shopkeeperInventoryPanel.gameObject);
         }
 
-        
+        GameObject shopkeeperInventoryPanelGameObject = (GameObject)Resources.Load("Prefabs/ShopkeeperInventoryPanel");
+        shopkeeperInventoryPanel = MonoBehaviour.Instantiate(shopkeeperInventoryPanelGameObject).GetComponent<Transform>();
+        GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+        shopkeeperInventoryPanel.SetParent(canvas.transform, false);
+        UiManager.shopkeeperInventoryPanel = shopkeeperInventoryPanel;
+        UiManager.closeTownProfessionsPanels.Add(shopkeeperInventoryPanel);
+        UiManager.openPanel(UiManager.shopkeeperInventoryPanel);
+
+        //First clear existing slots/buttons
+        UiManager.clearExistingSlotsAndButtons(shopkeeperInventoryPanel);
+
         Button[] paginationButtons = shopkeeperInventoryPanel.GetComponentsInChildren<Button>();
         foreach (Button button in paginationButtons){
             if (button.gameObject.tag == "LeftPagination"){
@@ -74,6 +78,8 @@ public class ShopKeeperScript : NpcScript {
 
     void CreateInventorySlots()
     {
+        slots.Clear();
+
         for (int i = 0; i < totalSlots; i++)
         {
             GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), shopkeeperInventoryPanel);
@@ -84,6 +90,7 @@ public class ShopKeeperScript : NpcScript {
 
     void LoadInventoryItems()
     {
+        itemButtons.Clear();
         //First initialize each button to null
         for (int i = 0; i < totalSlots; i++)
         {

@@ -1035,60 +1035,60 @@ public class GuiUtil : MonoBehaviour {
 
     public static void craftingDialog(PlayerScript playerScript, CraftingScript craftingScript)
     {
-        int buttonLength = (int)(craftingDialogGroupRect.width / 4);
-        int buffer = (int)craftingDialogGroupRect.width/16;
-        GUI.BeginGroup(craftingDialogGroupRect);
-        GUI.Box(craftingDialogBackgroundRect, "");
-        GUI.Box(craftingDialogIntroRect, playerScript.getCurrentCrafting());
-        //GUI.DrawTexture(backgroundRect, backgroundTexture);
+        // int buttonLength = (int)(craftingDialogGroupRect.width / 4);
+        // int buffer = (int)craftingDialogGroupRect.width/16;
+        // GUI.BeginGroup(craftingDialogGroupRect);
+        // GUI.Box(craftingDialogBackgroundRect, "");
+        // GUI.Box(craftingDialogIntroRect, playerScript.getCurrentCrafting());
+        // //GUI.DrawTexture(backgroundRect, backgroundTexture);
         
-        //Let player choose which product to craft
-        if(null == craftingScript.getProductCurrentlyCrafting()) {
+        // //Let player choose which product to craft
+        // if(null == craftingScript.getProductCurrentlyCrafting()) {
 
-            Dictionary<string, List<string>> craftingOptionsMap = craftingScript.getCraftingOptionsMap();
-            List<string> craftingOptions = craftingOptionsMap[playerScript.getCurrentCrafting()];
+        //     Dictionary<string, List<string>> craftingOptionsMap = craftingScript.getCraftingOptionsMap();
+        //     List<string> craftingOptions = craftingOptionsMap[playerScript.getCurrentCrafting()];
 
-            GUI.Label(craftingDialogTextRect, "Which product do you want to craft?");
-            for(int i = 0; i < craftingOptions.Count; i++) {
-                Rect craftingOptionButton = new Rect(
-                    craftingDialogOptionButton.x + (i * craftingDialogOptionButton.width) + (i * buffer),
-                    craftingDialogOptionButton.y,
-                    craftingDialogOptionButton.width,
-                    craftingDialogOptionButton.height
-                );
-                if(GUI.Button(craftingOptionButton, craftingOptions[i])) {
-                    craftingScript.setProductCurrentlyCrafting(craftingOptions[i]);
-                }
-            }
+        //     GUI.Label(craftingDialogTextRect, "Which product do you want to craft?");
+        //     for(int i = 0; i < craftingOptions.Count; i++) {
+        //         Rect craftingOptionButton = new Rect(
+        //             craftingDialogOptionButton.x + (i * craftingDialogOptionButton.width) + (i * buffer),
+        //             craftingDialogOptionButton.y,
+        //             craftingDialogOptionButton.width,
+        //             craftingDialogOptionButton.height
+        //         );
+        //         if(GUI.Button(craftingOptionButton, craftingOptions[i])) {
+        //             craftingScript.setProductCurrentlyCrafting(craftingOptions[i]);
+        //         }
+        //     }
 
-            if(GUI.Button(craftingDialogBackToTownButton, "Back to town")) {
-                craftingScript.goBackToTown();
-            }
+        //     if(GUI.Button(craftingDialogBackToTownButton, "Back to town")) {
+        //         craftingScript.goBackToTown();
+        //     }
             
-        }
-        //Crafting
-        else {
-            //Draw button to increment crafting manually
-            if(GUI.Button(craftingDialogOptionButton, "Click!")) {
-                craftingScript.clickIncrementCrafting();
-            }
+        // }
+        // //Crafting
+        // else {
+        //     //Draw button to increment crafting manually
+        //     if(GUI.Button(craftingDialogOptionButton, "Click!")) {
+        //         craftingScript.clickIncrementCrafting();
+        //     }
 
-            Rect stopCraftingButton = new Rect(
-                craftingDialogOptionButton.x + craftingDialogOptionButton.width + buffer,
-                craftingDialogOptionButton.y,
-                craftingDialogOptionButton.width,
-                craftingDialogOptionButton.height
-            );
-            //Draw button to increment crafting manually
-            if(GUI.Button(stopCraftingButton, "Stop")) {
-                craftingScript.setProductCurrentlyCrafting(null);
-            }
+        //     Rect stopCraftingButton = new Rect(
+        //         craftingDialogOptionButton.x + craftingDialogOptionButton.width + buffer,
+        //         craftingDialogOptionButton.y,
+        //         craftingDialogOptionButton.width,
+        //         craftingDialogOptionButton.height
+        //     );
+        //     //Draw button to increment crafting manually
+        //     if(GUI.Button(stopCraftingButton, "Stop")) {
+        //         craftingScript.setProductCurrentlyCrafting(null);
+        //     }
 
-            //Draw progress bar for the crafting
-            drawCraftingProgressBar(craftingScript);
-        }
+        //     //Draw progress bar for the crafting
+        //     drawCraftingProgressBar(craftingScript);
+        // }
 
-        GUI.EndGroup();
+        // GUI.EndGroup();
     }
 
 

@@ -17,7 +17,6 @@ public class TownScript : MonoBehaviour
    TownProfessionNpc selectedProfession;
    Transform townOptionsButtonPanel, townProfessionsPanel, npcDialogPanel;
    private int dungeonFloorsPage = 0;
-   Button byooton;
 
     void Awake()
     {
@@ -47,17 +46,6 @@ public class TownScript : MonoBehaviour
         initTownProfessionsPanel();
         initNpcDialogPanel();
 
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(1)) 
-        {
-            Debug.Log("Clickkkkkkkkk");
-            Debug.Log("byooton: " + byooton);
-            Debug.Log("onClick: " + byooton.onClick);
-            byooton.onClick.Invoke();
-        }
     }
 
     private void initTownOptionsPanel()
@@ -325,7 +313,7 @@ public class TownScript : MonoBehaviour
             Debug.Log("Can't craft when you're dead!");
         }
         else {
-            playerScript.setCurrentCrafting("Mining");
+            playerScript.setSelectedProfession(selectedProfession);
             SceneManager.LoadScene("CraftingScene");
         }
     }

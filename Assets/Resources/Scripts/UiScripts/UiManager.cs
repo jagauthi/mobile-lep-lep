@@ -32,14 +32,20 @@ public class UiManager : MonoBehaviour
     public static Transform shopkeeperInventoryPanel;
 
 
-    //Dungeon panels
-    public static Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel, dungeonRewardsPanel;
-
-
     //GameObjects used to enable/disable in the NPC dialog
     public static GameObject textPanelGameObject, buttonOptionsPanelGameObject, closeButtonGameObject, dungeonFloorsPanelGameObject, 
         dungeonFloorsTextPanel, dungeonFloorsUpButton, dungeonFloorsDownButton;
 
+
+    //Dungeon panels
+    public static Transform dungeonOptionsButtonPanel, dungeonEnemiesPanel, dungeonPlayerPlaceholderPanel, dungeonRewardsPanel;
+
+
+    //Crafting panels
+    public static Transform craftingDialogPanel;
+
+    //GameObjects used to enable/disable in the Crafting dialog
+    public static GameObject craftingTextPanelGameObject, craftingButtonOptionsPanelGameObject, productCraftingPanelGameObject;
 
     //Utils
     public static List<Transform> closeTownProfessionsPanels = new List<Transform>();
@@ -209,7 +215,10 @@ public class UiManager : MonoBehaviour
 
     public static void clearExistingSlotsAndButtons(Transform panel) {
         for(int i = 0; i < panel.childCount; i++) {
-            GameObject.Destroy(panel.GetChild(i).gameObject);
+            if(null != panel.GetChild(i).gameObject 
+                    && (panel.GetChild(i).gameObject.tag == null || panel.GetChild(i).gameObject.tag == "Untagged" ) ) {
+                GameObject.Destroy(panel.GetChild(i).gameObject);
+            }
         }
     }
     
