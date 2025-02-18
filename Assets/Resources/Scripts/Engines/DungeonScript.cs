@@ -433,10 +433,10 @@ public class DungeonScript : MonoBehaviour
 
             //If it's a boss room, guarentee more loot
             if(roomNumber == maxRooms) {
-                lootFromThisRoom.AddRange(ItemHandler.generateItems(enemy.getNumLoot(), enemy.getNumLoot(), null));
+                lootFromThisRoom.AddRange(ItemHandler.generateItems(enemy.getNumLoot(), enemy.getNumLoot(), null, playerScript.getDungeonFloorNum()));
             }
             else {
-                lootFromThisRoom.AddRange(ItemHandler.generateItems(0, enemy.getNumLoot(), null));
+                lootFromThisRoom.AddRange(ItemHandler.generateItems(0, enemy.getNumLoot(), null, playerScript.getDungeonFloorNum()));
             }
         }
 

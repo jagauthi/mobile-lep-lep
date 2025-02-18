@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class Armor : EquipmentItem {
 
-    protected int armorPower;
+    protected float armorPower;
 
-    public Armor(string baseName, string type, string slot, Texture2D icon, int cost, Rarity rarity, int armorPower) 
-    : base(baseName, type, slot, icon, cost, rarity) {
+    public Armor(string baseName, string type, Texture2D icon, int cost, Rarity rarity, string slot, int levelReq, int strReq, int intReq, int agilReq, float armorPower) 
+    : base(baseName, type, icon, cost, rarity, slot, levelReq, strReq, intReq, agilReq) {
         this.slot = slot;
         this.armorPower = armorPower;
         this.tooltip = "Armor: " + armorPower;
         getPlayer();
     }
 
-    public int getArmorPower() {
-        return armorPower;
+    public float getArmorPower() {
+        return armorPower * ItemHandler.rarityModifier(rarity);
+    }
+
+    public void updateTooltip() {
+        this.tooltip = "Armor: " + getArmorPower();
     }
 }

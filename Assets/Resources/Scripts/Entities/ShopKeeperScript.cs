@@ -32,10 +32,10 @@ public class ShopKeeperScript : NpcScript {
         items = new List<Item>();
 
         //Add 2-4 consumeables
-        items.AddRange(ItemHandler.generateItemsOfType(2, 4, "Consumable"));
+        // items.AddRange(ItemHandler.generateItemsOfType(2, 4, "Consumable", 1));
 
-        //Add 0-2 pieces of armor
-        items.AddRange(ItemHandler.generateItemsOfType(0, 2, "Armor"));
+        //Add 1-2 pieces of armor
+        items.AddRange(ItemHandler.generateItemsOfType(8, 9, "Armor", playerScript.getMaxDungeonFloorNumCompleted()+1));
     }
 
     private void initShopkeeperInventoryPanel() {

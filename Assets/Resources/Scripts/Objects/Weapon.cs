@@ -6,31 +6,15 @@ public class Weapon : EquipmentItem {
 
     protected GameObject weaponGameObject;
 
-    int baseDamage, addedDamage;
+    float baseDamage;
 
-    public Weapon(string baseName, string type, string slot, Texture2D icon, int cost, Rarity rarity) 
-    : base(baseName, type, slot, icon, cost, rarity) {
-        basicInits();
-    }
-
-    public void basicInits() {
-        loadWeaponInfo(baseName);
-    }
-    
-    void loadWeaponInfo(string baseName) {
-        baseDamage = 10;
-        addedDamage = 0;
-    }
-
-    public int getDamage() {
-        return baseDamage + addedDamage;
-    }
-
-    public void setBaseDamage(int baseDamage) {
+    public Weapon(string baseName, string type, Texture2D icon, int cost, Rarity rarity, string slot, int levelReq, int strReq, int intReq, int agilReq, float baseDamage) 
+    : base(baseName, type, icon, cost, rarity, slot, levelReq, strReq, intReq, agilReq) {
         this.baseDamage = baseDamage;
+        getPlayer();
     }
 
-    public void setAddedDamage(int addedDamage) {
-        this.addedDamage = addedDamage;
+    public float getDamage() {
+        return baseDamage;
     }
 }

@@ -13,7 +13,7 @@ public class Item {
 	protected Texture2D icon;
     protected PlayerScript playerScript;
     protected string tooltip;
-    Rarity rarity;
+    protected Rarity rarity;
 
     public Item(string baseName, string type, Texture2D icon, int cost, Rarity rarity) {
         this.baseName = baseName;
@@ -41,6 +41,11 @@ public class Item {
         return rarity;
     }
 
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
+        updateTooltip();
+    }
+
     public Texture2D getIcon() {
         return icon;
     }
@@ -56,6 +61,10 @@ public class Item {
     public string getTooltip()
     {
         return tooltip;
+    }
+
+    public void updateTooltip() {
+
     }
 
     public int getCost()

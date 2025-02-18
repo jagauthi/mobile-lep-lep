@@ -51,7 +51,7 @@ public class EnemyScript : NpcScript
 
     protected void getHit(Weapon weapon) {
         aggrod = true;
-        loseHealth(weapon.getDamage());
+        loseHealth((int)weapon.getDamage());
     }
 
     public void loseHealth(int x)

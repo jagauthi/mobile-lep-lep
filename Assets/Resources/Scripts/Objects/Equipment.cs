@@ -117,8 +117,8 @@ public class Equipment {
         return playerScript;
     }
 
-    public int getTotalArmor() {
-        int totalArmor = 0;
+    public float getTotalArmor() {
+        float totalArmor = 0f;
         foreach(EquipmentItem equipment in equipment.Values)
         {
             if (null != equipment && equipment is Armor)
