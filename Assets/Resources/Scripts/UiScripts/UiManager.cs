@@ -71,10 +71,10 @@ public class UiManager : MonoBehaviour
 
     void Start()
     {
-
+        
     }
 
-    public GameObject CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick, bool disabled)
+    public GameObject CreateButton(Transform panel, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick, bool disabled, string tooltip)
     {
         GameObject newButton = null;
 
@@ -91,7 +91,7 @@ public class UiManager : MonoBehaviour
             newButton = Instantiate(buttonPrefab, emptySlot); // Spawn inside the slot
             UiButton uiButton = newButton.GetComponent<UiButton>();
             if (uiButton != null) {
-                uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled);
+                uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled, tooltip);
             }
         }
         else
@@ -101,7 +101,7 @@ public class UiManager : MonoBehaviour
         return newButton;
     }
 
-    public GameObject CreateButtonInSlot(Transform slot, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick, bool disabled)
+    public GameObject CreateButtonInSlot(Transform slot, UiButton.ButtonType buttonType, string text, Item.Rarity rarity, Texture2D icon, UnityAction onClick, bool disabled, string tooltip)
     {
         GameObject newButton = null;
 
@@ -110,7 +110,7 @@ public class UiManager : MonoBehaviour
             newButton = Instantiate(buttonPrefab, slot); // Spawn inside the slot
             UiButton uiButton = newButton.GetComponent<UiButton>();
             if (uiButton != null) {
-                uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled);
+                uiButton.Setup(text, onClick, buttonType, rarity, icon, disabled, tooltip);
             }
         }
         else

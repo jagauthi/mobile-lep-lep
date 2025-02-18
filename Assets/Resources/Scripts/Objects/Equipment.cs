@@ -90,11 +90,11 @@ public class Equipment {
             Texture2D emptySlotTexture = (Texture2D)Resources.Load(resourceName);
 
             UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", Item.Rarity.None, 
-                            emptySlotTexture, () => Debug.Log("Nothing equipped"), false);
+                            emptySlotTexture, () => Debug.Log("Nothing equipped"), false, null);
         }
         else {
             UiManager.Instance.CreateButtonInSlot(equipmentSlot, UiButton.ButtonType.PlayerMenuOption, "", equippedItem.getRarity(), 
-                            equippedItem.getIcon(), () => unequipItem(null, equippedItem), false);
+                            equippedItem.getIcon(), () => unequipItem(null, equippedItem), false, null);
         }
     }
 

@@ -68,15 +68,15 @@ public class PlayerScript : MonoBehaviour
 
         GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
         newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"), false);
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Character", Item.Rarity.None, (Texture2D)Resources.Load("Images/CharacterMenuIcon"), () => toggleMenu("Character"), false, null);
 
         GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
         newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"), false);
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Inventory", Item.Rarity.None, (Texture2D)Resources.Load("Images/InventoryMenuIcon"), () => toggleMenu("Inventory"), false, null);
 
         GameObject newSlot3 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), playerOptionsPanel);
         newSlot3.GetComponent<UiSlot>().setType(UiButton.ButtonType.PlayerMenuOption);
-        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"), false);
+        UiManager.Instance.CreateButton(playerOptionsPanel, UiButton.ButtonType.PlayerMenuOption, "Main", Item.Rarity.None, (Texture2D)Resources.Load("Images/MainMenuIcon"), () => toggleMenu("Main"), false, null);
     }
 
     private void initCharacterSheetPanel()

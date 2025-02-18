@@ -65,7 +65,8 @@ public class TownScript : MonoBehaviour
 
             GameObject newSlot1 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townOptionsButtonPanel);
             newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-            UiManager.Instance.CreateButton(townOptionsButtonPanel, UiButton.ButtonType.TownMenuOption, "Stash", Item.Rarity.None, (Texture2D)Resources.Load("Images/StashMenuIcon"), () => UiManager.togglePanel(UiManager.playerStashPanel), false);
+            UiManager.Instance.CreateButton(townOptionsButtonPanel, UiButton.ButtonType.TownMenuOption, "Stash", Item.Rarity.None, (Texture2D)Resources.Load("Images/StashMenuIcon"), 
+                    () => UiManager.togglePanel(UiManager.playerStashPanel), false, null);
         }
         else {
             townOptionsButtonPanel = UiManager.townOptionsButtonPanel;
@@ -106,7 +107,7 @@ public class TownScript : MonoBehaviour
         {
             GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), townProfessionsPanel);
             newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-            UiManager.Instance.CreateButton(townProfessionsPanel, UiButton.ButtonType.TownMenuOption, npc.getName(), Item.Rarity.None, npc.getTexture(), () => npc.startInteraction(this), false);
+            UiManager.Instance.CreateButton(townProfessionsPanel, UiButton.ButtonType.TownMenuOption, npc.getName(), Item.Rarity.None, npc.getTexture(), () => npc.startInteraction(this), false, npc.getTooltip());
         }
     }
 
@@ -212,11 +213,11 @@ public class TownScript : MonoBehaviour
         newSlot1.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
         UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Dungeon", Item.Rarity.None, null, () => {
             enableDungeonFloorsSelection();
-            }, false);
+            }, false, null);
         //Crafting button
         GameObject newSlot2 = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), buttonOptionsPanel);
         newSlot2.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
-        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Crafting", Item.Rarity.None, null, () => startCrafting(), false);
+        UiManager.Instance.CreateButton(buttonOptionsPanel, UiButton.ButtonType.TownMenuOption, "Crafting", Item.Rarity.None, null, () => startCrafting(), false, null);
     }
 
     private void setupDungeonFloorButtons(GameObject dungeonFloorsPanelGameObject)
@@ -242,7 +243,7 @@ public class TownScript : MonoBehaviour
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.TownMenuOption);
             int floorNum = i + 1 + (dungeonFloorsPage * 5);
             bool disabled = maxDungeonFloorNumCompleted+1 < floorNum;
-            UiManager.Instance.CreateButton(dungeonFloorsPanel, UiButton.ButtonType.TownMenuOption, "" + floorNum, Item.Rarity.None, null, () => selectDungeonFloor(floorNum), disabled);
+            UiManager.Instance.CreateButton(dungeonFloorsPanel, UiButton.ButtonType.TownMenuOption, "" + floorNum, Item.Rarity.None, null, () => selectDungeonFloor(floorNum), disabled, null);
         }
     }
 
@@ -260,7 +261,6 @@ public class TownScript : MonoBehaviour
 
 
     private void selectDungeonFloor(int floorNum) {
-        Debug.Log("Selected floor: " + floorNum);
         playerScript.setSelectedProfession(selectedProfession);
         startDungeon(floorNum); 
     }

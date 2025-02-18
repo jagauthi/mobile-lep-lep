@@ -166,7 +166,7 @@ public class CraftingScript : MonoBehaviour
         else {
             productCraftingText.text = "";
             UiManager.Instance.CreateButtonInSlot(manualCraftButtonSlot, UiButton.ButtonType.PlayerMenuOption, "Click!", Item.Rarity.None, 
-                            null, () => clickIncrementCrafting(), false);
+                            null, () => clickIncrementCrafting(), false, null);
         }
     }
 
@@ -179,11 +179,11 @@ public class CraftingScript : MonoBehaviour
             GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), craftingButtonOptionsPanel);
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
             CraftingTypes thisCraftingType = craftingType;
-            GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, craftingType.HumanName(), Item.Rarity.None, 
+            GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, craftingType.ToString(), Item.Rarity.None, 
                             null, () => {
                                 selectedCraftingType = thisCraftingType;
                                 setupCraftingDialog();
-                            }, false);
+                            }, false, null);
         }
     }
 
@@ -200,7 +200,7 @@ public class CraftingScript : MonoBehaviour
                             null, () => {
                                 setProductCurrentlyCrafting(thisProduct);
                                 setupCraftingDialog();
-                            }, false);
+                            }, false, null);
         }
     }
 
@@ -208,7 +208,7 @@ public class CraftingScript : MonoBehaviour
     {
         updateProgressBar();
     }
-    
+
     public void goBackToTown() {
         SceneManager.LoadScene("TownScene");
     }

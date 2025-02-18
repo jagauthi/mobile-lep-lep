@@ -69,4 +69,8 @@ public class NpcScript
     public virtual void startInteraction(TownScript townScript) {
         
     }
+
+    public string getTooltip() {
+        return npcName;
+    }
 }

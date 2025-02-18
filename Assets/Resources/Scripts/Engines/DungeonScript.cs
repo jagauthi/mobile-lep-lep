@@ -17,7 +17,7 @@ public class DungeonScript : MonoBehaviour
     private PlayerScript playerScript;
     protected List<EnemyScript> enemies;
     public Ability selectedPlayerAbility;
-    bool playerTurn, inProgress;
+    bool playerTurn;
     
     List<Item> lootFromThisRoom, totalLoot;
     int goldFromThisRoom, totalGold, expFromThisRoom, totalExp;
@@ -166,13 +166,12 @@ public class DungeonScript : MonoBehaviour
     public void updateDungeonButtons() {
          List<Ability> playerAbilities = playerScript.getAbilities();
          List<Item> playerItems = playerScript.getInventory().getItems();
-         Debug.Log("dungeonOptionsButtonPanel slots: " + dungeonOptionsButtonPanel.childCount);
          for(int i = 0; i < dungeonOptionsSlotsMaxCount; i++) {
             int slotNum = i;
             if(i < playerAbilities.Count) {
                 Ability ability = playerAbilities[i];
                 GameObject abilityButton = UiManager.Instance.CreateButton(dungeonOptionsButtonPanel, UiButton.ButtonType.DungeonOption, "" + slotNum, Item.Rarity.None, 
-                                ability.getIcon(), () => selectPlayerAbility(ability), false);
+                                ability.getIcon(), () => selectPlayerAbility(ability), false, ability.getTooltip());
             }
             else if(i - playerAbilities.Count < playerItems.Count) {
                 Item item = playerItems[i - playerAbilities.Count];
@@ -181,7 +180,7 @@ public class DungeonScript : MonoBehaviour
                                     if(playerScript.useItem(item)) {
                                         destroyButton(slotNum, dungeonOptionSlots);
                                     }
-                                }, false);
+                                }, false, item.getTooltip());
             }
          }
     }
@@ -235,7 +234,7 @@ public class DungeonScript : MonoBehaviour
                                         lootFromThisRoom.Remove(item);
                                         destroyButton(slotNum, rewardsLootSlots);
                                     }
-                                }, false);
+                                }, false, item.getTooltip());
         }
     }
 
@@ -257,18 +256,18 @@ public class DungeonScript : MonoBehaviour
                         for(int i = 0; i < rewardsLootSlots.Count; i++) {
                             destroyButton(i, rewardsLootSlots);
                         }
-                    }, false);
+                    }, false, null);
 
         //Back to town button
         GameObject backToTownSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), rewardsActionsPanel);
         backToTownSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonMenuOption);
-        UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Go to town", Item.Rarity.None, null, goBackToTown, false);
+        UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Go to town", Item.Rarity.None, null, goBackToTown, false, null);
         
         //Next room button, missing if we completed the last room already
         if(roomNumber != maxRooms) {
             GameObject nextRoomSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), rewardsActionsPanel);
             nextRoomSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.DungeonMenuOption);
-            UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Next room", Item.Rarity.None, null, nextRoom, false);
+            UiManager.Instance.CreateButton(rewardsActionsPanel, UiButton.ButtonType.DungeonMenuOption, "Next room", Item.Rarity.None, null, nextRoom, false, null);
         }
     }
 
@@ -328,7 +327,7 @@ public class DungeonScript : MonoBehaviour
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Enemy);
             enemySlots.Add(newSlot);
             GameObject newEnemy = UiManager.Instance.CreateButton(dungeonEnemiesPanel, UiButton.ButtonType.Enemy, "", Item.Rarity.None, 
-                                enemy.getTexture(), () => attackEnemy(enemy), false);
+                                enemy.getTexture(), () => attackEnemy(enemy), false, enemy.getTooltip());
         }
     }
 

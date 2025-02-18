@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,5 +34,9 @@ public class Ability {
 
 	public Texture2D getIcon() {
 		return icon;
+	}
+
+	public String getTooltip() {
+		return name + ": " + getPower() + " damage, " + getResourceCost() + " mana";
 	}
 }

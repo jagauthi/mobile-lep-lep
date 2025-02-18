@@ -146,7 +146,7 @@ public class Inventory {
 
 
             GameObject newItem = UiManager.Instance.CreateButton(panel, UiButton.ButtonType.PlayerMenuOption, "", Item.Rarity.None, 
-                                item.getIcon(), itemUseFunction, false);
+                                item.getIcon(), itemUseFunction, false, item.getTooltip());
 
             newItem.SetActive(false); // Initially hidden
             itemButtons.Add(newItem);
@@ -228,7 +228,7 @@ public class Inventory {
     public bool addItem(Item item) {
         if(items.Count < inventoryTotalSlots) {
             items.Add(item);
-            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item), false);
+            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item), false, item.getTooltip());
             return true;
         }
         else {
@@ -240,7 +240,7 @@ public class Inventory {
     public bool addStashItem(Item item) {
         if(stashItems.Count < stashTotalSlots) {
             stashItems.Add(item);
-            UiManager.Instance.CreateButton(playerStashPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => transferFromStashToInventory(item), false);
+            UiManager.Instance.CreateButton(playerStashPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => transferFromStashToInventory(item), false, item.getTooltip());
             return true;
         }
         else {

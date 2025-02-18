@@ -69,6 +69,14 @@ public class EnemyScript : NpcScript
         damageAmountTaken = 0;
     }
 
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
     public bool isDead() {
         return currentHealth <= 0;
     }
@@ -99,6 +107,10 @@ public class EnemyScript : NpcScript
 
     public int getNumLoot() {
         return numLoot;
+    }
+
+    public string getTooltip() {
+        return npcName + ": Max health = " + getMaxHealth();
     }
 
 }

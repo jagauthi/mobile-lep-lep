@@ -24,6 +24,7 @@ public class CanvasScript : MonoBehaviour
 
     void Start()
     {
+        Instantiate(Resources.Load<GameObject>("Prefabs/TooltipPanel"), transform);
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)

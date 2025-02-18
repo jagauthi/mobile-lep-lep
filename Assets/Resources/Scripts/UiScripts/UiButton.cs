@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
-public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public enum ButtonType { Ability, Item, ShopkeeperItem, PlayerMenuOption, TownMenuOption, DungeonMenuOption, DungeonOption, Enemy }
 
@@ -19,6 +19,7 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public Transform originalParent;
     private CanvasGroup canvasGroup;
+    private string tooltip;
 
     void Awake()
     {
@@ -32,13 +33,14 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>(); // Ensure it exists
     }
 
-    public void Setup(string text, UnityAction onClickAction, ButtonType buttonType, Item.Rarity rarity, Texture2D icon, bool disabled)
+    public void Setup(string text, UnityAction onClickAction, ButtonType buttonType, Item.Rarity rarity, Texture2D icon, bool disabled, string tooltip)
     {
         if(null == buttonText) {
             Awake();
         }
         this.buttonType = buttonType;
         this.itemRarity = rarity;
+        this.tooltip = tooltip;
 
         buttonText.text = text;
         if (icon != null) {
@@ -143,5 +145,15 @@ public class UiButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
 
         return null; // No valid slot found
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        UiTooltip.Instance.ShowTooltip(tooltip, Input.mousePosition);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        UiTooltip.Instance.HideTooltip();
     }
 }
