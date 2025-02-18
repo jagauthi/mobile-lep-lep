@@ -45,7 +45,6 @@ public class DungeonScript : MonoBehaviour
         enemies = new List<EnemyScript>();
         
         playerTurn = true;
-        inProgress = true;
 
         lootFromThisRoom = new List<Item>();
         totalLoot = new List<Item>();
@@ -279,7 +278,6 @@ public class DungeonScript : MonoBehaviour
         expFromThisRoom = 0;
         lootFromThisRoom = new List<Item>();
 
-        inProgress = true;
         playerTurn = true;
 
         if(roomNumber == maxRooms) {
@@ -457,7 +455,6 @@ public class DungeonScript : MonoBehaviour
         }
 
         enemies = new List<EnemyScript>();
-        inProgress = false;
         
         UiManager.closePanel(dungeonEnemiesPanel);
         UiManager.openPanel(dungeonRewardsPanel);
@@ -494,7 +491,6 @@ public class DungeonScript : MonoBehaviour
     }
 
     public void goBackToTown() {
-        inProgress = false;
         SceneManager.LoadScene("TownScene");
     }
 
