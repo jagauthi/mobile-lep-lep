@@ -22,7 +22,7 @@ public class Item {
         this.cost = cost;
         this.rarity = rarity;
         playerScript = null;
-        tooltip = "testTooltip";
+        tooltip = "Cost: " + cost;
     }
 
     public virtual bool use() {
@@ -63,8 +63,8 @@ public class Item {
         return tooltip;
     }
 
-    public void updateTooltip() {
-
+    public virtual void updateTooltip() {
+        tooltip = "Cost: " + cost;
     }
 
     public int getCost()

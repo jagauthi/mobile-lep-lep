@@ -10,7 +10,7 @@ public class Armor : EquipmentItem {
     : base(baseName, type, icon, cost, rarity, slot, levelReq, strReq, intReq, agilReq) {
         this.slot = slot;
         this.armorPower = armorPower;
-        this.tooltip = "Armor: " + armorPower;
+        this.tooltip = "Armor: " + getArmorPower() + ", cost: " + cost;
         getPlayer();
     }
 
@@ -18,7 +18,12 @@ public class Armor : EquipmentItem {
         return armorPower * ItemHandler.rarityModifier(rarity);
     }
 
-    public void updateTooltip() {
-        this.tooltip = "Armor: " + getArmorPower();
+    public override void updateTooltip() {
+        this.tooltip = "Armor: " + getArmorPower() + ", cost: " + cost;
     }
+
+    public Armor copyArmor() {
+        return new Armor(baseName, type, icon, cost, rarity, slot, levelReq, strReq, intReq, agilReq, armorPower);
+    }
+    
 }

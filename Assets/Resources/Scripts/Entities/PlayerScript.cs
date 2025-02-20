@@ -246,7 +246,6 @@ public class PlayerScript : MonoBehaviour
         equipment = new Equipment();
         inventory.addItem(ItemHandler.getItemMap()["Health Potion"]);
         inventory.addItem(ItemHandler.getItemMap()["Mana Potion"]);
-        inventory.addItem(ItemHandler.getItemMap()["Iron Chest"]);
 
         gainGold(10);
 

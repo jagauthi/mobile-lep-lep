@@ -1,7 +1,9 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using static Item;
@@ -74,31 +76,45 @@ public class ItemHandler {
         return allItems;
     }
 
-    public static List<Item> generateItems(int minNumItems, int maxNumItems, List<Item> itemList, int level) {
-        List<Item> itemsToReturn = new List<Item>();
-        if(null == itemList) {
-            itemList = allItems;
+    public static List<Item> generateItems(int minNumItems, int maxNumItems, String itemType, int level) {
+        if(level < 1) {
+            level = 1;
         }
+        List<Item> itemsToReturn = new List<Item>();
 
         for(int i = 0; i < maxNumItems; i++) {
+            
             //50% chance to add an item
-            if(Random.Range(0, 2) == 1) {
-                Item randomItem = itemList[Random.Range(0, itemList.Count)];
-                if(randomItem is Armor) {
-                    //Get a random armor if it was armor
+            if(UnityEngine.Random.Range(0, 2) == 1) {
+                if(null == itemType) {
+                    itemType = getRandomItemType();
+                }
+
+                if(itemType == "Armor") {
                     itemsToReturn.Add(getRandomArmor(level));
                 }
-                //Otherwise just add this
                 else {
-                    itemsToReturn.Add(randomItem);
+                    List<Item> theseItems = itemsMappedByType[itemType];
+                    itemsToReturn.Add(theseItems[UnityEngine.Random.Range(0, theseItems.Count)]);
                 }
             }
         }
-
+        
+        int numItemsNeeded = minNumItems - itemsToReturn.Count;
         //If we didn't get atleast min number of items, add the rest
         if(itemsToReturn.Count < minNumItems) {
-            for(int i = 0; i < minNumItems - itemsToReturn.Count; i++) {
-                itemsToReturn.Add(itemList[Random.Range(0, itemList.Count)]);
+            for(int i = 0; i < numItemsNeeded ; i++) {
+                if(null == itemType) {
+                    itemType = getRandomItemType();
+                }
+
+                if(itemType == "Armor") {
+                    itemsToReturn.Add(getRandomArmor(level));
+                }
+                else {
+                    List<Item> theseItems = itemsMappedByType[itemType];
+                    itemsToReturn.Add(theseItems[UnityEngine.Random.Range(0, theseItems.Count)]);
+                }
             }
         }
 
@@ -106,11 +122,22 @@ public class ItemHandler {
     }
 
     public static List<Item> generateItemsOfType(int minNumItems, int maxNumItems, string type, int level) {
-        return generateItems(minNumItems, maxNumItems, itemsMappedByType[type], level);
+        return generateItems(minNumItems, maxNumItems, type, level);
+    }
+
+    public static string getRandomItemType() {
+        List<string> itemTypes = new List<string>
+        {
+            "Consumable",
+            "Armor",
+            "Crafting Material"
+        };
+        int typeSelector = UnityEngine.Random.Range(0, itemTypes.Count);
+        return itemTypes[typeSelector];
     }
 
     public static Armor getRandomArmor(int level) {
-        int randomNumber = Random.Range(0,4);
+        int randomNumber = UnityEngine.Random.Range(0,4);
         string slotToLookFor = "";
         if(randomNumber == 0) {
             slotToLookFor = "Head";
@@ -148,14 +175,17 @@ public class ItemHandler {
             return null;
         }
 
-        pickedArmor.setRarity(getRandomRarity());
+        //TODO: Need to make a copy of the armor so we dont update the base item
+        
+        Armor armorCopy = pickedArmor.copyArmor();
 
-        return pickedArmor;
+        armorCopy.setRarity(getRandomRarity());
+
+        return armorCopy;
     }
 
     public static Rarity getRandomRarity() {
-        int randomNumber = Random.Range(1,101);
-        Debug.Log(randomNumber);
+        int randomNumber = UnityEngine.Random.Range(1,101);
         if(randomNumber < 70) {
             return Rarity.Common;
         }

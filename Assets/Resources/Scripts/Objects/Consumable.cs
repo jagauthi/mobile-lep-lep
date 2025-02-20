@@ -11,7 +11,7 @@ public class Consumable : Item {
          : base(baseName, type, icon, cost, rarity) {
         this.consumableType = consumableType;
         this.power = power;
-        this.tooltip = consumableType + ": " + power;
+        this.tooltip = consumableType + ": " + power + ", cost: " + cost;;
     }
 
     public override bool use() {
@@ -39,5 +39,9 @@ public class Consumable : Item {
                 return false;
             }
         }
+    }
+
+    public override void updateTooltip() {
+        this.tooltip = consumableType + ": " + power + ", cost: " + cost;
     }
 }

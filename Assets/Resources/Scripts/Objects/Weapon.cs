@@ -17,4 +17,8 @@ public class Weapon : EquipmentItem {
     public float getDamage() {
         return baseDamage;
     }
+
+    public override void updateTooltip() {
+        this.tooltip = "Damnage: " + getDamage() + ", cost: " + cost;
+    }
 }
