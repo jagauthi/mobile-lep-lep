@@ -247,6 +247,15 @@ public class PlayerScript : MonoBehaviour
         inventory.addItem(ItemHandler.getItemMap()["Health Potion"]);
         inventory.addItem(ItemHandler.getItemMap()["Mana Potion"]);
 
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+        inventory.addItem(ItemHandler.getRandomArmor(1));
+
         gainGold(10);
 
         dungeonFloorNum = 1;

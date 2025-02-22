@@ -14,6 +14,7 @@ public class Item {
     protected PlayerScript playerScript;
     protected string tooltip;
     protected Rarity rarity;
+    protected String uuid;
 
     public Item(string baseName, string type, Texture2D icon, int cost, Rarity rarity) {
         this.baseName = baseName;
@@ -23,6 +24,7 @@ public class Item {
         this.rarity = rarity;
         playerScript = null;
         tooltip = "Cost: " + cost;
+        this.uuid = Guid.NewGuid().ToString();
     }
 
     public virtual bool use() {
@@ -70,5 +72,9 @@ public class Item {
     public int getCost()
     {
         return cost;
+    }
+
+    public string getUuid() {
+        return uuid;
     }
 }

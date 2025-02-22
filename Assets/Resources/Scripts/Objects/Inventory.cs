@@ -228,7 +228,8 @@ public class Inventory {
     public bool addItem(Item item) {
         if(items.Count < inventoryTotalSlots) {
             items.Add(item);
-            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item), false, item.getTooltip());
+            Debug.Log("Inventory added item with rarity " + item.getRarity());
+            UiManager.Instance.CreateButton(playerInventoryPanel, UiButton.ButtonType.Item, item.getUuid(), item.getRarity(), item.getIcon(), () => playerScript.useItem(item), false, item.getTooltip());
             return true;
         }
         else {
@@ -240,7 +241,7 @@ public class Inventory {
     public bool addStashItem(Item item) {
         if(stashItems.Count < stashTotalSlots) {
             stashItems.Add(item);
-            UiManager.Instance.CreateButton(playerStashPanel, UiButton.ButtonType.Item, item.getBaseName(), item.getRarity(), item.getIcon(), () => transferFromStashToInventory(item), false, item.getTooltip());
+            UiManager.Instance.CreateButton(playerStashPanel, UiButton.ButtonType.Item, item.getUuid(), item.getRarity(), item.getIcon(), () => transferFromStashToInventory(item), false, item.getTooltip());
             return true;
         }
         else {
@@ -255,12 +256,12 @@ public class Inventory {
 
     public void loseItem(Item item) {
         items.Remove(item);
-        UiManager.Instance.RemoveButton(playerInventoryPanel, item.getBaseName());
+        UiManager.Instance.RemoveButton(playerInventoryPanel, item.getUuid());
     }
 
     public void loseStashItem(Item item) {
         stashItems.Remove(item);
-        UiManager.Instance.RemoveButton(playerStashPanel, item.getBaseName());
+        UiManager.Instance.RemoveButton(playerStashPanel, item.getUuid());
     }
 
     public int getSize() {

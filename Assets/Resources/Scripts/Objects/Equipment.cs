@@ -24,12 +24,16 @@ public class Equipment {
     }
 
     public bool equipItem(PlayerScript player, EquipmentItem item) {
+        EquipmentItem keepTrackOfItem = null;
+        Debug.Log("Going to equip item with rarity " + item.getRarity());
         if(null == player) {
             player = getPlayer();
         }
         //if(player.meetsRequirements(item)) {
             if(equipment[item.getSlot()] != null) {
                 EquipmentItem existingItem = equipment[item.getSlot()];
+                keepTrackOfItem = existingItem;
+                Debug.Log("Existing item has rarity " + existingItem.getRarity());
                 if(!player.getInventory().addItem(existingItem)) { 
                     Debug.Log("Inventory full");
                     return false;
@@ -37,6 +41,10 @@ public class Equipment {
             }
             equipment[item.getSlot()] = item;
             updateCharacterSheetEquipment(player);
+            Debug.Log("Item equipped: " + item.getRarity());
+            if(null != keepTrackOfItem) {
+                Debug.Log("keepTrackOfItem: " + keepTrackOfItem.getRarity());
+            }
             return true;
         //}
         //else { return false; }
