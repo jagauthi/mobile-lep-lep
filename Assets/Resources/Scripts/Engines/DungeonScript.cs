@@ -56,7 +56,7 @@ public class DungeonScript : MonoBehaviour
         roomNumber = 0;
 
         //There will be max of 3-5 rooms
-        maxRooms = UnityEngine.Random.Range(2, 2);
+        maxRooms = UnityEngine.Random.Range(3, 3);
 
         initDungeonOptionsPanel();
         initDungeonEnemiesPanel();
@@ -292,7 +292,7 @@ public class DungeonScript : MonoBehaviour
             int roomType = UnityEngine.Random.Range(0, typesOfRooms.Count);
             if(typesOfRooms[roomType] == "Monsters") {
                 //Generate 1-3 enemies
-                int numberOfEnemies = UnityEngine.Random.Range(1, 4);
+                int numberOfEnemies = UnityEngine.Random.Range(1, 3);
                 enemies.AddRange(EnemyHandler.generateEnemies(numberOfEnemies, false));
             }
             else if(typesOfRooms[roomType] == "Treasure") {
