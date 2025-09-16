@@ -15,8 +15,8 @@ public class EnemyHandler {
         allEnemies = new List<EnemyScript>();
         allBosses = new List<EnemyScript>();
         
-        allEnemies.Add(new EnemyScript("Cube", (Texture2D)Resources.Load("Images/SawahCube1"), 100, 10, 20, 10, 1));
-        allBosses.Add(new EnemyScript("Dragon", (Texture2D)Resources.Load("Images/SawahDragon1"), 200, 20, 40, 30, 3));
+        allEnemies.Add(new EnemyScript("Cube", (Texture2D)Resources.Load("Images/SawahCube1"), 100, 10, 20, 5, 1));
+        allBosses.Add(new EnemyScript("Dragon", (Texture2D)Resources.Load("Images/SawahDragon1"), 200, 20, 40, 20, 3));
 
         loaEnemiesIntoEnemyMaps(allEnemies, enemiesMappedByName);
         loaEnemiesIntoEnemyMaps(allBosses, bossesMappedByName);
