@@ -238,6 +238,19 @@ public class CraftingScript : MonoBehaviour
         return 30;
     }
 
+    public void tryStartCrafting(CraftingRecipe recipe)
+    {
+        //If player has the materials to start crafting it, subtract those and start crafting
+        if (playerScript.consumeCraftingIngredients(recipe))
+        {
+            setProductCurrentlyCrafting(recipe);
+        }
+        else
+        {
+            
+        }
+    }
+
     public void setProductCurrentlyCrafting(CraftingRecipe recipe) {
         productCurrentlyCrafting = recipe;
         craftingClicks = 0;

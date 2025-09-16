@@ -14,7 +14,7 @@ public class PlayerScript : MonoBehaviour
 
     protected GameScript gameScript;
     public GameObject player, gameEngine;
-    
+
     protected int currentHealth, currentResource, strength, intelligence, agility;
     protected int level = 1;
     protected int exp = 0;
@@ -40,7 +40,7 @@ public class PlayerScript : MonoBehaviour
         DontDestroyOnLoad(transform.gameObject);
     }
 
-    protected void Start ()
+    protected void Start()
     {
         //Cursor.visible = false;
         Debug.Log("PlayerScript Start");
@@ -59,7 +59,7 @@ public class PlayerScript : MonoBehaviour
         {
             GameObject playerOptionsPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerOptionsPanel");
             playerOptionsPanel = MonoBehaviour.Instantiate(playerOptionsPanelGameObject).GetComponent<Transform>();
-            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas"); 
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             playerOptionsPanel.SetParent(canvas.transform, false);
             UiManager.playerOptionsPanel = playerOptionsPanel;
             UiManager.openPanel(UiManager.playerOptionsPanel);
@@ -155,17 +155,18 @@ public class PlayerScript : MonoBehaviour
         });
 
         UiManager.playerSkillButtons = playerSkillButtons;
-        
+
         Transform armorSection = statsPanel.Find("ArmorStat");
         TextMeshProUGUI armorText = armorSection.Find("StatText").gameObject.GetComponent<TextMeshProUGUI>();
         UiManager.playerArmorText = armorText;
-        
+
         updatePlayerSkillsSection();
     }
 
     private void initEquipmentPanel()
     {
-        if(null == UiManager.characterSheetEquipmentMap) {
+        if (null == UiManager.characterSheetEquipmentMap)
+        {
 
             Transform equipmentPanel = characterSheetPanel.Find("EquipmentSection");
 
@@ -193,7 +194,7 @@ public class PlayerScript : MonoBehaviour
         {
             GameObject playerHealthPanelGameObject = (GameObject)Resources.Load("Prefabs/PlayerHealthPanel");
             playerHealthPanel = MonoBehaviour.Instantiate(playerHealthPanelGameObject).GetComponent<Transform>();
-            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas"); 
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             playerHealthPanel.SetParent(canvas.transform, false);
             UiManager.playerHealthPanel = playerHealthPanel;
             UiManager.addPanelToList(UiManager.playerHealthPanel, UiManager.dungeonInitOnPanels);
@@ -211,15 +212,19 @@ public class PlayerScript : MonoBehaviour
         UiManager.closePanel(playerHealthPanel);
     }
 
-    public void updatePlayerSkillsSection() {
+    public void updatePlayerSkillsSection()
+    {
 
         //Skill points
         UiManager.playerSkillPointsText.text = "Points: " + skillPoints;
-        foreach(GameObject skillButton in UiManager.playerSkillButtons) {
-            if(skillPoints > 0) {
+        foreach (GameObject skillButton in UiManager.playerSkillButtons)
+        {
+            if (skillPoints > 0)
+            {
                 skillButton.SetActive(true);
             }
-            else {
+            else
+            {
                 skillButton.SetActive(false);
             }
         }
@@ -233,7 +238,8 @@ public class PlayerScript : MonoBehaviour
 
     protected void basicInits()
     {
-        if(null == player) {
+        if (null == player)
+        {
             player = GameObject.FindGameObjectWithTag("Player");
         }
 
@@ -264,16 +270,20 @@ public class PlayerScript : MonoBehaviour
         currentResource = getMaxResource();
     }
 
-    public GameScript retrieveGameScript() {
-        if(gameScript == null) {
+    public GameScript retrieveGameScript()
+    {
+        if (gameScript == null)
+        {
             findGameScript();
         }
         return gameScript;
     }
 
-    protected void findGameScript() {
+    protected void findGameScript()
+    {
         gameEngine = GameObject.FindGameObjectWithTag("GameEngine");
-        if(gameEngine != null) {
+        if (gameEngine != null)
+        {
             gameScript = gameEngine.GetComponent<GameScript>();
         }
     }
@@ -290,7 +300,7 @@ public class PlayerScript : MonoBehaviour
     {
         abilityMap.Add("Melee Attack", new Ability("Melee Attack", "Melee", 0, 10,
                 (Texture2D)Resources.Load("Images/WeaponIcon")));
-                
+
         abilityMap.Add("Double Hammer Strike", new Ability("Double Hammer Strike", "Melee", 10, 40,
                 (Texture2D)Resources.Load("Images/DoubleHammerStrike")));
 
@@ -304,11 +314,13 @@ public class PlayerScript : MonoBehaviour
                 (Texture2D)Resources.Load("Images/FrostballIcon")));
     }
 
-    protected void Update() {
-       basicUpdates();
+    protected void Update()
+    {
+        basicUpdates();
     }
 
-    protected void basicUpdates() {
+    protected void basicUpdates()
+    {
 
     }
 
@@ -320,9 +332,10 @@ public class PlayerScript : MonoBehaviour
     public void loseHealth(int x)
     {
         float armorBlock = 0;
-        foreach(Item item in equipment.getItems())
+        foreach (Item item in equipment.getItems())
         {
-            if(null != item && item.getType() == "Armor") {
+            if (null != item && item.getType() == "Armor")
+            {
                 armorBlock += ((Armor)item).getArmorPower();
             }
         }
@@ -334,13 +347,17 @@ public class PlayerScript : MonoBehaviour
         updateHealthBar();
     }
 
-    public bool gainHealth(int health) { 
-        if(currentHealth >= getMaxHealth()) {
+    public bool gainHealth(int health)
+    {
+        if (currentHealth >= getMaxHealth())
+        {
             return false;
         }
-        else {
+        else
+        {
             currentHealth += health;
-            if(currentHealth >= getMaxHealth()) {
+            if (currentHealth >= getMaxHealth())
+            {
                 fullHeal();
             }
             updateHealthBar();
@@ -348,24 +365,28 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void updateHealthBar() {
-        if(null != healthBar) {
+    private void updateHealthBar()
+    {
+        if (null != healthBar)
+        {
             float fillAmount = currentHealth / (float)getMaxHealth();
             healthBar.fillAmount = fillAmount;
         }
     }
 
-    public bool isDead() {
+    public bool isDead()
+    {
         return currentHealth <= 0;
     }
 
     protected int getMaxHealth()
     {
-        return 100 + (level * 20) + (strength*10);
+        return 100 + (level * 20) + (strength * 10);
     }
 
-    protected virtual int getMaxResource() {
-        return 100 + (intelligence*20);
+    protected virtual int getMaxResource()
+    {
+        return 100 + (intelligence * 20);
     }
 
     public void gainExp(int x)
@@ -380,17 +401,22 @@ public class PlayerScript : MonoBehaviour
         updateExpBar();
     }
 
-    private void updateExpBar() {
+    private void updateExpBar()
+    {
         expBar.fillAmount = exp / (float)GetExpToNextLevel();
     }
 
-    public bool gainResource(int x) { 
-        if(currentResource >= getMaxResource()) {
+    public bool gainResource(int x)
+    {
+        if (currentResource >= getMaxResource())
+        {
             return false;
         }
-        else {
+        else
+        {
             currentResource += x;
-            if(currentResource > getMaxResource()) {
+            if (currentResource > getMaxResource())
+            {
                 currentResource = getMaxResource();
             }
             updateResourceBar();
@@ -398,82 +424,102 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public bool loseResource(int x) {
-        if(currentResource >= x) {
+    public bool loseResource(int x)
+    {
+        if (currentResource >= x)
+        {
             currentResource -= x;
             updateResourceBar();
             return true;
         }
-        else {
+        else
+        {
             return false;
         }
     }
 
-    private void updateResourceBar() {
-        if(null != manaBar) {
+    private void updateResourceBar()
+    {
+        if (null != manaBar)
+        {
             manaBar.fillAmount = currentResource / (float)getMaxResource();
         }
     }
 
-    public void setStrength(int newStrength) {
+    public void setStrength(int newStrength)
+    {
         int oldMaxHealth = getMaxHealth();
         this.strength = newStrength;
         int healthDifference = getMaxHealth() - oldMaxHealth;
-        if(healthDifference > 0) {
+        if (healthDifference > 0)
+        {
             gainHealth(healthDifference);
         }
-        else {
+        else
+        {
             loseHealth(healthDifference);
         }
     }
 
-    public void setIntelligence(int intelligence) {
+    public void setIntelligence(int intelligence)
+    {
         int oldMaxResource = getMaxResource();
         this.intelligence = intelligence;
         int resourceDifference = getMaxResource() - oldMaxResource;
-        if(resourceDifference > 0) {
+        if (resourceDifference > 0)
+        {
             gainResource(resourceDifference);
         }
-        else {
+        else
+        {
             loseResource(resourceDifference);
         }
     }
 
-    public void setAgility(int agility) {
+    public void setAgility(int agility)
+    {
         this.agility = agility;
     }
 
-    public void setSkillPoints(int skillPoints) {
+    public void setSkillPoints(int skillPoints)
+    {
         this.skillPoints = skillPoints;
     }
 
-    public int getSkillPoints() {
+    public int getSkillPoints()
+    {
         return skillPoints;
     }
 
-    public int getStrength() {
+    public int getStrength()
+    {
         return strength;
     }
 
-    public int getIntelligence() {
+    public int getIntelligence()
+    {
         return intelligence;
     }
 
-    public int getAgility() {
+    public int getAgility()
+    {
         return agility;
     }
 
-    public int getGold() {
+    public int getGold()
+    {
         return gold;
     }
 
-    public void completeQuest(Quest quest) {
+    public void completeQuest(Quest quest)
+    {
         removeQuest(quest);
         gainExp(quest.expReward);
         gainGold(quest.goldReward);
     }
 
-    public void removeQuest(Quest quest) {
+    public void removeQuest(Quest quest)
+    {
         activeQuests.Remove(quest);
     }
 
@@ -482,7 +528,8 @@ public class PlayerScript : MonoBehaviour
         return currentHealth;
     }
 
-    public void fullHeal() {
+    public void fullHeal()
+    {
         this.currentHealth = this.getMaxHealth();
         updateHealthBar();
     }
@@ -492,30 +539,37 @@ public class PlayerScript : MonoBehaviour
         return (level * 50);
     }
 
-    public void gainGold(int x) {
+    public void gainGold(int x)
+    {
         this.gold += x;
         inventory.updateGoldText(this);
     }
 
-    public void loseGold(int x) {
-        if(this.gold - x <= 0) {
+    public void loseGold(int x)
+    {
+        if (this.gold - x <= 0)
+        {
             this.gold = 0;
         }
-        else {
+        else
+        {
             this.gold -= x;
         }
         inventory.updateGoldText(this);
     }
 
-    public bool getLevelupToggle() {
+    public bool getLevelupToggle()
+    {
         return levelUpMenuToggle;
     }
 
-    public void setLevelupToggle(bool levelUpMenuToggle) {
+    public void setLevelupToggle(bool levelUpMenuToggle)
+    {
         this.levelUpMenuToggle = levelUpMenuToggle;
     }
 
-    public Inventory getInventory() {
+    public Inventory getInventory()
+    {
         return inventory;
     }
 
@@ -531,26 +585,33 @@ public class PlayerScript : MonoBehaviour
         updatePlayerSkillsSection();
     }
 
-    public void addQuest(Quest quest) {
+    public void addQuest(Quest quest)
+    {
         activeQuests.Add(quest);
     }
 
-    public bool hasQuest(Quest quest) {
-        return activeQuests.Contains(quest); 
+    public bool hasQuest(Quest quest)
+    {
+        return activeQuests.Contains(quest);
     }
 
-    public bool useItem(Item item) {
+    public bool useItem(Item item)
+    {
         //If the shopkeeper is open, we should try to sell to them
-        if(UiManager.isShopkeeperPanelOpen()) {
+        if (UiManager.isShopkeeperPanelOpen())
+        {
             ShopKeeperScript shopkeeper = getShopkeeper();
             return sellItem(item, shopkeeper);
         }
-        else if(UiManager.isStashOpen()) {
+        else if (UiManager.isStashOpen())
+        {
             return inventory.transferFromInventoryToStash(item);
         }
         //Otherwise if it's just in our inventory, use the item
-        else {
-            if(item.use()) {
+        else
+        {
+            if (item.use())
+            {
                 inventory.loseItem(item);
                 return true;
             }
@@ -559,15 +620,19 @@ public class PlayerScript : MonoBehaviour
         return false;
     }
 
-    public ShopKeeperScript getShopkeeper() {
-        if(null != GameObject.FindGameObjectWithTag("Town")) {
+    public ShopKeeperScript getShopkeeper()
+    {
+        if (null != GameObject.FindGameObjectWithTag("Town"))
+        {
             return GameObject.FindGameObjectWithTag("Town").GetComponent<TownScript>().getShopkeeper();
         }
         return null;
     }
 
-    public bool sellItem(Item item, ShopKeeperScript shopkeeper) {
-        if(shopkeeper.buyItem(item)) {
+    public bool sellItem(Item item, ShopKeeperScript shopkeeper)
+    {
+        if (shopkeeper.buyItem(item))
+        {
             inventory.loseItem(item);
             gainGold(item.getCost() / 2);
             return true;
@@ -575,90 +640,122 @@ public class PlayerScript : MonoBehaviour
         return false;
     }
 
-    public bool buyItem(Item item, int cost, ShopKeeperScript shopkeeper) {
-        if(gold >= cost && inventory.addItem(item)) {
+    public bool buyItem(Item item, int cost, ShopKeeperScript shopkeeper)
+    {
+        if (gold >= cost && inventory.addItem(item))
+        {
             loseGold(cost);
             shopkeeper.loseItem(item);
             return true;
         }
-        else {
+        else
+        {
             Debug.Log("Either not enough gold or not enough inventory space");
             return false;
         }
     }
 
-    public Equipment getEquipment() {
+    public Equipment getEquipment()
+    {
         return equipment;
     }
 
-    public Armor getArmorSlot(string slot) {
+    public Armor getArmorSlot(string slot)
+    {
         return (Armor)equipment.getItemMap()[slot];
     }
 
-    public List<Ability> getAbilities() {
+    public List<Ability> getAbilities()
+    {
         return abilities;
     }
 
-    public bool useAbility(Ability ability) {
+    public bool useAbility(Ability ability)
+    {
         return loseResource(ability.getResourceCost());
     }
 
-    public void toggleMenu(String menu) {
-        if(menu == "Character") {
+    public void toggleMenu(String menu)
+    {
+        if (menu == "Character")
+        {
             UiManager.togglePanel(characterSheetPanel);
         }
-        else if(menu == "Inventory") {
+        else if (menu == "Inventory")
+        {
             //inventory.toggleInventory();
             UiManager.togglePanel(inventory.playerInventoryPanel);
         }
-        else if(menu == "Stash") {
+        else if (menu == "Stash")
+        {
             // UiManager.Instance.togglePanel(inventory.playerStashPanel);
         }
-        else if(menu == "Main") {
+        else if (menu == "Main")
+        {
             // UiManager.Instance.togglePanel(inventory.mainMenuPanel);
         }
     }
 
-    public void closeCharacterSheet() {
+    public void closeCharacterSheet()
+    {
         UiManager.closePanel(characterSheetPanel);
         // characterSheetPanel.gameObject.SetActive(false);
     }
-    
 
-    public bool isStashOpen() {
+
+    public bool isStashOpen()
+    {
         return stashOpen;
     }
 
-    public void setDungeonFloor(int floorNum) {
+    public void setDungeonFloor(int floorNum)
+    {
         dungeonFloorNum = floorNum;
     }
 
-    public int getDungeonFloorNum() {
+    public int getDungeonFloorNum()
+    {
         return dungeonFloorNum;
     }
 
-    public void setMaxDungeonFloorNumCompleted(int floorNum) {
+    public void setMaxDungeonFloorNumCompleted(int floorNum)
+    {
         maxDungeonFloorNumCompleted = floorNum;
     }
 
-    public int getMaxDungeonFloorNumCompleted() {
+    public int getMaxDungeonFloorNumCompleted()
+    {
         return maxDungeonFloorNumCompleted;
     }
-    
-    public string getCurrentCrafting() {
+
+    public string getCurrentCrafting()
+    {
         return currentCrafting;
     }
 
-    public void setCurrentCrafting(string crafting) {
+    public void setCurrentCrafting(string crafting)
+    {
         this.currentCrafting = crafting;
     }
 
-    public void setSelectedProfession(TownProfessionNpc selectedProfession) {
+    public void setSelectedProfession(TownProfessionNpc selectedProfession)
+    {
         this.selectedProfession = selectedProfession;
         playerIconImage.GetComponent<Image>().sprite = Sprite.Create(selectedProfession.getHeadShot(), new Rect(0, 0, selectedProfession.getTexture().width, selectedProfession.getTexture().height), new Vector2(0.5f, 0.5f));
     }
 
-    public TownProfessionNpc getSelectedProfession() {
+    public TownProfessionNpc getSelectedProfession()
+    {
         return selectedProfession;
+    }
+
+    public bool consumeCraftingIngredients(CraftingRecipe craftingRecipe)
+    {
+        Dictionary<string, int> ingredients = craftingRecipe.getIngredients();
+        foreach (KeyValuePair<string, int> ingredient in ingredients)
+        {
+            Console.WriteLine($"Name: {ingredient.Key}, Age: {ingredient.Value}");
+        }
+        return true;
     }
 }

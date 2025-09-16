@@ -18,4 +18,9 @@ public class CraftingRecipe
     {
         return product;
     }
+
+    public Dictionary<string, int> getIngredients()
+    {
+        return ingredients;
+    }
 }
