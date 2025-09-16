@@ -31,6 +31,9 @@ public class CraftingScript : MonoBehaviour
     Transform manualCraftButtonSlot;
     Image craftingProgressBar;
 
+    List<CraftingRecipe> miningCraftingRecipes;
+    List<CraftingRecipe> smithingCraftingRecipes;
+
 
     void Start()
     {
@@ -43,7 +46,28 @@ public class CraftingScript : MonoBehaviour
 
         craftingClicks = 0;
         craftingOptionsMap = new Dictionary<CraftingTypes, List<string>>();
+
+        //Mining ores dont cost any ingredients
+        miningCraftingRecipes.Add(new CraftingRecipe(new List<Item>(), ItemHandler.getItemMap()["Copper Ore"]));
+        miningCraftingRecipes.Add(new CraftingRecipe(new List<Item>(), ItemHandler.getItemMap()["Iron Ore"]));
         
+
+        //Smithing bars costs some ores
+        List<Item> copperBarIngredients = new List<Item>
+        {
+            ItemHandler.getItemMap()["Copper Ore"]
+        };
+        smithingCraftingRecipes.Add(new CraftingRecipe(copperBarIngredients, ItemHandler.getItemMap()["Copper Bar"]));
+        
+
+        List<Item> ironBarIngredients = new List<Item>
+        {
+            ItemHandler.getItemMap()["Copper Ore"],
+            ItemHandler.getItemMap()["Iron Ore"]
+        };
+        smithingCraftingRecipes.Add(new CraftingRecipe(ironBarIngredients, ItemHandler.getItemMap()["Iron Bar"]));
+
+
         //Mining
         List<string> miningOptions = new List<string>
         {
