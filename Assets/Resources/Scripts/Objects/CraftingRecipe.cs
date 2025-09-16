@@ -2,13 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CraftingRecipe {
+public class CraftingRecipe
+{
 
-    protected List<Item> ingredients;
+    protected Dictionary<string, int> ingredients;
     protected Item product;
 
-    public CraftingRecipe(List<Item> ingredients, Item product) {
+    public CraftingRecipe(Dictionary<string, int> ingredients, Item product)
+    {
         this.ingredients = ingredients;
         this.product = product;
+    }
+
+    public Item getProduct()
+    {
+        return product;
     }
 }

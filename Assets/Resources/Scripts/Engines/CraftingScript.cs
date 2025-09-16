@@ -19,9 +19,9 @@ public class CraftingScript : MonoBehaviour
     DateTime craftingStartTime;
     int craftingClicks;
 
-    string productCurrentlyCrafting;
+    CraftingRecipe productCurrentlyCrafting;
 
-    Dictionary<CraftingTypes, List<string>> craftingOptionsMap;
+    Dictionary<CraftingTypes, Dictionary<string, CraftingRecipe>> craftingOptionsMap;
 
     Transform craftingDialogPanel, craftingButtonOptionsPanel;
 
@@ -30,9 +30,6 @@ public class CraftingScript : MonoBehaviour
     TownProfessionNpc selectedProfession;
     Transform manualCraftButtonSlot;
     Image craftingProgressBar;
-
-    List<CraftingRecipe> miningCraftingRecipes;
-    List<CraftingRecipe> smithingCraftingRecipes;
 
 
     void Start()
@@ -45,43 +42,25 @@ public class CraftingScript : MonoBehaviour
         }
 
         craftingClicks = 0;
-        craftingOptionsMap = new Dictionary<CraftingTypes, List<string>>();
+        craftingOptionsMap = new Dictionary<CraftingTypes, Dictionary<string, CraftingRecipe>>();
+
 
         //Mining ores dont cost any ingredients
-        miningCraftingRecipes.Add(new CraftingRecipe(new List<Item>(), ItemHandler.getItemMap()["Copper Ore"]));
-        miningCraftingRecipes.Add(new CraftingRecipe(new List<Item>(), ItemHandler.getItemMap()["Iron Ore"]));
-        
+        Dictionary<string, CraftingRecipe> miningCraftingRecipes = new Dictionary<string, CraftingRecipe>();
+        miningCraftingRecipes.Add("Copper Ore", new CraftingRecipe(new Dictionary<string, int>(), ItemHandler.getItemMap()["Copper Ore"]));
+        miningCraftingRecipes.Add("Iron Ore", new CraftingRecipe(new Dictionary<string, int>(), ItemHandler.getItemMap()["Iron Ore"]));
 
         //Smithing bars costs some ores
-        List<Item> copperBarIngredients = new List<Item>
-        {
-            ItemHandler.getItemMap()["Copper Ore"]
-        };
-        smithingCraftingRecipes.Add(new CraftingRecipe(copperBarIngredients, ItemHandler.getItemMap()["Copper Bar"]));
-        
-
-        List<Item> ironBarIngredients = new List<Item>
-        {
-            ItemHandler.getItemMap()["Copper Ore"],
-            ItemHandler.getItemMap()["Iron Ore"]
-        };
-        smithingCraftingRecipes.Add(new CraftingRecipe(ironBarIngredients, ItemHandler.getItemMap()["Iron Bar"]));
+        Dictionary<string, CraftingRecipe> smithingCraftingRecipes = new Dictionary<string, CraftingRecipe>();
+        smithingCraftingRecipes.Add("Copper Bar", new CraftingRecipe(new Dictionary<string, int>{ { "Copper Ore", 2 } }, ItemHandler.getItemMap()["Copper Bar"]));
+        smithingCraftingRecipes.Add("Iron Bar", new CraftingRecipe(new Dictionary<string, int>{ { "Iron Ore", 2 } }, ItemHandler.getItemMap()["Iron Bar"]));
 
 
         //Mining
-        List<string> miningOptions = new List<string>
-        {
-            "Copper Ore", "Iron Ore"
-        };
-        craftingOptionsMap.Add(CraftingTypes.Mining, miningOptions);
-        
+        craftingOptionsMap.Add(CraftingTypes.Mining, miningCraftingRecipes);
 
         //Smithing
-        List<string> smithingOptions = new List<string>
-        {
-            "Copper Bar", "Iron Bar"
-        };
-        craftingOptionsMap.Add(CraftingTypes.Smithing, smithingOptions);
+        craftingOptionsMap.Add(CraftingTypes.Smithing, smithingCraftingRecipes);
 
         selectedCraftingType = CraftingTypes.None;
         
@@ -182,7 +161,7 @@ public class CraftingScript : MonoBehaviour
         //Otherwise if we haven't selected which product to craft yet, display the options for which products can be crafted
         else if(null == productCurrentlyCrafting) {
             npcCraftingText.text = "And which product do you want to make?";
-            List<string> productsToCraft = craftingOptionsMap[selectedCraftingType];
+            List<string> productsToCraft = new List<string>(craftingOptionsMap[selectedCraftingType].Keys);
             UiManager.clearExistingSlotsAndButtons(craftingButtonOptionsPanel);
             loadProducts(productsToCraft);
         }
@@ -219,10 +198,10 @@ public class CraftingScript : MonoBehaviour
         foreach(string product in productsToCraft) {
             GameObject newSlot = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/UiSlotPrefab"), craftingButtonOptionsPanel);
             newSlot.GetComponent<UiSlot>().setType(UiButton.ButtonType.Item);
-            string thisProduct = product;
+            CraftingRecipe recipe = craftingOptionsMap[selectedCraftingType][product];
             GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, product, Item.Rarity.None, 
                             null, () => {
-                                setProductCurrentlyCrafting(thisProduct);
+                                setProductCurrentlyCrafting(recipe);
                                 setupCraftingDialog();
                             }, false, null);
         }
@@ -244,7 +223,7 @@ public class CraftingScript : MonoBehaviour
     public int getCurrentCraftingProgress() {
         int secondsCrafting = DateTime.Now.Subtract(craftingStartTime).Seconds;
         if(secondsCrafting + craftingClicks >= getMaxCraftingProgress()) {
-            Item craftedItem = ItemHandler.getItemMap()[productCurrentlyCrafting];
+            Item craftedItem = productCurrentlyCrafting.getProduct();
             if(!playerScript.getInventory().addItem(craftedItem)) {
                 playerScript.getInventory().getStashItems().Add(craftedItem);
                 Debug.Log("Sent " + craftedItem.getBaseName() + " to stash");
@@ -259,12 +238,8 @@ public class CraftingScript : MonoBehaviour
         return 30;
     }
 
-    public Dictionary<CraftingTypes, List<string>> getCraftingOptionsMap() {
-        return craftingOptionsMap;
-    }
-
-    public void setProductCurrentlyCrafting(string product) {
-        productCurrentlyCrafting = product;
+    public void setProductCurrentlyCrafting(CraftingRecipe recipe) {
+        productCurrentlyCrafting = recipe;
         craftingClicks = 0;
         craftingStartTime = DateTime.Now;
 
@@ -273,7 +248,7 @@ public class CraftingScript : MonoBehaviour
         UiManager.enablePanel(UiManager.productCraftingPanelGameObject);
     }
 
-    public string getProductCurrentlyCrafting() {
+    public CraftingRecipe getProductCurrentlyCrafting() {
         return productCurrentlyCrafting;
     }
 
