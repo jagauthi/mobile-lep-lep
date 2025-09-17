@@ -752,9 +752,15 @@ public class PlayerScript : MonoBehaviour
     public bool consumeCraftingIngredients(CraftingRecipe craftingRecipe)
     {
         Dictionary<string, int> ingredients = craftingRecipe.getIngredients();
+        Dictionary<string, int> inventoryMap = getInventory().getInventoryContents();
+
+        bool hasEnoughIngredients = false;
         foreach (KeyValuePair<string, int> ingredient in ingredients)
         {
-            Console.WriteLine($"Name: {ingredient.Key}, Age: {ingredient.Value}");
+            if (inventoryMap[ingredient.Key] >= ingredient.Value)
+            {
+
+            }
         }
         return true;
     }

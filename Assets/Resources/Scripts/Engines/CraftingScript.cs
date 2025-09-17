@@ -247,7 +247,7 @@ public class CraftingScript : MonoBehaviour
         }
         else
         {
-            
+            Debug.Log("Dont have required ingredients: " + recipe.getIngredients());
         }
     }
 
