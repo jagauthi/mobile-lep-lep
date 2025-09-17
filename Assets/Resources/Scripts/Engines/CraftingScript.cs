@@ -201,7 +201,7 @@ public class CraftingScript : MonoBehaviour
             CraftingRecipe recipe = craftingOptionsMap[selectedCraftingType][product];
             GameObject newItem = UiManager.Instance.CreateButton(craftingButtonOptionsPanel, UiButton.ButtonType.PlayerMenuOption, product, Item.Rarity.None, 
                             null, () => {
-                                setProductCurrentlyCrafting(recipe);
+                                tryStartCrafting(recipe);
                                 setupCraftingDialog();
                             }, false, null);
         }
@@ -230,12 +230,14 @@ public class CraftingScript : MonoBehaviour
             }
             craftingStartTime = DateTime.Now;
             craftingClicks = 0;
+            tryStartCrafting(productCurrentlyCrafting);
+            setupCraftingDialog();
         }
         return secondsCrafting + craftingClicks;
     }
 
     public int getMaxCraftingProgress() {
-        return 30;
+        return 10;
     }
 
     public void tryStartCrafting(CraftingRecipe recipe)
@@ -248,6 +250,7 @@ public class CraftingScript : MonoBehaviour
         else
         {
             Debug.Log("Dont have required ingredients: " + recipe.getIngredients());
+            productCurrentlyCrafting = null;
         }
     }
 

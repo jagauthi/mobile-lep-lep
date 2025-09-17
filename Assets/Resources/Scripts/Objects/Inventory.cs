@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class Inventory
 {
@@ -317,16 +318,34 @@ public class Inventory
         Dictionary<string, int> inventoryContents = new Dictionary<string, int>();
         foreach (Item item in items)
         {
-            if (inventoryContents[item.getBaseName()] == 0)
+            if (!inventoryContents.ContainsKey(item.getBaseName()))
             {
-                inventoryContents.Add(item.getBaseName(), 1);
+                inventoryContents.Add(item.getBaseName(), 0);
             }
-            else
-            {
-                inventoryContents[item.getBaseName()] += 1;
-            }
+            inventoryContents[item.getBaseName()] += 1;
         }
         return inventoryContents;
+    }
+
+    public async void removeItemsFromInventory(string itemName, int quantity)
+    {
+        //This is some janky innefficient way to do it, but going to rearchitect inventory system later. 
+        //Iterating through inventory and removing the items wasn't working since i was modifying list as I was iterating the inventory
+        for (int i = 0; i < quantity; i++)
+        {
+            foreach (Item item in items)
+            {
+                if (item.getBaseName().Equals(itemName))
+                {
+                    loseItem(item);
+                    
+                    //Waiting since we are destroying buttons which takes time
+                    await Task.Delay(UiManager.buttonClearDelayMillis); 
+
+                    break;
+                }
+            }
+        }
     }
 
 }

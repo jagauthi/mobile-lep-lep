@@ -29,7 +29,7 @@ public class PlayerScript : MonoBehaviour
     Hashtable abilityMap = new Hashtable();
     protected List<Ability> abilities;
     protected List<Quest> activeQuests;
-    protected Inventory inventory;
+    public Inventory inventory;
     protected Equipment equipment;
     Transform playerOptionsPanel, characterSheetPanel, playerHealthPanel;
     Image playerIconImage, healthBar, manaBar, expBar;
@@ -754,14 +754,26 @@ public class PlayerScript : MonoBehaviour
         Dictionary<string, int> ingredients = craftingRecipe.getIngredients();
         Dictionary<string, int> inventoryMap = getInventory().getInventoryContents();
 
-        bool hasEnoughIngredients = false;
         foreach (KeyValuePair<string, int> ingredient in ingredients)
         {
-            if (inventoryMap[ingredient.Key] >= ingredient.Value)
+            if (!inventoryMap.ContainsKey(ingredient.Key) || inventoryMap[ingredient.Key] < ingredient.Value)
             {
-
+                return false;
             }
         }
+
+        //Otherwise if we made it here, we have the crafting ingredients, so remove those from the inventory and return true
+        foreach (KeyValuePair<string, int> ingredient in ingredients)
+        {
+            inventory.removeItemsFromInventory(ingredient.Key, ingredient.Value);
+        }
+
         return true;
+    }
+
+    async void removeItemsFromInventory(Dictionary<string, int> ingredients)
+    {
+        //Waiting while existing buttons get cleared
+
     }
 }
