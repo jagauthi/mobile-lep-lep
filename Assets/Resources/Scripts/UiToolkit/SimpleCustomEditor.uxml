@@ -1,0 +1,38 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+  <VisualElement name="smithing-root" style="flex-direction: column; padding: 10px;">
+    
+    <!-- Title -->
+    <Label text="Smithing.." class="title"/>
+
+    <!-- XP Progress Bar -->
+    <ProgressBar name="xp-bar" title="XP Progress" value="26" high-value="75" />
+
+    <VisualElement style="flex-direction: row; margin-top: 10px; gap: 10px;">
+      
+      <!-- Bar List -->
+      <VisualElement name="bar-list" class="list-panel">
+        <Label text="Bars" class="header"/>
+        <Button name="btn-copper" text="Copper Bar"/>
+        <Button name="btn-iron" text="Iron Bar"/>
+        <Button name="btn-mithril" text="Mithril Bar"/>
+        <Button name="btn-adamant" text="Adamant Bar"/>
+        <Label text="Weapons" class="header" style="margin-top:10px;"/>
+        <Button name="btn-copper-sword" text="Copper Sword"/>
+      </VisualElement>
+
+      <!-- Selected Item Details -->
+      <VisualElement name="item-details" class="detail-panel">
+        <Label name="selected-item-name" text="Iron Bar" class="subheader"/>
+        <Image name="selected-item-icon" scale-mode="ScaleToFit" style="height: 64px; width: 64px;"/>
+        <Label text="Materials" class="header"/>
+        <Label name="materials-list" text="Iron Ore: 2&#10;Coal: 1"/>
+        <Button name="btn-craft" text="Craft"/>
+      </VisualElement>
+
+    </VisualElement>
+
+    <!-- Crafting Progress Bar -->
+    <ProgressBar name="crafting-chance-bar" title="Iron Bar" value="27" high-value="100" style="margin-top: 10px;"/>
+
+  </VisualElement>
+</UXML>
